@@ -1,0 +1,123 @@
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
+<script>
+function renderMermaid(){
+    mermaid.init(undefined,document.querySelectorAll(".mermaid"));
+}
+$(function() {
+    $(document).on('previewUpdated', function() {        
+        renderMermaid();
+    });
+    renderMermaid();
+});
+</script>
+
+<div class="mermaid">
+classDiagram
+      exampleValues <-- sourceHandling
+	  exampleValues <-- requestBodyDict
+	  utilityFunctions <-- requestBodyDict
+	  utilityFunctions <-- dataType
+	  utilityFunctions <-- sourceHandling
+	  utilityFunctions <-- interfaceMethod
+	  utilityFunctions <-- pdf2yaml
+	  utilityFunctions <-- pdf2txt
+	  requestBodyDict <-- sourceHandling
+	  interfaceMethod <-- sourceHandling
+	  dataType <-- sourceHandling
+	  sourceHandling <-- pdf2yaml
+	  pdf2txt <-- pdf2yaml
+	  class utilityFunctions{
+		  +pathSplitL()
+		  +pathSplitR()
+		  +shortenCommonTerms()
+		  +makeStringCamelCase()
+		  +upperFirstChar()
+		  +iFirstUpperChar()
+		  +returnTextLineFromList()
+		  +getColumnFromTable()
+		  +getOperationIdsWithoutDoubles()
+		  +renameOperationIdsWithOneUnderscore()
+	  }
+	  class interfaceMethod{
+		  +str type_
+		  +str num
+		  +str title
+		  +str requestMethod
+		  +str description
+		  +dict requestHeader
+		  +dict requestBody
+		  +dict responseHeaderSuccess
+		  +str responseBodySuccess
+		  +dict responseHeaderFailure
+		  +dict responseBodyFailure
+		  +str ref400
+		  +str ref401
+		  +str ref500
+		  +__init__()
+		  -printContent()
+	  }
+	  class dataType{
+		  +str num
+		  +str title
+		  +str description
+		  +list att1
+		  +list att2type
+		  +list att3desc
+		  +list att4mand
+		  +list att5ed
+		  +list key1
+		  +list key2type
+		  +list key3desc
+		  +__init__()
+		  -concatMultiLineDescriptions()
+		  -printContent()
+	  }
+	  class sourceHandling{
+		  -list interfaceMethods
+		  -list dataTypes
+		  -list yaml
+		  +__init__()
+		  -readSourceContent()
+		  -splitSourceContent()
+		  -defInterfaceMethodObj()
+		  -defDataTypeObj()
+		  -appendFileToYAML()
+		  -addHeader()
+		  -addTags()
+		  -addPaths()
+		  -addParameters()
+		  -addRequestBodies()
+		  -addResponses()
+		  -addSecuritySchemes()
+		  -addSchemas()
+		  -markdownTable()
+		  -saveResult()
+		  -process()
+		  +generate()
+		  +generateReturn()
+	  }
+	  class exampleValues{
+		  +RandomValueExamples.get()
+		  +FixedValueExamples.get()
+		  +FixedValueExamples.reset()
+		  +randomizeComponentsExamples()
+	  }
+	  class requestBodyDict{
+		  -deleteEmptyLines()
+		  -removeLinksTillEnd()
+		  -dictOfProperties()
+		  -dictOfPropertiesEditable()
+		  -listOfPropertyEntries()
+		  +generateRequestBodyExamples()
+	  }
+	  class pdf2txt{
+		  -pyMuPdfParser()
+		  +parseTR()
+	  }
+	  class pdf2yaml{
+		  -dateKey()
+		  -chooseFile()
+		  +main()
+	  }
+</div>

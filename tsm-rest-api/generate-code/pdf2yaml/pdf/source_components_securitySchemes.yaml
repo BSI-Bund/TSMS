@@ -1,0 +1,8 @@
+    LongtermToken:
+      type: "http"
+      scheme: bearer
+    
+    authToken:
+      type: "http"
+      scheme: bearer
+    

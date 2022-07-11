@@ -1,0 +1,69 @@
+    binaryELF:
+      description: "Binary data of ELF to be uploaded as part of a request body."
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              elf-filename:
+                description: filename of the ELF
+                type: string
+                example: elf-file.cap
+              elf-file:
+                description: containing actual elf-file
+                type: string
+                format: binary
+                example: "01000101010011000100011000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+          encoding:
+            elf-filename:
+              contentType: text/plain
+            elf-file:
+              contentType: application/octet-stream
+    
+    binaryPersoScript:
+      description: "Binary data of a personalization script to be uploaded as part of a request body."
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              script-filename:
+                description: filename of the personalization script
+                type: string
+                example: file.pers
+              script-file:
+                description: containing actual script-file
+                type: string
+                format: binary
+                example: "01010011011000110111001001101001011100000111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+          encoding:
+            script-filename:
+              contentType: text/plain
+            script-file:
+              contentType: application/octet-stream
+    
+    binaryCertificate:
+      description: "Binary data of a certificate to be uploaded as part of a request body."
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              cert-filename:
+                description: filename of the certificate
+                type: string
+                example: file.cert
+              cert-file:
+                description: containing actual cert-file
+                type: string
+                format: binary
+                example: "0100001101100101011100100111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+          encoding:
+            cert-filename:
+              contentType: text/plain
+            cert-file:
+              contentType: application/octet-stream
+    

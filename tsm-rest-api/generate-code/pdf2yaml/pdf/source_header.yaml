@@ -1,0 +1,66 @@
+openapi: 3.0.0
+
+info:
+  description: |
+    A graphical representation of the TSM-Backend API for a TSMS (Trusted Service Management System) using Swagger UI is presented here. This is to be seen as a supplement to the [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html). In case of discrepancies, the content of the written guideline applies.
+    
+    A TSM-Backend is an IT-system of a TSM that provides TSM-services in form of a REST-API. It acts as a repository for secure applications in different Flavors, configurations, and resources that are necessary to install a secure application. It allows service providers to create, read, update and delete all data objects that are necessary to enable the life-cycle management of their secure application on secure components.
+    
+    __Functionality:__
+    * upload JavaCard *.cap files to TSM-Backend
+    * define a service which consists of one or multiple *.cap files
+    * versionize the service
+    * define hardware variants for each service - called flavors 
+    * specify technical requirements for each flavor, e.g. minimal JavaCard version
+    
+#__...:__
+#
+#* ...
+##* ...
+#
+#The following entities are handled by this API:
+#
+#* ServiceProvider - The top-level entity of the data model is a ServiceProvider. The ServiceProvider entity of the data model represents the ('real-life') SP, and both terms will be used interchangeable.
+#* Service - A Service (as an entity of the data model) represents all data needed for the life-cycle management of a secure application.
+#* Version - A Service can be provided in different Versions.
+#* Flavor - Services, respectively Versions, can be provided in different Flavors to solve interoperability problems when provisioning Services to different SC platforms. Simply speaking, a Flavor is a certain variant of a Service.
+#* SecurityRequirements - The SecurityRequirements data type is part of a Flavor to configure platform security and is used for the Eligibility Check.
+#* ApplicationInstantiationConfig - The ApplicationInstantiationConfig contains the link between EM and the ApplicationConfig for a certain Flavor. A lower value of priority indicates that an ApplicationInstantiationConfig shall be applied before an ApplicationInstantiationConfig with a higher value of priority.
+#* ExecutableLoadFile - An ExecutableLoadFile (ELF) is an executable binary file that can be loaded onto a Secure Component. In SmartCard terminology, the ELF is a container of executable code on a secure component [GPC_SPE_034].
+#* CAP - A CAP is a Java Card realization of an ELF.
+#* TechnicalRequirements - The TechnicalRequirements data type is used to define technical requirements needed to execute a CAP.
+#* ExecutableModule - ExecutableModules (EMs) are contained in ELFs. Thus, an EM is always bound to an ELF. A specific example of an EM is a Java Card Applet.
+#* ApplicationConfig - An ApplicationConfig consists of parameters, certificates and other properties needed for provisioning applications.
+#* InstallConfig - An InstallConfig is a structure to configure configuration options needed to deploy a Service to lifecycle state Installed.
+#* ActivationConfig - An ActivationConfig is a structure to configure configuration options needed to deploy a service to lifecycle state Activated.
+#* PersonalizationConfig - A PersonalizationConfig is a structure to configure configuration options needed to deploy a service to lifecycle state Personalized.
+#* PersonalizationScript - A PersonalizationScript is a script a SP may use to specify installation instructions or request TSM-support for, e.g., the personalization of a secure application during the provisioning process.
+#* Certificate - A Certificate is used for the communication between TSM and SP Online System and also in PersonalizationScripts for applet provisioning and personalization.
+#* SposConfig - SposConfig is used to configure communication with the Service Provider Online System.
+  version: "1.0"
+  title: "BSI-TR-03165: TSM-Backend"
+  termsOfService: https://www.bsi.bund.de/DE/Service/Nutzungsbedingungen/Nutzungsbedingungen_node.html
+  contact:
+    email: mobile-eid@bsi.bund.de
+  license:
+    name: Apache License, Version 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+tags:
+- name: /auth
+  description: authentication methods
+- name: /serviceproviders
+  description: methods for management of SP
+- name: /services
+  description: methods for management of Services and Flavors
+- name: /executable-load-files
+  description: methods for management of ELFs and EMs
+- name: /application-configs
+  description: methods for management of ApplicationConfigurations
+- name: /personalization-scripts
+  description: methods for management of PersonalizationScripts
+- name: /certificates
+  description: methods for management of Certificates
+- name: /spos-configs
+  description: methods for management of SposConfigs
+

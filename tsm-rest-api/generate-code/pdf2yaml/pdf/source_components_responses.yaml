@@ -1,0 +1,236 @@
+    200Binary_ELF:
+      description: Ok
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+            example: attachment; filename="filename.cap"
+      content:
+        application/octet-data:
+          schema:
+            description: containing actual elf-binary
+            type: string
+            format: binary
+            example: "01000101010011000100011000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+    
+    200Binary_Script:
+      description: Ok
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+            example: attachment; filename="filename.pers"
+      content:
+        application/octet-data:
+          schema:
+            description: containing actual pers-binary
+            type: string
+            format: binary
+            example: "01010011011000110111001001101001011100000111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+    
+    200Binary_Cert:
+      description: Ok
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+            example: attachment; filename="filename.cert"
+      content:
+        application/octet-data:
+          schema:
+            description: containing actual cert-binary
+            type: string
+            format: binary
+            example: "0100001101100101011100100111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+    
+    400Error_1002:
+      description: "Bad Request - returned error category: 1002"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1002
+            errorMessage: "Invalid: request body not allowed."
+    
+    400Error_1002_1009:
+      description: "Bad Request - possible error categories: 1002, 1009"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1009
+            errorMessage: "Not existing: <<entityName>> with identifier '<<attributeValue>>' is not existing."
+    
+    400Error_1002_1009_1010:
+      description: "Bad Request - possible error categories: 1002, 1009, 1010"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1010
+            errorMessage: "Delete failed: <<entityName>> is referenced in <<entityNameWhereUsed>>."
+    
+    400Error_1002_1011_1012_1013_1014:
+      description: "Bad Request - possible error categories: 1002, 1011, 1012, 1013, 1014"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1011
+            errorMessage: "Upload failed: missing file."
+    
+    400Error_1003_1004_1007_1008_1009_1011_1012_1013_1014:
+      description: "Bad Request - possible error categories: 1003, 1004, 1007, 1008, 1009, 1011, 1012, 1013, 1014"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1013
+            errorMessage: "Upload failed: invalid file type. Supported file types are <<fileTypeList>>."
+    
+    400Error_1003_1004_1007_1008_1009:
+      description: "Bad Request - possible error categories: 1003, 1004, 1007, 1008, 1009"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1003
+            errorMessage: "Create failed: attribute <<attributeName>> not allowed for POST. It is automatically assigned when created."
+    
+    400Error_1003_1004_1007_1008_1009_1016:
+      description: "Bad Request - possible error categories: 1003, 1004, 1007, 1008, 1009, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1004
+            errorMessage: "Create failed: attribute <<attributeName>> is missing, but it is mandatory for <<entityName>>."
+    
+    
+    400Error_1005_1006_1007_1008_1009:
+      description: "Bad Request - possible error categories: 1005, 1006, 1007, 1008, 1009"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1005
+            errorMessage: "Modify failed: attribute <<attributeName>> not allowed for PUT. Attribute cannot be modified after creation."
+    
+    400Error_1005_1006_1007_1008_1009_1011_1012_1013_1014_1015_1016:
+      description: "Bad Request - possible error categories: 1005, 1006, 1007, 1008, 1009, 1011, 1012, 1013, 1014, 1015, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1007
+            errorMessage: "Unknown: ‘<<attributeName>>’ is not a valid attribute."
+    
+    400Error_1005_1006_1007_1008_1009_1015_1016:
+      description: "Bad Request - possible error categories: 1005, 1006, 1007, 1008, 1009, 1015, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1015
+            errorMessage: "Already Published: <<entityName>> cannot be modified. It is already published via Flavor identifier ‘<<attributeValue>>’."
+    
+    400Error_1005_1006_1007_1008_1009_1016:
+      description: "Bad Request - possible error categories: 1005, 1006, 1007, 1008, 1009, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1016
+            errorMessage: "Technical constraints failed: minimal <<attributeName>> version not supported by SecureComponentProfile."
+    
+    400Error_1008_1009:
+      description: "Bad Request - possible error categories: 1008, 1009"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1008
+            errorMessage: "Invalid format '<<attributeValue>>' for << attributeName>>. Supported format is <<formatDefinition>>."
+    
+    400Error_1008_1009_1015:
+      description: "Bad Request - possible error categories: 1008, 1009, 1015"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1008
+            errorMessage: "Invalid format '<<attributeValue>>' for << attributeName>>. Supported format is <<formatDefinition>>."
+    
+    400Error_1008_1009_1015_1016:
+      description: "Bad Request - possible error categories: 1008, 1009, 1015, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1015
+            errorMessage: "Already Published: <<entityName>> cannot be modified. It is already published via Flavor identifier ‘<<attributeValue>>’."
+    
+    400Error_1008_1009_1016:
+      description: "Bad Request - possible error categories: 1008, 1009, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1016
+            errorMessage: "Technical constraints failed: minimal <<attributeName>> version not supported by SecureComponentProfile."
+    
+    401Error_1000:
+      description: "Unauthorized - returned error category: 1000"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1000
+            errorMessage: "Not authenticated"
+    
+    401Error_1001:
+      description: "Unauthorized - returned error category: 1001"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1001
+            errorMessage: "Authentication failed."  
+    
+    403Error_1000:
+      description: "Forbidden - returned error category: 1000"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1000
+            errorMessage: "Not authenticated"
+    
+    500Error_2000:
+      description: "Internal Server Error - possible error categories: >= 2000"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 2000
+            errorMessage: "Internal server error: Sample error reason"
+    

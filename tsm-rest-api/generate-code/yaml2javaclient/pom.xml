@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>yaml2javaclient</artifactId>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>de.bsi.tsms.tsm-rest-api</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <build>
+        <plugins>
+            <!--
+                PLUGIN SEQUENCE:
+                    1. CLEAN
+                            maven-clean-plugin
+                                - remove dist/*java-client*
+                                - remove generated-code/java-client
+                                - remove docs
+                    2. PHASE validate
+                            copy-rename-maven-plugin
+                                - copy bat to target
+                    3. PHASE initialize
+                            maven-replacer-plugin
+                                - correct version in generate-java-client-pom.xml and in bat file
+                    4. PHASE generate-sources
+                            exec-maven-plugin
+                                - generate java-client
+                    5. PHASE process-sources
+                            exec-maven-plugin
+                                - build generated java-client
+                    6. PHASE generate-resources
+                            maven-antrun-plugin
+                                - extract javadoc
+                            maven-resources-plugin
+                                - copy md-files (docs)
+                    7. PHASE process-resources
+                            maven-replacer-plugin
+                                - correct links in docs/README.md
+                                - strip date from generated files
+                    8. PHASE package
+                            maven-assembly-plugin
+                                - create java-client-README.zip
+                    9. PHASE install
+                            copy-rename-maven-plugin
+                                - copy pom, bat, jars, zip to dist
+            -->
+
+            <!-- clean up -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <filesets>
+                        <!-- remove dist/*java-client* -->
+                        <fileset>
+                            <directory>${project.basedir}/../../dist/${project.version}</directory>
+                            <includes>
+                                <include>*java-client*/**</include>
+                            </includes>
+                        </fileset>
+                        <!-- remove generated-code/java-client -->
+                        <fileset>
+                            <directory>${project.basedir}/../../generated-code/java-client</directory>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <!-- exec maven to generate and build java-client -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <!-- generate java-client -->
+                    <execution>
+                        <id>generate-java-client</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <arguments>
+                                <argument>-f</argument>
+                                <argument>generate-java-client-pom.xml</argument>
+                                <argument>install</argument>
+                                <argument>-Dyaml=../../generated-code/tsm-rest-api.yaml</argument>
+                                <argument>-Ddest=../../generated-code/java-client</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <!-- build generated java-client -->
+                    <execution>
+                        <id>build-java-client</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <arguments>
+                                <argument>-f</argument>
+                                <argument>../../generated-code/java-client/pom.xml</argument>
+                                <argument>clean</argument>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- antrun -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <!-- extract javadoc -->
+                    <execution>
+                        <id>extract-javadoc-to-dist</id>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <target>
+                                <unzip src="${project.basedir}/../../generated-code/java-client/target/java-client-${project.version}-javadoc.jar" dest="${project.basedir}/../../generated-code/java-client/javadocs">
+                                </unzip>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- copy folders -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <!-- copy md-files (docs) -->
+                    <execution>
+                        <id>copy-docs</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/../../docs</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/../../generated-code/java-client/docs</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                                <resource>
+                                    <directory>${basedir}/../../generated-code/java-client/</directory>
+                                    <includes>
+                                        <include>README.md</include>
+                                    </includes>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- replace in files -->
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <!-- correct version in generate-java-client-pom.xml and in bat file -->
+                    <execution>
+                        <id>replace-generate-files</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <basedir>${project.basedir}</basedir>
+                            <includes>
+                                <include>generate-java-client-pom.xml</include>
+                                <include>target/generate-java-client.bat</include>
+                            </includes>
+                            <regex>true</regex>
+                            <replacements>
+                                <replacement>
+                                    <token><![CDATA[-f yaml2javaclient/pom.xml]]></token>
+                                    <value><![CDATA[-f generate-tsm-rest-api-java-client-${project.version}-pom.xml]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<version>.*<\/version>.*<packaging>pom<\/packaging>]]></token>
+                                    <value><![CDATA[<version>${project.version}</version>
+    <packaging>pom</packaging>]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<yaml>tsm-rest-api-.*.yaml</yaml>]]></token>
+                                    <value><![CDATA[<yaml>tsm-rest-api-${project.version}.yaml</yaml>]]></value>
+                                </replacement>
+                            </replacements>
+                            <regexFlags>
+                                <regexFlag>CASE_INSENSITIVE</regexFlag>
+                                <regexFlag>MULTILINE</regexFlag>
+                                <regexFlag>DOTALL</regexFlag>
+                            </regexFlags>
+                        </configuration>
+                    </execution>
+                    <!-- correct links in docs/README.md -->
+                    <execution>
+                        <id>correct-links-in-docs</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>replace</goal>
+                            </goals>
+                            <configuration>
+                            <basedir>${project.basedir}/../../docs</basedir>
+                            <includes>
+                                <include>README.md</include>
+                            </includes>
+                            <regex>true</regex>
+                            <replacements>
+                                <replacement>
+                                    <token><![CDATA[docs/(.*).md]]></token>
+                                    <value><![CDATA[$1.md]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[Build date: 202.*\[.*\]
+
+A graphical]]></token>
+                                    <value><![CDATA[Build date: generated
+
+A graphical]]></value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                    <!-- strip date from generated files -->
+                    <execution>
+                        <id>strip-date-in-generated-files</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <basedir>${project.basedir}/../../generated-code/java-client</basedir>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <regex>true</regex>
+                            <replacements>
+                                <replacement>
+                                    <token><![CDATA["dc.created" content="202.-..-..">]]></token>
+                                    <value><![CDATA["dc.created" content="generated">]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[Build date: 202.*\[.*\]
+
+A graphical]]></token>
+                                    <value><![CDATA[Build date: generated
+
+A graphical]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<!-- Generated by javadoc (.*) on .* 20.. -->]]></token>
+                                    <value><![CDATA[<!-- Generated by javadoc $1 -->]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[date</a>="202.*\]"\)]]></token>
+                                    <value><![CDATA[date</a>="generated")]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[, date = "202.*\[.*\]"\)]]></token>
+                                    <value><![CDATA[, date = "generated")]]></value>
+                                </replacement>
+                            </replacements>
+                            <regexFlags>
+                                <regexFlag>CASE_INSENSITIVE</regexFlag>
+                                <regexFlag>MULTILINE</regexFlag>
+                                <regexFlag>DOTALL</regexFlag>
+                            </regexFlags>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- create zip -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <!-- create java-client-README.zip -->
+                    <execution>
+                        <id>create-zip</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>${project.basedir}/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- copy files -->
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <!-- copy bat to target -->
+                    <execution>
+                        <id>copy-bat-to-target</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <sourceFile>${project.basedir}/../4_generate-java-client.bat</sourceFile>
+                                    <destinationFile>${project.basedir}/target/generate-java-client.bat</destinationFile>
+                                </fileSet>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+                    <!-- copy pom, bat, jars, zip to dist -->
+                    <execution>
+                        <id>copy-to-dist</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <sourceFile>${project.basedir}/generate-java-client-pom.xml</sourceFile>
+                                    <destinationFile>${project.basedir}/../../dist/${project.version}/generate-tsm-rest-api-java-client-${project.version}-pom.xml</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.basedir}/target/generate-java-client.bat</sourceFile>
+                                    <destinationFile>${project.basedir}/../../dist/${project.version}/generate-tsm-rest-api-java-client-${project.version}.bat</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.basedir}/../../generated-code/java-client/target/java-client-${project.version}.jar</sourceFile>
+                                    <destinationFile>${project.basedir}/../../dist/${project.version}/tsm-rest-api-java-client-${project.version}.jar</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.basedir}/../../generated-code/java-client/target/java-client-${project.version}-javadoc.jar</sourceFile>
+                                    <destinationFile>${project.basedir}/../../dist/${project.version}/tsm-rest-api-java-client-${project.version}-javadoc.jar</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.basedir}/../../generated-code/java-client/target/java-client-${project.version}-sources.jar</sourceFile>
+                                    <destinationFile>${project.basedir}/../../dist/${project.version}/tsm-rest-api-java-client-${project.version}-sources.jar</destinationFile>
+                                </fileSet>
+                                <fileSet>
+                                    <sourceFile>${project.basedir}/target/yaml2javaclient-${project.version}.zip</sourceFile>
+                                    <destinationFile>${project.basedir}/../../dist/${project.version}/tsm-rest-api-java-client-${project.version}-README.zip</destinationFile>
+                                </fileSet>
+                            </fileSets>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit-version>4.13.1</junit-version>
+    </properties>
+
+</project>

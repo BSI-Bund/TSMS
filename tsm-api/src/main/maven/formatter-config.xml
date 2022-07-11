@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<profiles version="11">
+    <profile kind="CodeFormatterProfile" name="Custom Project Formatter" version="11">
+        <setting id="org.eclipse.jdt.core.formatter.blank_lines_after_package" value="1"/>
+        <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="100"/>
+        <setting id="org.eclipse.jdt.core.formatter.comment.line_length" value="80"/>
+        <setting id="org.eclipse.jdt.core.formatter.tabulation.char" value="space"/>
+        <setting id="org.eclipse.jdt.core.formatter.tabulation.size" value="4"/>
+    </profile>
+</profiles>

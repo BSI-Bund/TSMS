@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.bsi.tsms.tsm-rest-api</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.0</version>
+	<packaging>pom</packaging>
+
+    <modules>
+        <module>generate-code/pdf2yaml</module>
+        <module>generate-code/yaml2json</module>
+        <module>generate-code/json2swaggerui</module>
+        <module>generate-code/yaml2javaclient</module>
+	</modules>
+    
+	<build>
+        <plugins>
+            <!-- copy Changelog.md -->
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <!-- copy Changelog.md to dist -->
+                    <execution>
+                        <id>copy-to-dist</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${project.basedir}/CHANGELOG.md</sourceFile>
+                            <destinationFile>${project.basedir}/dist/${project.version}/changelog-tsm-rest-api-${project.version}.md</destinationFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

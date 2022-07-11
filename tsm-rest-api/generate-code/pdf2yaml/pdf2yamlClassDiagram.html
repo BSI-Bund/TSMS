@@ -1,0 +1,60 @@
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
+<script>
+function renderMermaid(){
+    mermaid.init(undefined,document.querySelectorAll(".mermaid"));
+}
+$(function() {
+    $(document).on('previewUpdated', function() {        
+        renderMermaid();
+    });
+    renderMermaid();
+});
+</script>
+
+<div class="mermaid">
+classDiagram
+      exampleValues <-- sourceHandling
+	  exampleValues <-- requestBodyDict
+	  utilityFunctions <-- requestBodyDict
+	  utilityFunctions <-- dataType
+	  utilityFunctions <-- sourceHandling
+	  utilityFunctions <-- interfaceMethod
+	  utilityFunctions <-- pdf2yaml
+	  utilityFunctions <-- pdf2txt
+	  requestBodyDict <-- sourceHandling
+	  interfaceMethod <-- sourceHandling
+	  dataType <-- sourceHandling
+	  sourceHandling <-- pdf2yaml
+	  pdf2txt <-- pdf2yaml
+	  class utilityFunctions{
+		  +shortenCommonTerms()
+		  +makeStringCamelCase()
+		  +returnTextLineFromList()
+		  +getColumnFromTable()
+	  }
+	  class interfaceMethod{
+		  +__init__()
+	  }
+	  class dataType{
+		  +__init__()
+	  }
+	  class sourceHandling{
+		  +__init__()
+		  +generate()
+		  +generateReturn()
+	  }
+	  class exampleValues{
+		  +RandomValueExamples.get()
+		  +FixedValueExamples.get()
+	  }
+	  class requestBodyDict{
+		  +generateRequestBodyExamples()
+	  }
+	  class pdf2txt{
+		  +parseTR()
+	  }
+	  class pdf2yaml{
+		  +main()
+	  }
+</div>

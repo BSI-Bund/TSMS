@@ -1,0 +1,8 @@
+### 4.1.4.0 ###
+  
+    auth-Token:
+      description: Short-term bearer token, that is used to access Backend-API functions.
+      type: string
+      #format: uuid
+      example: "a cryptographic token, transmitted as part of the request header"
+

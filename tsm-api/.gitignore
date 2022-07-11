@@ -1,0 +1,5 @@
+.idea
+target
+javadocs
+dist/*SNAPSHOT*
+dist/*SNAPSHOT*/**

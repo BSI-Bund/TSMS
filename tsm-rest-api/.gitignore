@@ -1,0 +1,10 @@
+.idea
+generate-code/pdf2yaml/archive
+generated-code
+dist/*SNAPSHOT*
+dist/*SNAPSHOT*/**
+**/__pycache__
+**/target
+**/*.iml
+**/*.releaseBackup
+**/release.properties
