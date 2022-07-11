@@ -67,9 +67,9 @@ This project is a Maven Java project and is structured as follows:
 |**Folder**|**Description**|
 |:----------|:----------|
 |[<em>dist/</em>](dist/)|Contains resulting build artifacts of the project in several versions.|
-|[<em>javadocs/</em>](javadocs/)|Generated when building the project. It contains the extracted JavaDoc HTML documentation of the TSM-API.|
-|[<em>src/main/java</em>](src/main/java/)|Contains Java source code files of the TSM-API.|
-|[<em>target/</em>](target/)|Generated when building the project. It contains temporary build files created by Maven.|
+|<em>javadocs/</em>|Generated when building the project. It contains the extracted JavaDoc HTML documentation of the TSM-API.|
+|[<em>src/main/java/</em>](src/main/java/)|Contains Java source code files of the TSM-API.|
+|<em>target/</em>|Generated when building the project. It contains temporary build files created by Maven.|
 
 
 <a name="setup_development_environment"></a>
@@ -115,7 +115,7 @@ For all processes, the smartphone app needs no direct connection to the vendor o
 
 <a name="api_methods"></a>
 ### 3.4 API Method Overview
-The interface [ITsmApiService](javadocs/de/bsi/tsms/tsmapi/ITsmApiService.html) is the main entry point to use the tsm-api.jar. It contains all methods to install, update and uninstall JavaCard applets and apart from that, it offers some additional supporting operations. The following table lists all methods of the TSM-API:
+The interface [ITsmApiService](src/main/java/de/bsi/tsms/tsmapi/ITsmApiService.java) is the main entry point to use the tsm-api.jar. It contains all methods to install, update and uninstall JavaCard applets and apart from that, it offers some additional supporting operations. The following table lists all methods of the TSM-API:
 
 | *Method*                            | *Description*                                                                                                                                                               |
 |:------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

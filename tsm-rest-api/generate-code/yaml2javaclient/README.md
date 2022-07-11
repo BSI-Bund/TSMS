@@ -127,6 +127,6 @@ Usage the Java-Client might slightly change depending on the version of BSI-TR-0
 ../../dist/${VERSION}/tsm-rest-api-java-client-${VERSION}-README.zip
 ```
 
-The Java-Client Usage documentation for the latest TSM-Backend REST-API can be found inside the parent [Section 3.6 API-Methods](../../README.md#36-api-methods) of the parent README documentation.
+The Java-Client Usage documentation for the latest TSM-Backend REST-API can be found inside the parent Section [3.6 API-Methods](../../README.md#api_methods) of the parent README documentation.
 
 [Back to TSM-REST-API](../../README.md)

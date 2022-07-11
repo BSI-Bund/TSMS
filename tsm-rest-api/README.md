@@ -4,7 +4,7 @@
 
 The module **tsm-rest-api** is an OpenApi realization of the TSM-Backend REST-API specified in section 4.1 of [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html). It is a submodule of [GitHub-BSI-TSMS](../README.md).
 
-Swagger-ui documentation of latest TSM-REST-API: [tsm-rest-api.yaml](https://petstore.swagger.io/?url=https://github.com/BSI-Bund/TSMS/blob/master/tsm-rest-api/tsm-rest-api.yaml)
+Swagger-ui documentation of latest TSM-REST-API: [tsm-rest-api.yaml](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/BSI-Bund/TSMS/main/tsm-rest-api/dist/1.0.0/tsm-rest-api-1.0.0.yaml)
 
 
 Content:
@@ -88,7 +88,7 @@ This project is separated into the following subfolders:
 |[<em>dist/</em>](dist/)|Contains resulting build artifacts of this project in several versions.|
 |[<em>docs/</em>](docs/)|Contains a markdown documentation of the java-client for the TSM-Backend REST-API. All files in this folder are generated from the tsm-rest-api.|
 |[<em>generate-code/</em>](generate-code/)|Contains Maven submodules with several subprojects to generate yaml, json, java and md files related to the TSM-Backend REST-API.|
-|[<em>generated-code/</em>](generated-code/)|Contains resulting files when executing the code generation scripts.|
+|<em>generated-code/</em>|Contains resulting files when executing the code generation scripts.|
 
 
 <a name="code_generation"></a>
@@ -206,7 +206,7 @@ All methods of the TSM-Backend REST-API are described in detail in BSI-TR-03165 
 
 Additional documentation generated from the TR is available here:
 
-* Online Swagger UI documentation: [tsm-rest-api.yaml](https://petstore.swagger.io/?url=https://gitlab.governikus.de/smarti/TSMS/-/blob/master/tsm-rest-api/tsm-rest-api.yaml)
+* Online Swagger UI documentation: [tsm-rest-api.yaml](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/BSI-Bund/TSMS/main/tsm-rest-api/dist/1.0.0/tsm-rest-api-1.0.0.yaml)
 * Offline Swagger UI documentation: [tsm-rest-api-1.0.0-swagger-ui.zip](dist/1.0.0/tsm-rest-api-1.0.0-swagger-ui.zip)
 * Java-Client documentation: [docs/README.md](docs/README.md)
 
