@@ -52,10 +52,10 @@ def shortenCommonTerms(verbose_term: str, delim = ' ') -> str:
 def makeStringCamelCase(string: str, delim: str) -> str:
     """
     convert ordinary string sentences toAppearInCamelcase
-    single words are seperated by underscore " "
+    single words are separated by underscore " "
     or
     convert ordinary string filenames toAppearInCamelcase
-    single words are seperated by underscore "_"
+    single words are separated by underscore "_"
     choose delim accordingly
     """
     string = string.lower().strip()

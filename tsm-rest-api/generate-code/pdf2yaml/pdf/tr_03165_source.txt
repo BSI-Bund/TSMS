@@ -837,8 +837,7 @@ Get ApplicationConfig.
 PUT
 /application-configs/{configId}
 Modify ApplicationConfig.
-DELET
-E
+DELETE
 /application-configs/{configId}
 Delete ApplicationConfig.
 GET
@@ -871,8 +870,7 @@ PUT
 /personalization-scripts/{scriptId}
 Modify PersonalizationScript
 and overwrite binary.
-DELET
-E
+DELETE
 /personalization-scripts/{scriptId}
 Delete PersonalizationScript.
 GET
@@ -904,8 +902,7 @@ PUT
 /certificates/{certificateId}
 Modify Certificate and overwrite
 binary.
-DELET
-E
+DELETE
 /certificates/{certificateId}
 Delete Certificate.
 GET
@@ -939,8 +936,7 @@ Get SposConfig.
 PUT
 /spos-configs/{configId}
 Modify SposConfig.
-DELET
-E
+DELETE
 /spos-configs/{configId}
 Delete SposConfig.
 GET
@@ -4351,7 +4347,7 @@ GeneralError
 1000, 1002, 1009, 2000
 4.1.6.8.5 Delete Certificate
 Delete a certain Certificate. All data, including binary data, is deleted.
-Deletion SHALL only be possible if the Certficate is not referenced in any ApplicationConfig or SposConfig and
+Deletion SHALL only be possible if the Certificate is not referenced in any ApplicationConfig or SposConfig and
 thus is not in use anywhere.
 REST-URL
 <<tsmBaseURL>>/certificates/{certificateId}
@@ -6453,7 +6449,7 @@ Trusted Execution Environment
 TLS
 Transport Layer Security
 TR
-Technical Guidline (german: Technische Richtlinie)
+Technical Guideline (german: Technische Richtlinie)
 TSM
 Trusted Service Manager
 TSM-API

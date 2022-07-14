@@ -4,8 +4,8 @@ All URIs are relative to */*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**createPersoScriptAndUploadBinary**](PersonalizationScriptsApi.md#createPersoScriptAndUploadBinary) | **POST** /personalization-scripts | Create a new PersonalizationScript and upload corresponding binar...
-[**deletePersoScript**](PersonalizationScriptsApi.md#deletePersoScript) | **DELETE** /personalization-scripts/{personalizationScriptId} | Delete a certain PersonalizationScript. All data, including binar...
+[**createPersoScriptAndUploadBinary**](PersonalizationScriptsApi.md#createPersoScriptAndUploadBinary) | **POST** /personalization-scripts | Create a new PersonalizationScript and upload corresponding binary...
+[**deletePersoScript**](PersonalizationScriptsApi.md#deletePersoScript) | **DELETE** /personalization-scripts/{personalizationScriptId} | Delete a certain PersonalizationScript. All data, including binary...
 [**getPersoScript**](PersonalizationScriptsApi.md#getPersoScript) | **GET** /personalization-scripts/{personalizationScriptId} | Get details of a certain PersonalizationScript.
 [**getScriptBinary**](PersonalizationScriptsApi.md#getScriptBinary) | **GET** /personalization-scripts/{personalizationScriptId}/binary | Get binary data of a certain PersonalizationScript.
 [**listPersoScripts**](PersonalizationScriptsApi.md#listPersoScripts) | **GET** /personalization-scripts | List all PersonalizationScripts of the authenticated ServiceProvider.
@@ -18,7 +18,7 @@ Method | HTTP request | Description
 # **createPersoScriptAndUploadBinary**
 > PersonalizationScript createPersoScriptAndUploadBinary(scriptFilename, scriptFile)
 
-Create a new PersonalizationScript and upload corresponding binar...
+Create a new PersonalizationScript and upload corresponding binary...
 
 Create a new PersonalizationScript and upload corresponding binary data.
 
@@ -70,7 +70,7 @@ Name | Type | Description  | Notes
 # **deletePersoScript**
 > deletePersoScript(personalizationScriptId)
 
-Delete a certain PersonalizationScript. All data, including binar...
+Delete a certain PersonalizationScript. All data, including binary...
 
 Delete a certain PersonalizationScript. All data, including binary data, is deleted. Deletion SHALL only be possible if the PersonalizationScript is not referenced in any ApplicationConfig and thus is not in use anywhere.
 
