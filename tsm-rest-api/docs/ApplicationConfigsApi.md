@@ -5,7 +5,7 @@ All URIs are relative to */*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**createAppConfig**](ApplicationConfigsApi.md#createAppConfig) | **POST** /application-configs | Create a new ApplicationConfig.
-[**deleteAppConfig**](ApplicationConfigsApi.md#deleteAppConfig) | **DELETE** /application-configs/{applicationConfigId} | Delete a certain ApplicationConfig. All data is deleted. Referenc...
+[**deleteAppConfig**](ApplicationConfigsApi.md#deleteAppConfig) | **DELETE** /application-configs/{applicationConfigId} | Delete a certain ApplicationConfig. All data is deleted. Reference...
 [**getAppConfig**](ApplicationConfigsApi.md#getAppConfig) | **GET** /application-configs/{applicationConfigId} | Get details of a certain ApplicationConfig.
 [**listAppConfigRelatedEms**](ApplicationConfigsApi.md#listAppConfigRelatedEms) | **GET** /application-configs/{applicationConfigId}/executable-modules | List all ExecutableModules that use a certain ApplicationConfig.
 [**listAppConfigRelatedFlavors**](ApplicationConfigsApi.md#listAppConfigRelatedFlavors) | **GET** /application-configs/{applicationConfigId}/flavors | List all Flavors that use a certain ApplicationConfig.
@@ -67,7 +67,7 @@ Name | Type | Description  | Notes
 # **deleteAppConfig**
 > deleteAppConfig(applicationConfigId)
 
-Delete a certain ApplicationConfig. All data is deleted. Referenc...
+Delete a certain ApplicationConfig. All data is deleted. Reference...
 
 Delete a certain ApplicationConfig. All data is deleted. Referenced Certificates and PersonalizationScripts are not deleted. Deletion SHALL only be possible if the ApplicationConfig is not referenced in any Flavor and thus is not in use anywhere.
 

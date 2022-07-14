@@ -450,7 +450,7 @@ class FixedValueExamples:
 
     @classmethod
     def get(cls, example_type: str, lower = 0, upper = 256) -> str: #pylint: disable=unused-argument
-        """interface function to recieve fixed example values"""
+        """interface function to receive fixed example values"""
         if example_type == 'uuid':
             return cls.exampleListUUID[cls.inc(0)]
         if example_type == 'aid':

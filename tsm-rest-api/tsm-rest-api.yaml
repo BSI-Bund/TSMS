@@ -448,7 +448,7 @@ paths:
       - $ref: "#/components/parameters/serviceId"
       responses:
         204:
-          description: "item deleted sucessfully"
+          description: "item deleted successfully"
         400:
           $ref: "#/components/responses/400Error_1002_1009"
         401:
@@ -619,7 +619,7 @@ paths:
       - $ref: "#/components/parameters/flavorId"
       responses:
         204:
-          description: "item deleted sucessfully"
+          description: "item deleted successfully"
         400:
           $ref: "#/components/responses/400Error_1002_1009_1010"
         401:
@@ -985,7 +985,7 @@ paths:
       - $ref: "#/components/parameters/tag"
       responses:
         204:
-          description: "item deleted sucessfully"
+          description: "item deleted successfully"
         400:
           $ref: "#/components/responses/400Error_1002_1009_1010"
         401:
@@ -1391,7 +1391,7 @@ paths:
       - $ref: "#/components/parameters/elfId"
       responses:
         204:
-          description: "item deleted sucessfully"
+          description: "item deleted successfully"
         400:
           $ref: "#/components/responses/400Error_1002_1009_1010"
         401:
@@ -1788,7 +1788,7 @@ paths:
     delete:
       tags:
       - /application-configs
-      summary: "Delete a certain ApplicationConfig. All data is deleted. Referenc..."
+      summary: "Delete a certain ApplicationConfig. All data is deleted. Reference..."
       description: "Delete a certain ApplicationConfig. All data is deleted. Referenced Certificates and PersonalizationScripts are not deleted. Deletion SHALL only be possible if the ApplicationConfig is not referenced in any Flavor and thus is not in use anywhere."
       operationId: deleteAppConfig
       ##### Request Headers:
@@ -1799,7 +1799,7 @@ paths:
       - $ref: "#/components/parameters/applicationConfigId"
       responses:
         204:
-          description: "item deleted sucessfully"
+          description: "item deleted successfully"
         400:
           $ref: "#/components/responses/400Error_1002_1009_1010"
         401:
@@ -1939,7 +1939,7 @@ paths:
     post:
       tags:
       - /personalization-scripts
-      summary: "Create a new PersonalizationScript and upload corresponding binar..."
+      summary: "Create a new PersonalizationScript and upload corresponding binary..."
       description: "Create a new PersonalizationScript and upload corresponding binary data."
       operationId: createPersoScriptAndUploadBinary
       ##### Request Headers:
@@ -2028,7 +2028,7 @@ paths:
     delete:
       tags:
       - /personalization-scripts
-      summary: "Delete a certain PersonalizationScript. All data, including binar..."
+      summary: "Delete a certain PersonalizationScript. All data, including binary..."
       description: "Delete a certain PersonalizationScript. All data, including binary data, is deleted. Deletion SHALL only be possible if the PersonalizationScript is not referenced in any ApplicationConfig and thus is not in use anywhere."
       operationId: deletePersoScript
       ##### Request Headers:
@@ -2039,7 +2039,7 @@ paths:
       - $ref: "#/components/parameters/personalizationScriptId"
       responses:
         204:
-          description: "item deleted sucessfully"
+          description: "item deleted successfully"
         400:
           $ref: "#/components/responses/400Error_1002_1009_1010"
         401:
@@ -2293,7 +2293,7 @@ paths:
       tags:
       - /certificates
       summary: "Delete a certain Certificate. All data, including binary data, is..."
-      description: "Delete a certain Certificate. All data, including binary data, is deleted. Deletion SHALL only be possible if the Certficate is not referenced in any ApplicationConfig or SposConfig and thus is not in use anywhere."
+      description: "Delete a certain Certificate. All data, including binary data, is deleted. Deletion SHALL only be possible if the Certificate is not referenced in any ApplicationConfig or SposConfig and thus is not in use anywhere."
       operationId: deleteCert
       ##### Request Headers:
       security:
@@ -2303,7 +2303,7 @@ paths:
       - $ref: "#/components/parameters/certificateId"
       responses:
         204:
-          description: "item deleted sucessfully"
+          description: "item deleted successfully"
         400:
           $ref: "#/components/responses/400Error_1002_1009_1010"
         401:
@@ -2610,7 +2610,7 @@ paths:
       - $ref: "#/components/parameters/sposConfigId"
       responses:
         204:
-          description: "item deleted sucessfully"
+          description: "item deleted successfully"
         400:
           $ref: "#/components/responses/400Error_1002_1009_1010"
         401:

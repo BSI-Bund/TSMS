@@ -13,7 +13,7 @@ from utilityFunctions import makeStringCamelCase, pathSplitL
 
 def deleteEmptyLines(text: list) -> list:
     """
-    empty lines or lines beginnig with comments are ignored
+    empty lines or lines beginning with comments are ignored
     """
     for i, line in enumerate(text):
         if len(line.lstrip()) > 0:
@@ -187,7 +187,7 @@ def generateRequestBodyExamples(source_path: str) -> dict:
 
     # define source
     #source_path = os.path.join('.','TSM_Backend_API.yaml')
-    # check for source existance
+    # check for source existence
     if not os.path.isfile(source_path):
         return {}
 

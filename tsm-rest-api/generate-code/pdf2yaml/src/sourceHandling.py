@@ -325,7 +325,7 @@ class Source:
                             self.yaml.append('                $ref: "#/components/schemas/'+interface_method_.response_body_success+'"\n')
                 elif interface_method_.response_headers_success['Status Code'] == '204':
                     self.yaml.append('        204:\n')
-                    self.yaml.append('          description: "item deleted sucessfully"\n')
+                    self.yaml.append('          description: "item deleted successfully"\n')
                 # response on failure
                 if '400' in interface_method_.response_headers_failure['Status Code']:
                     self.yaml.append('        400:\n          ' + interface_method_.ref400 + '\n')#.replace('__','_')

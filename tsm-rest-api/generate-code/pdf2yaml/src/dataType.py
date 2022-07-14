@@ -22,7 +22,7 @@ class DataType:
                 break # for safety
 
         self.data_type_text = data_type_text
-        # look for first occurance only
+        # look for first occurrence only
         self.line_att1 = returnTextLineFromList(self.data_type_text, 'Attribute\n')
         self.line_att5ed = returnTextLineFromList(self.data_type_text, 'Ed.\n')
         # delete consecutive table header if existing
@@ -37,7 +37,7 @@ class DataType:
         # pull long descriptions into one line
         self.concatMultiLineDescriptions()
 
-        # look for first occurance only
+        # look for first occurrence only
         self.line_key1 = returnTextLineFromList(self.data_type_text, 'Key\n')
         self.line_key2type = returnTextLineFromList(self.data_type_text, 'ReturnType of Link\n')
         # delete second table header if existing

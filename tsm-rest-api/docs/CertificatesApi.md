@@ -73,7 +73,7 @@ Name | Type | Description  | Notes
 
 Delete a certain Certificate. All data, including binary data, is...
 
-Delete a certain Certificate. All data, including binary data, is deleted. Deletion SHALL only be possible if the Certficate is not referenced in any ApplicationConfig or SposConfig and thus is not in use anywhere.
+Delete a certain Certificate. All data, including binary data, is deleted. Deletion SHALL only be possible if the Certificate is not referenced in any ApplicationConfig or SposConfig and thus is not in use anywhere.
 
 ### Example
 ```java

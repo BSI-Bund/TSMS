@@ -13,7 +13,7 @@ done in around 0.3s, versus 4 min in manual copy-paste-extraction
 ## CJK languages (Chinese, Japanese, and Korean), and various font types (Type1, TrueType, Type3, and CID).
 ### different configuration in output file, would have to rewrite lot of functions
 
-# not feasable:
+# not feasible:
 ## PyPDF2: A Python library to extract document information and content, split documents page-by-page, merge documents, crop pages, and add watermarks. PyPDF2 supports both unencrypted and encrypted documents.
 ### wrongfully put linebreaks '\n'
 ## PDFQuery: It describes itself as 'a fast and friendly PDF scraping library' which is implemented as a wrapper around PDFMiner, lxml, and pyquery. Its design aim is 'to reliably extract data from sets of PDFs with as little code as possible.'

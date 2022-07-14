@@ -23,7 +23,7 @@ package de.bsi.tsms.tsmapi;
  */
 public enum EErrorType {
     /**
-     * No error occured.
+     * No error occurred.
      */
     NO_ERROR(0),
     /**

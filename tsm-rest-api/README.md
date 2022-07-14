@@ -35,7 +35,7 @@ Content:
 <a name="motivation"></a>
 ## 1. Motivation
 
-The provisioning of secure components usually relies on a Trusted Service Manager (TSM) which provides the neccessary server structure for provisioning and holds the organisatoric and cryptographic access rigths to the relevant parts of the secure component (not neccesarily to the ISD). From a technical point of view, the TSM is an independent component in the TSMS, i.e. not directly connected to applications on the smartphone. To trigger actions like the provisioning or removal of applets, applications on the handset need to communicate to a backend system of the TSM. A prerequisite of this is that the applet in question has been made available to the TSM, including all relevant configuration information. 
+The provisioning of secure components usually relies on a Trusted Service Manager (TSM) which provides the necessary server structure for provisioning and holds the organisatoric and cryptographic access rights to the relevant parts of the secure component (not necessarily to the ISD). From a technical point of view, the TSM is an independent component in the TSMS, i.e. not directly connected to applications on the smartphone. To trigger actions like the provisioning or removal of applets, applications on the handset need to communicate to a backend system of the TSM. A prerequisite of this is that the applet in question has been made available to the TSM, including all relevant configuration information. 
 
 Uploading JavaCard applets to a TSM-Backend and the configuration of Services via a dedicated API is step two in the usage path of BSI-TR-03165.
 
