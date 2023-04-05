@@ -3,9 +3,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.bsi.tsms</groupId>
+    <groupId>de.bund.bsi.tsms</groupId>
     <artifactId>tsm-api</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
+
+    <name>TSM-API</name>
+    <description>The TSM-API is a Java realization of the TSM-API interface specified in BSI-TR-03165. This interface offers methods to install and remove JavaCard applets on eSEs (embedded Secure Elements) or eSIMs.</description>
+    <url>https://github.com/BSI-Bund/TSMS</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/BSI-Bund/TSMS.git</connection>
+        <developerConnection>scm:git:ssh://github.com:BSI-Bund/TSMS.git</developerConnection>
+        <url>http://github.com/BSI-Bund/TSMS/tree/master</url>
+    </scm>
 
     <build>
         <plugins>
@@ -13,7 +30,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <configuration>
                     <filesets>
                         <fileset>
@@ -34,10 +51,45 @@
                 </configuration>
             </plugin>
 
+            <!-- replace version to ${project.version} in all documentation files -->
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <basedir>${project.basedir}</basedir>
+                    <includes>
+                        <include>README.md</include>
+                    </includes>
+                    <regex>true</regex>
+                    <replacements>
+                        <!-- modify README.md tsm-api-$version-->
+                        <replacement>
+                            <token>tsm-api-\d\.\d\.\d(-SNAPSHOT)?</token>
+                            <value>tsm-api-${project.version}</value>
+                        </replacement>
+                        <!-- modify README.md dist/$version -->
+                        <replacement>
+                            <token>dist\/\d\.\d\.\d(-SNAPSHOT)?</token>
+                            <value>dist/${project.version}</value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>
+
             <!-- auto format source code -->
             <plugin>
                 <groupId>net.revelc.code.formatter</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
+                <!-- do not upgrade to higher version, since those require jdk-11 (older jdk versions are then not supported anymore) -->
                 <version>2.16.0</version>
                 <configuration>
                     <lineEnding>CRLF</lineEnding>
@@ -80,7 +132,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>create-javadoc</id>
@@ -98,7 +150,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>copy-jars-to-dist</id>
@@ -125,7 +177,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>extract-javadoc</id>
@@ -167,10 +219,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.1</version>
                 <configuration>
                     <configLocation>src/main/maven/checkstyle.xml</configLocation>
-                    <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>false</failsOnError>
                     <linkXRef>false</linkXRef>

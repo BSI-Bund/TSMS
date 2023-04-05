@@ -1,6 +1,6 @@
 # TSM-API 
 
-*Last updated: 07.06.2022*
+*Last updated: 14.02.2023*
 
 The module **tsm-api** is a Java realization of the TSM-API specified in section 4.2 of [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html). It is a submodule of [GitHub-BSI-TSMS](../README.md).
 
@@ -24,7 +24,7 @@ Content:
   </li>
 </ol>
 
-*Attention: the **tsm-api.jar** is just a collection of interfaces and simple data transfer objects (DTO). It does not contain the concrete TSM implementation needed to install applets on secure elements.*
+*Attention: the **tsm-api.jar** is a collection of interfaces and simple data transfer objects (DTO). It does not contain the concrete TSM implementation needed to install applets on secure elements.*
 
 <a name="motivation"></a>
 ## 1. Motivation
@@ -46,13 +46,13 @@ Installing JavaCard applets on a secure component of a smartphone is step three 
 
 The resulting build artifacts of this module are:
 
-* **[tsm-api-1.0.0.jar](dist/1.0.0/tsm-api-1.0.0.jar)**
+* **[tsm-api-1.0.2.jar](dist/1.0.2/tsm-api-1.0.2.jar)**
   * can be included into an Android app to use a TSMS by calling TSM-API methods
   * provide default implementations for all data types required by the TSM-API
   * can be used to implement a TSM-API-SDK according to BSI-TR-03165 
-* **[tsm-api-1.0.0-javadoc.jar](dist/1.0.0/tsm-api-1.0.0-javadoc.jar)**
+* **[tsm-api-1.0.2-javadoc.jar](dist/1.0.2/tsm-api-1.0.2-javadoc.jar)**
   * JavaDoc documentation of the TSM-API interfaces, enums and classes
-* **[tsm-api-1.0.0-sources.jar](dist/1.0.0/tsm-api-1.0.0-sources.jar)**
+* **[tsm-api-1.0.2-sources.jar](dist/1.0.2/tsm-api-1.0.2-sources.jar)**
   * source code of the TSM-API
 
 
@@ -115,7 +115,7 @@ For all processes, the smartphone app needs no direct connection to the vendor o
 
 <a name="api_methods"></a>
 ### 3.4 API Method Overview
-The interface [ITsmApiService](src/main/java/de/bsi/tsms/tsmapi/ITsmApiService.java) is the main entry point to use the tsm-api.jar. It contains all methods to install, update and uninstall JavaCard applets and apart from that, it offers some additional supporting operations. The following table lists all methods of the TSM-API:
+The interface [ITsmApiService](src/main/java/de/bund/bsi/tsms/tsmapi/ITsmApiService.java) is the main entry point to use the tsm-api.jar. It contains all methods to install, update and uninstall JavaCard applets and apart from that, it offers some additional supporting operations. The following table lists all methods of the TSM-API:
 
 | *Method*                            | *Description*                                                                                                                                                               |
 |:------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -127,6 +127,7 @@ The interface [ITsmApiService](src/main/java/de/bsi/tsms/tsmapi/ITsmApiService.j
 | updateService(..)                   | Remove old and install new version of JavaCard applet(s) configured in the TSM-Backend.                                                                                     |
 | suspendOrResumeService(..)          | Disable or enable the main JavaCard applet on the smartphone.                                                                                                               |
 | terminateService(..)                | Remove a Service and its JavaCard applet(s) from the smartphone.                                                                                                            |
+| setCustomAccessToken(..)                | An optional method to specify a custom access token to authenticate against the TSM-Backend. |
 
 
 <a name="prerequisites"></a>
@@ -150,7 +151,7 @@ The following prerequisites are needed to use the TSM-API:
 
 <a name="initialize"></a>
 ### 3.6 Initialize the TSM-API-SDK
-The initialization of the TSM-API-SDK highly depends on the specific implementation details. The code snippet below shows the source code needed to initialize an TSM-API-SDK when Android Service binding is used. 
+The initialization of the TSM-API-SDK highly depends on the specific implementation details. The code snippet below shows the source code needed to initialize an TSM-API-SDK when Android Service binding is used.
 
 ```java
     import android.content.ComponentName;
@@ -160,7 +161,7 @@ The initialization of the TSM-API-SDK highly depends on the specific implementat
     import android.os.IBinder;
     import android.util.Log;
 
-    import de.bsi.tsms.tsmapi.ITsmApiService;
+    import de.bund.bsi.tsms.tsmapi.ITsmApiService;
     import your.tsm.provider.TsmApiServiceImpl;
     
     ...
