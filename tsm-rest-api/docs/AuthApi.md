@@ -17,11 +17,11 @@ Authenticate to the TSM-Backend by sending a long-term token, and receive a shor
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.AuthApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.AuthApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 

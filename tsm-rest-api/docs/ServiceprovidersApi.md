@@ -17,11 +17,11 @@ Get details of the SP account.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.ServiceprovidersApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ServiceprovidersApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 

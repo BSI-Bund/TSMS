@@ -10,6 +10,7 @@ import re
 
 ### random value functions ###
 
+
 class RandomValueExamples:
     """
     definition of RandomValueExamples Class
@@ -18,37 +19,74 @@ class RandomValueExamples:
     @classmethod
     def generateUuid(cls) -> str:
         """generate random UUID value"""
-        return secrets.token_hex(4)+'-'+secrets.token_hex(2)+'-'+secrets.token_hex(2)+'-'+secrets.token_hex(2)+'-'+secrets.token_hex(6)
+        return (
+            secrets.token_hex(4)
+            + '-'
+            + secrets.token_hex(2)
+            + '-'
+            + secrets.token_hex(2)
+            + '-'
+            + secrets.token_hex(2)
+            + '-'
+            + secrets.token_hex(6)
+        )
 
     @classmethod
     def generateAid(cls) -> str:
         """generate random AID value"""
-        return 'A00'+'0000'+str(secrets.randbelow(10000)).zfill(4)+str(secrets.randbelow(10000)).zfill(4)+'C'+f'{secrets.randbits(4):>04b}'
+        return (
+            'A00'
+            + '0000'
+            + str(secrets.randbelow(10000)).zfill(4)
+            + str(secrets.randbelow(10000)).zfill(4)
+            + 'C'
+            + f'{secrets.randbits(4):>04b}'
+        )
 
     @classmethod
     def generateServiceName(cls) -> str:
         """generate random service name value"""
-        return random.choice(['pay','book','auth','open'])+random.choice(['Hotel','Rental','Home','App','Device','Token'])+'By'+random.choice(['JCN','Jtol','BNE','SecNat'])
+        return (
+            random.choice(['pay', 'book', 'auth', 'open'])
+            + random.choice(['Hotel', 'Rental', 'Home', 'App', 'Device', 'Token'])
+            + 'By'
+            + random.choice(['JCN', 'Jtol', 'BNE', 'SecNat'])
+        )
 
     @classmethod
     def generateFlavorName(cls) -> str:
         """generate random flavor name value"""
-        return random.choice(['XX-','XY-','YX-','YY-'])+str(secrets.randbelow(1000)).zfill(3)+random.choice(['A-','B-','C-','D-'])+str(secrets.randbelow(100)).zfill(2)
+        return (
+            random.choice(['XX-', 'XY-', 'YX-', 'YY-'])
+            + str(secrets.randbelow(1000)).zfill(3)
+            + random.choice(['A-', 'B-', 'C-', 'D-'])
+            + str(secrets.randbelow(100)).zfill(2)
+        )
 
     @classmethod
     def generateVersion(cls) -> str:
         """generate random Version (eg. 1.2.3) value"""
-        return str(secrets.randbelow(10)).zfill(1)+'.'+str(secrets.randbelow(55)).zfill(2)+'.'+str(secrets.randbelow(130)).zfill(3)
+        return (
+            str(secrets.randbelow(10)).zfill(1)
+            + '.'
+            + str(secrets.randbelow(55)).zfill(2)
+            + '.'
+            + str(secrets.randbelow(130)).zfill(3)
+        )
 
     @classmethod
     def generateVersionMM(cls) -> str:
         """generate random Version (eg. 1.2) value"""
-        return str(secrets.randbelow(10)).zfill(1)+'.'+str(secrets.randbelow(55)).zfill(2)
+        return (
+            str(secrets.randbelow(10)).zfill(1)
+            + '.'
+            + str(secrets.randbelow(55)).zfill(2)
+        )
 
     @classmethod
     def generateTlv(cls) -> str:
         """generate random TLV value"""
-        num = secrets.choice(range(7,10))
+        num = secrets.choice(range(7, 10))
         tlv = f'{secrets.randbits(8):02x} {num:02x}'
         for _ in range(num):
             tlv += f' {secrets.randbits(8):02x}'
@@ -73,10 +111,10 @@ class RandomValueExamples:
     @classmethod
     def reset(cls) -> None:
         """empty method to have same interface as the other class"""
-        pass #pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     @classmethod
-    def get(cls, example_type: str, lower = 0, upper = 256) -> str:
+    def get(cls, example_type: str, lower=0, upper=256) -> str:
         """central interface function for random values"""
         if example_type == 'uuid':
             return cls.generateUuid()
@@ -103,6 +141,7 @@ class RandomValueExamples:
             return f'{now.tm_year:04d}-{now.tm_mon:02d}-{now.tm_mday:02d}T{now.tm_hour:02d}:{now.tm_min:02d}:{now.tm_sec:02d}Z'
         return 'INVALID INPUT [function: randomValueExamples.get(<string>)]'
 
+
 def randomizeComponentsExamples(components: list) -> list:
     """randomize uuid and aid values for components examples"""
     re_uuid = re.compile('[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}')
@@ -110,11 +149,12 @@ def randomizeComponentsExamples(components: list) -> list:
     for num, component in enumerate(components):
         results = re_uuid.findall(component)
         for j in results:
-            components[num] = component.replace(j,RandomValueExamples.get('uuid'))
+            components[num] = component.replace(j, RandomValueExamples.get('uuid'))
         results = re_aid.findall(component)
         for j in results:
-            components[num] = component.replace(j,RandomValueExamples.get('aid'))
+            components[num] = component.replace(j, RandomValueExamples.get('aid'))
     return components
+
 
 def binaryFromString(val: str) -> str:
     """binary representation of string"""
@@ -123,7 +163,9 @@ def binaryFromString(val: str) -> str:
         return_value += f'{ord(num):08b}'
     return return_value
 
+
 ### fixed value functions ###
+
 
 class FixedValueExamples:
     """
@@ -132,24 +174,24 @@ class FixedValueExamples:
 
     exampleListUUID = [
         # paths
-        '62d2a5d8-f591-f9ec-32b3-558047c576a7', # example, service-sposConfigId
-        'c207b03f-75c5-c5ff-2460-fe6cec8ab803', # example, version-allowList [0]
-        'ca85a700-9b54-e89a-8b3f-60296b75c26f', # example, version-allowList [1]
-        '553e809b-5610-53f0-ed91-5a12fa0e65ac', # example, version-allowList [2]
-        '54050ff0-7d9e-ef28-b120-3c3e81ae77af', # example, flavor-elfID [0]
-        '7860e9a9-70b3-43b1-b2d7-fc6199c92cb4', # example, flavor-elfID [1]
-        '2b3447ca-eecc-eba9-3f48-2f61ae43c742', # example, flavor-elfID [2]
-        '40b455b5-1e45-fd2f-319b-83794b2a8d82', # example, flavor-appInstaConfig [0]
-        '1e555fae-c0bb-9915-b086-b7f77a52ca69', # example, flavor-appInstaConfig [1]
-        'efe37b02-819a-9dc1-f656-b00b80072581', # example, flavor-appInstaConfig [2]
-        '9b2990c9-59b0-a979-d4b2-11ff5fe00cb2', # example, flavor-appInstaConfig [3]
-        '105030db-8fd7-095f-953e-a4143a3576c3', # example, flavor-appInstaConfig [4]
-        'b3f08e86-ebed-1a72-984d-8030cbe89b79', # example, flavor-appInstaConfig [5]
-        'b9ee54ed-b5dc-61c5-7e9f-01beea073f92', # example, emID
-        '5d9ecaf4-e832-4c96-833b-054546a56c21', # example, appConfigID
-        '7a06adf4-87c3-bdda-047d-bb727813329c', # example, personalizationConfig-certID
-        'a8369519-ed68-0181-e7e6-13471beaa418', # example, personalizationConfig-persoScriptID
-        '652f7175-d33a-0616-cf61-0451f2587361', # example, sposConfig-certID
+        '62d2a5d8-f591-f9ec-32b3-558047c576a7',  # example, service-sposConfigId
+        'c207b03f-75c5-c5ff-2460-fe6cec8ab803',  # example, version-allowList [0]
+        'ca85a700-9b54-e89a-8b3f-60296b75c26f',  # example, version-allowList [1]
+        '553e809b-5610-53f0-ed91-5a12fa0e65ac',  # example, version-allowList [2]
+        '54050ff0-7d9e-ef28-b120-3c3e81ae77af',  # example, flavor-elfID [0]
+        '7860e9a9-70b3-43b1-b2d7-fc6199c92cb4',  # example, flavor-elfID [1]
+        '2b3447ca-eecc-eba9-3f48-2f61ae43c742',  # example, flavor-elfID [2]
+        '40b455b5-1e45-fd2f-319b-83794b2a8d82',  # example, flavor-appInstaConfig [0]
+        '1e555fae-c0bb-9915-b086-b7f77a52ca69',  # example, flavor-appInstaConfig [1]
+        'efe37b02-819a-9dc1-f656-b00b80072581',  # example, flavor-appInstaConfig [2]
+        '9b2990c9-59b0-a979-d4b2-11ff5fe00cb2',  # example, flavor-appInstaConfig [3]
+        '105030db-8fd7-095f-953e-a4143a3576c3',  # example, flavor-appInstaConfig [4]
+        'b3f08e86-ebed-1a72-984d-8030cbe89b79',  # example, flavor-appInstaConfig [5]
+        'b9ee54ed-b5dc-61c5-7e9f-01beea073f92',  # example, emID
+        '5d9ecaf4-e832-4c96-833b-054546a56c21',  # example, appConfigID
+        '7a06adf4-87c3-bdda-047d-bb727813329c',  # example, personalizationConfig-certID
+        'a8369519-ed68-0181-e7e6-13471beaa418',  # example, personalizationConfig-persoScriptID
+        '652f7175-d33a-0616-cf61-0451f2587361',  # example, sposConfig-certID
         # parameters
         'bc675568-34ac-40b0-abc0-03929b2d5ccd',
         'e59d3d32-6756-76ac-ffff-feeba10c081a',
@@ -195,14 +237,15 @@ class FixedValueExamples:
         'b3f08e86-ebed-1a72-984d-8030cbe89b79',
         'e5f8f333-3e95-83e7-b5d7-766428757560',
         '5dc9a676-847d-2606-bc15-fc8eea036be0',
-        '00f5cc8a-f5c7-3929-682f-8eef5972f55a',]
+        '00f5cc8a-f5c7-3929-682f-8eef5972f55a',
+    ]
 
     exampleListAID = [
         # paths
-        'A00000021784013C0110', # example, service-accessAuthor [0]
-        'A00000007220548C0001', # example, service-accessAuthor [1]
-        'A00000033467106C1111', # example, service-accessAuthor [2]
-        'A00000089316631C0000', # example, appConfig-instanceAid
+        'A00000021784013C0110',  # example, service-accessAuthor [0]
+        'A00000007220548C0001',  # example, service-accessAuthor [1]
+        'A00000033467106C1111',  # example, service-accessAuthor [2]
+        'A00000089316631C0000',  # example, appConfig-instanceAid
         # 'A00000095083184C0011',
         # 'A00000067684050C0010',
         # 'A00000035863789C0110',
@@ -238,7 +281,8 @@ class FixedValueExamples:
         'A00000062627072C1001',
         'A00000030923268C1000',
         'A00000023417222C1011',
-        'A00000058998654C0100']
+        'A00000058998654C0100',
+    ]
 
     exampleListServiceName = [
         'authDeviceByBNE',
@@ -270,14 +314,15 @@ class FixedValueExamples:
         'authTokenByJCN',
         'openHotelByBNE',
         'authHotelByJtol',
-        'openHotelByJtol']
+        'openHotelByJtol',
+    ]
 
     exampleListFlavorName = [
-        'YY-624B-11',   # example, flavor-name
-        'XX-414D-31',   # example, elf-name
-        'XX-413D-58',   # example, appConfig-name
-        'YX-471D-01',   # example, persoScript-name
-        'XX-159D-47',   # example, cert-name
+        'YY-624B-11',  # example, flavor-name
+        'XX-414D-31',  # example, elf-name
+        'XX-413D-58',  # example, appConfig-name
+        'YX-471D-01',  # example, persoScript-name
+        'XX-159D-47',  # example, cert-name
         'YY-688D-47',
         'XX-364B-04',
         'XX-015D-02',
@@ -302,7 +347,8 @@ class FixedValueExamples:
         'YY-023B-46',
         'YY-950D-10',
         'XX-416C-86',
-        'XX-980A-56']
+        'XX-980A-56',
+    ]
 
     exampleListVersion = [
         # paths
@@ -342,7 +388,8 @@ class FixedValueExamples:
         '2.05.046',
         '6.13.048',
         '1.15.042',
-        '3.12.087']
+        '3.12.087',
+    ]
 
     exampleListVersionMM = [
         # paths
@@ -365,10 +412,11 @@ class FixedValueExamples:
         '9.44',
         '2.16',
         '6.23',
-        '6.27']
+        '6.27',
+    ]
 
     exampleListTLV = [
-        'f5 09 5e 0f d2 68 12 d4 7f f3 d5', # example, installConfig-appSpecificationInstallParam
+        'f5 09 5e 0f d2 68 12 d4 7f f3 d5',  # example, installConfig-appSpecificationInstallParam
         '0f 09 e6 ea e9 06 8d 89 19 a4 8a',
         '2c 08 d7 af 24 8c 75 50 3c 2d',
         'aa 08 1e 0e f8 25 69 3a 03 83',
@@ -397,12 +445,13 @@ class FixedValueExamples:
         'c2 08 7d 96 56 01 6d 5b a6 12',
         'ff 08 eb bd a0 de 7b 7c 00 63',
         'b7 09 af 49 67 d5 ac 4b ed 93 bc',
-        '35 09 c9 b3 1c fd 9f 7f 42 4d 3e']
+        '35 09 c9 b3 1c fd 9f 7f 42 4d 3e',
+    ]
 
     exampleListINT = [
-        '137', # example, appInstaConfig [0]
+        '137',  # example, appInstaConfig [0]
         '81',  # example, appInstaConfig [1]
-        '132', # example, appInstaConfig [2]
+        '132',  # example, appInstaConfig [2]
         '131',
         '184',
         '245',
@@ -429,7 +478,8 @@ class FixedValueExamples:
         '193',
         '119',
         '121',
-        '189']
+        '189',
+    ]
 
     boolean = True
 
@@ -449,7 +499,9 @@ class FixedValueExamples:
         return cls.counter[num] - 1
 
     @classmethod
-    def get(cls, example_type: str, lower = 0, upper = 256) -> str: #pylint: disable=unused-argument
+    def get(
+        cls, example_type: str, lower=0, upper=256
+    ) -> str:  # pylint: disable=unused-argument
         """interface function to receive fixed example values"""
         if example_type == 'uuid':
             return cls.exampleListUUID[cls.inc(0)]
@@ -468,7 +520,10 @@ class FixedValueExamples:
         if example_type == 'uri':
             return RandomValueExamples.get('uri')
         if example_type == 'int':
-            return cls.exampleListINT[cls.inc(8)]
+            value = cls.exampleListINT[cls.inc(8)]
+            while not lower <= int(value) <= upper:
+                value = cls.exampleListINT[cls.inc(8)]
+            return value
         if example_type == 'bool':
             cls.boolean = not cls.boolean
             return str(cls.boolean).lower()
@@ -478,10 +533,22 @@ class FixedValueExamples:
         return 'INVALID INPUT [function: fixedValueExamples.get(<string>)]'
 
 
-
 # test routine for development purposes
 if __name__ == '__main__':
-    example_types = ['uuid','aid','service_name','flavor_name','version','versionMM','tlv','uri','int','bool','date-time','new_type']
+    example_types = [
+        'uuid',
+        'aid',
+        'service_name',
+        'flavor_name',
+        'version',
+        'versionMM',
+        'tlv',
+        'uri',
+        'int',
+        'bool',
+        'date-time',
+        'new_type',
+    ]
     for t in example_types:
         for i in range(10):
             print(RandomValueExamples.get(t))

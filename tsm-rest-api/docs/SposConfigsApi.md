@@ -22,11 +22,11 @@ Create a new SposConfig and set all corresponding details.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SposConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SposConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -72,11 +72,11 @@ Delete a certain SposConfig. All data is deleted. Deletion SHALL only be possibl
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SposConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SposConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -121,11 +121,11 @@ Get details of a certain SposConfig.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SposConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SposConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -171,11 +171,11 @@ List all Services that use a certain SposConfig.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SposConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SposConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -221,11 +221,11 @@ List all SposConfigs of the authenticated ServiceProvider.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SposConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SposConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -267,11 +267,11 @@ Update details of an existing SposConfig.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SposConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SposConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 

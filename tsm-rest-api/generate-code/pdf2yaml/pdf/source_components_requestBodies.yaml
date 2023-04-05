@@ -6,19 +6,19 @@
           schema:
             type: object
             properties:
-              elf-filename:
+              elfFilename:
                 description: filename of the ELF
                 type: string
                 example: elf-file.cap
-              elf-file:
+              elfFile:
                 description: containing actual elf-file
                 type: string
                 format: binary
                 example: "01000101010011000100011000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
           encoding:
-            elf-filename:
+            elfFilename:
               contentType: text/plain
-            elf-file:
+            elfFile:
               contentType: application/octet-stream
     
     binaryPersoScript:
@@ -29,19 +29,19 @@
           schema:
             type: object
             properties:
-              script-filename:
+              scriptFilename:
                 description: filename of the personalization script
                 type: string
                 example: file.pers
-              script-file:
+              scriptFile:
                 description: containing actual script-file
                 type: string
                 format: binary
                 example: "01010011011000110111001001101001011100000111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
           encoding:
-            script-filename:
+            scriptFilename:
               contentType: text/plain
-            script-file:
+            scriptFile:
               contentType: application/octet-stream
     
     binaryCertificate:
@@ -52,18 +52,18 @@
           schema:
             type: object
             properties:
-              cert-filename:
+              certFilename:
                 description: filename of the certificate
                 type: string
                 example: file.cert
-              cert-file:
+              certFile:
                 description: containing actual cert-file
                 type: string
                 format: binary
                 example: "0100001101100101011100100111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
           encoding:
-            cert-filename:
+            certFilename:
               contentType: text/plain
-            cert-file:
+            certFile:
               contentType: application/octet-stream
     

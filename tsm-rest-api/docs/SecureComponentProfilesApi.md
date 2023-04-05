@@ -22,11 +22,11 @@ Get details of a certain SecureComponentProfile.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -72,11 +72,11 @@ List all ELFs that use a certain SecureComponentProfile.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -122,11 +122,11 @@ List all Flavors of a certain Service that use a certain SecureComponentProfile.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -174,11 +174,11 @@ List all Services that use a certain SecureComponentProfile.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -224,11 +224,11 @@ List all Versions of a certain Service that use a certain SecureComponentProfile
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -276,11 +276,11 @@ List all available SecureComponentProfiles.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.SecureComponentProfilesApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 

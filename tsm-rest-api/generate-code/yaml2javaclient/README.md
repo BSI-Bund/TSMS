@@ -94,12 +94,12 @@ This module uses [Swagger Codegen](https://swagger.io/tools/swagger-codegen/) to
                     <!-- target to generate java client code -->
                     <language>java</language>
                     <addCompileSourceRoot>true</addCompileSourceRoot>
-                    <invokerPackage>de.bsi.tsms.tsmrestapi</invokerPackage>
-                    <modelPackage>de.bsi.tsms.tsmrestapi.model</modelPackage>
-                    <apiPackage>de.bsi.tsms.tsmrestapi.api</apiPackage>
+                    <invokerPackage>de.bund.bsi.tsms.tsmrestapi</invokerPackage>
+                    <modelPackage>de.bund.bsi.tsms.tsmrestapi.model</modelPackage>
+                    <apiPackage>de.bund.bsi.tsms.tsmrestapi.api</apiPackage>
                     <withXml>false</withXml>
                     <output>${dest}</output>
-                    <groupId>de.bsi.tsms.tsm-rest-api</groupId>
+                    <groupId>de.bund.bsi.tsms.tsm-rest-api</groupId>
                     <artifactId>java-client</artifactId>
                     <artifactVersion>${project.version}</artifactVersion>
 

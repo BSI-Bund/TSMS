@@ -1,20 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.bsi.tsms.tsm-rest-api</groupId>
+    <groupId>de.bund.bsi.tsms.tsm-rest-api</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0</version>
-	<packaging>pom</packaging>
+    <version>1.0.2</version>
+    <packaging>pom</packaging>
 
     <modules>
         <module>generate-code/pdf2yaml</module>
         <module>generate-code/yaml2json</module>
         <module>generate-code/json2swaggerui</module>
         <module>generate-code/yaml2javaclient</module>
-	</modules>
+    </modules>
     
-	<build>
+    <build>
         <plugins>
+            <!-- replace version to ${project.version} in all documentation files -->
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <basedir>${project.basedir}</basedir>
+                    <includes>
+                        <include>README.md</include>
+                        <include>generate-code/json2swaggerui/pom.xml</include>
+                        <include>generate-code/pdf2yaml/pom.xml</include>
+                        <include>generate-code/yaml2javaclient/pom.xml</include>
+                        <include>generate-code/yaml2javaclient/generate-java-client-pom.xml</include>
+                        <include>generate-code/yaml2json/pom.xml</include>
+                    </includes>
+                    <regex>true</regex>
+                    <replacements>
+                        <!-- modify README.md tsm-api-$version-->
+                        <replacement>
+                            <token>tsm-rest-api-\d\.\d\.\d(-SNAPSHOT)?</token>
+                            <value>tsm-rest-api-${project.version}</value>
+                        </replacement>
+                        <!-- modify README.md dist/$version -->
+                        <replacement>
+                            <token>dist\/\d\.\d\.\d(-SNAPSHOT)?</token>
+                            <value>dist/${project.version}</value>
+                        </replacement>
+                        <!-- modify README.md java-client-$version -->
+                        <replacement>
+                            <token>java-client-\d\.\d\.\d(-SNAPSHOT)?</token>
+                            <value>java-client-${project.version}</value>
+                        </replacement>
+                        <!-- modify pom.xml -->
+                        <replacement>
+                            <token><![CDATA[<artifactId>parent</artifactId>.*<version>\d\.\d\.\d(-SNAPSHOT)?</version>.*<relativePath>]]></token>
+                            <value><![CDATA[<artifactId>parent</artifactId>
+        <version>${project.version}</version>
+        <relativePath>]]></value>
+                        </replacement>
+                        <!-- modify generate-java-client-pom.xml -->
+                        <replacement>
+                            <token><![CDATA[<yaml>tsm-rest-api-\d\.\d\.\d(-SNAPSHOT)?\.yaml</yaml>]]></token>
+                            <value><![CDATA[<yaml>tsm-rest-api-${project.version}\.yaml</yaml>]]></value>
+                        </replacement>
+                        <!-- modify generate-java-client-pom.xml -->
+                        <replacement>
+                            <token><![CDATA[<artifactId>generate-java-client</artifactId>.*<version>\d\.\d\.\d(-SNAPSHOT)?</version>.*<packaging>]]></token>
+                            <value><![CDATA[<artifactId>generate-java-client</artifactId>
+    <version>${project.version}</version>
+    <packaging>]]></value>
+                        </replacement>
+                    </replacements>
+                    <regexFlags>
+                        <regexFlag>CASE_INSENSITIVE</regexFlag>
+                        <regexFlag>MULTILINE</regexFlag>
+                        <regexFlag>DOTALL</regexFlag>
+                    </regexFlags>
+                </configuration>
+            </plugin>
+
             <!-- copy Changelog.md -->
             <plugin>
                 <groupId>com.coderplus.maven.plugins</groupId>

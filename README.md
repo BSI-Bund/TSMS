@@ -1,8 +1,8 @@
 # TSMS - Trusted Service Management System 
 
-Last updated: 08.07.2022
+Last updated: 05.04.2023
 
-The *GitHub-BSI-TSMS* project is a collection of source code modules to implement the interfaces specified in [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html).
+The *GitHub-BSI-TSMS* project contains a set of source code modules designed to implement the interfaces specified in [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html), which is a technical guideline published by the German Federal Office for Information Security (BSI).
 
 Content:
 
@@ -12,14 +12,14 @@ Content:
     <ol>
       <li><a href="tsm-api/README.md">TSM-API</a></li>
       <li><a href="tsm-rest-api/README.md">TSM-REST-API</a></li>
-	</ol>
+    </ol>
   </li>
   <li><a href="README.md#documentation">Documentation</a></li>
   <li><a href="README.md#faq">FAQ</a>
  </li>
 </ol>
 
-*Attention: in case of conflicts between GitHub-BSI-TSMS and BSI-TR-03165, information specified in BSI-TR-03165 always have higher priority.*
+*Attention: In case of conflicts between GitHub-BSI-TSMS and BSI-TR-03165, the information specified in BSI-TR-03165 takes precedence.*
 
 
 <a name="motivation"></a>
@@ -36,6 +36,8 @@ The simplest approach is to install and personalize the secure component already
 Another approach is to pre-install standardized JavaCard applets on the smartphone and personalize them later in the field. Besides increasing effort in some fields, a world-wide standardization of applets for ID, ticketing, payment and other use cases is still lacking. Instead, the implementation of those applets is usually controlled by the smartphone issuer, which leads to a lack of control about the security implementation details and supported functionality for specific use cases.
 
 A third approach is to install and personalize a secure component dynamically in the field. This is a powerful approach, but is also complicated. Due to bad cyber resilience of smartphone apps, the smartphone OS itself is not allowed to modify the secure component. Instead, the app needs to trigger a Trusted Service Manager (TSM) to install and, if applicable, personalize the secure component. The TSM guarantees that only the app provider gets full control to a restricted area on each secure component in the field, but it requires a relatively complex infrastructure. Thus, setting up a dedicated TSM for a specific application is not very effective. A TSM is best seen as a central component in a TSM-System (TSMS), which consists of one (or multiple) TSMs, multiple apps and app providers covering a variety of use cases, and a multitude of secure component issuers to ensure considerable market coverage. 
+
+There is a new approach currently under specification, called [SAM - Secure Applications on Mobile](https://trustedconnectivityalliance.org/wp-content/uploads/2023/02/TCA_SAM_PositionPaper_FINAL.pdf)</a>, which is a promising concept to make eSIM accessible for third-party applets. However, as of 2023, SAM is not yet  available.
 
 The BSI-TR-03165 describes a TSMS which simplifies the third approach by keeping its flexibility. In particular, it
 * provides a non-discriminating access to secure components,
@@ -77,6 +79,7 @@ The following steps describe the workflow how to use secure components according
 1. Create app specific JavaCard applets<br><br>
  ![TSMS Usage step1](tsm-graphics/tsms-step1.png)<br><br>
  After production, a secure component just contains an operating system and some basic administration tools. The secure component must be programmed to support certain use cases - e.g. ID use case, DL use case, payment use case. Here for, the app provider must first develop a JavaCard applet implementing the security functionality to protect the sensitive data needed by the app.<br><br>
+ The module [**tsm-test-applets**](tsm-test-applets/README.md) contains a collection of sample JavaCard applets.<br><br>
 
 
 2. Upload JavaCard applets to TSM-Backend<br><br>
@@ -94,6 +97,8 @@ The following steps describe the workflow how to use secure components according
 4. Create a smartphone app to use JavaCard applets<br><br>
  ![TSMS Usage step4](tsm-graphics/tsms-step4.png)<br><br>
  Last step is to use the JavaCard applet on the secure component of the smartphone to protect app specific sensitive data. This app can use the standard OMAPI interface provided by Android devices on default to access the applet.<br>
+ The module [**tsm-test-app**](tsm-test-app/README.md) contains a sample smartphone app to install, use and uninstall JavaCard applets on secure components of smartphones.
+ <br>
 
 
 ### 3.2 Components and Interaction
@@ -140,4 +145,5 @@ There are multiple options to access secure components and each one has pros and
 |*Option A:* preinstalled, applet provided by service provider|+ high control about implementation details<br>+ simple, no installation in field needed|- low device coverage|
 |*Option B:* preinstalled, applet provided by smartphone issuer|+ high device coverage<br>+ simple, no installation in field needed|- missing control about  implementation details|
 |*Option C:* installation in field via SP|+ high control about implementation details<br>|- complex, installation in field needed<br>- low device coverage|
-|*Option D:* installation in field via BSI-TR-03165|+ high device coverage achievable<br>+ high control about implementation details|- complex, installation in field needed|
+|*Option D:* installation in field via [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html)|+ high device coverage achievable<br>+ high control about implementation details|- complex, installation in field needed|
+|*Option E:* installation in field via [SAM - Secure Applications on Mobile](https://trustedconnectivityalliance.org/wp-content/uploads/2023/02/TCA_SAM_PositionPaper_FINAL.pdf)|+ high device coverage prognosis<br>+ high control about implementation details|- not yet available (status 2023)|

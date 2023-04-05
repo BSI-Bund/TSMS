@@ -1,5 +1,6 @@
 .idea
 generate-code/pdf2yaml/archive
+generate-code/pdf2yaml/env
 generated-code
 dist/*SNAPSHOT*
 dist/*SNAPSHOT*/**
@@ -8,3 +9,4 @@ dist/*SNAPSHOT*/**
 **/*.iml
 **/*.releaseBackup
 **/release.properties
+**/*.log

@@ -5,7 +5,7 @@ All URIs are relative to */*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**createAppConfig**](ApplicationConfigsApi.md#createAppConfig) | **POST** /application-configs | Create a new ApplicationConfig.
-[**deleteAppConfig**](ApplicationConfigsApi.md#deleteAppConfig) | **DELETE** /application-configs/{applicationConfigId} | Delete a certain ApplicationConfig. All data is deleted. Reference...
+[**deleteAppConfig**](ApplicationConfigsApi.md#deleteAppConfig) | **DELETE** /application-configs/{applicationConfigId} | Delete a certain ApplicationConfig. All data is deleted. Referenc...
 [**getAppConfig**](ApplicationConfigsApi.md#getAppConfig) | **GET** /application-configs/{applicationConfigId} | Get details of a certain ApplicationConfig.
 [**listAppConfigRelatedEms**](ApplicationConfigsApi.md#listAppConfigRelatedEms) | **GET** /application-configs/{applicationConfigId}/executable-modules | List all ExecutableModules that use a certain ApplicationConfig.
 [**listAppConfigRelatedFlavors**](ApplicationConfigsApi.md#listAppConfigRelatedFlavors) | **GET** /application-configs/{applicationConfigId}/flavors | List all Flavors that use a certain ApplicationConfig.
@@ -24,11 +24,11 @@ Create a new ApplicationConfig.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -67,18 +67,18 @@ Name | Type | Description  | Notes
 # **deleteAppConfig**
 > deleteAppConfig(applicationConfigId)
 
-Delete a certain ApplicationConfig. All data is deleted. Reference...
+Delete a certain ApplicationConfig. All data is deleted. Referenc...
 
 Delete a certain ApplicationConfig. All data is deleted. Referenced Certificates and PersonalizationScripts are not deleted. Deletion SHALL only be possible if the ApplicationConfig is not referenced in any Flavor and thus is not in use anywhere.
 
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -123,11 +123,11 @@ Get details of a certain ApplicationConfig.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -173,11 +173,11 @@ List all ExecutableModules that use a certain ApplicationConfig.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -223,11 +223,11 @@ List all Flavors that use a certain ApplicationConfig.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -273,11 +273,11 @@ List all Services that use a certain ApplicationConfig.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -323,11 +323,11 @@ List all ApplicationConfigs of the authenticated ServiceProvider.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -369,11 +369,11 @@ Update details of an existing ApplicationConfig.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ApplicationConfigsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 

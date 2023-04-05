@@ -36,7 +36,8 @@ import time
 
 import fitz
 
-from utilityFunctions import pathSplitL #, msgs
+from utilityFunctions import pathSplitL  # , msgs
+
 
 def pyMuPdfParser(source_file: str, dest_file: str) -> None:
     """
@@ -47,6 +48,7 @@ def pyMuPdfParser(source_file: str, dest_file: str) -> None:
         for page in doc:
             fout.write(page.get_text().encode('utf-8') + bytes((12,)))
 
+
 def parseTR(pdf_file: str, txt_file: str) -> None:
     """
     function to translate a tr-pdf to a tr-txt
@@ -55,7 +57,7 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
 
     pyMuPdfParser(pdf_file, txt_file)
 
-    #re_soleChapNum = re.compile(r'[\d\.]+\n')
+    # re_soleChapNum = re.compile(r'[\d\.]+\n')
 
     with open(txt_file, 'rt', encoding='utf-8') as file:
         text = file.readlines()
@@ -67,7 +69,7 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
     for i, line in enumerate(text):
         if '\f' in line:
             text[i] = line.strip() + '\n'
-            text[i+1] = text[i+1].strip() + ' '
+            text[i + 1] = text[i + 1].strip() + ' '
 
     # pull title and num together
     re_num = re.compile(r'^\d\.[\d\.]+$')
@@ -96,7 +98,7 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
             chap_a = i
         if re_chap_d.search(line.strip()):
             chap_d = i
-    #text = text[chap_a:chap_d+1]
+    # text = text[chap_a:chap_d+1]
 
     # no line shall end by semicolon, minus (connecting words) or comma (after error number)
     re_semicolon_end = re.compile(r'\;$')
@@ -104,7 +106,11 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
     re_comma_end = re.compile(r'[ \,][\d]{4}\,$')
     re_slash_end = re.compile(r'Id\}\/$')
     for i, line in enumerate(text):
-        if re_semicolon_end.search(line.strip()) or re_comma_end.search(line.strip()) or re_slash_end.search(line.strip()):
+        if (
+            re_semicolon_end.search(line.strip())
+            or re_comma_end.search(line.strip())
+            or re_slash_end.search(line.strip())
+        ):
             text[i] = line.strip() + ' '
         elif re_minus_end.search(line.strip()):
             text[i] = line.strip()
@@ -113,9 +119,9 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
     re_bracket_start = re.compile(r'^\(')
     for i, line in enumerate(text):
         if re_bracket_start.search(line.strip()):
-            text[i-1] = text[i-1].strip() + ' '
+            text[i - 1] = text[i - 1].strip() + ' '
         if '  ' in line:
-            text[i] = line.replace('  ',' ')
+            text[i] = line.replace('  ', ' ')
 
     with open(txt_file, 'wt', encoding='utf-8') as file:
         file.writelines(text)
@@ -147,46 +153,47 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
     # clear empty lines and spaces at line end
     for i, line in enumerate(text):
         if len(line.strip()) != 0:
-            text[i] = line.strip().replace('> ','>\n') + '\n'
+            text[i] = line.strip().replace('> ', '>\n') + '\n'
         else:
             text[i] = line.strip()
 
     # section 4.1.4
     replace_a = [
         ## Content
-        ('tiatio\n','tiatio'),
-        ('nstant\n','nstant'),
-        (' string\n','\nstring\n'),
-        ('<string,\n','<string, '),
-        ('Mand. Ed.\n','Mand.\nEd.\n'),
-        (' string[]\n','\nstring[]\n'),
-        ('Config Config','Config\nConfig'),
-        ('allowedDeploy\n','allowedDeploy'),
-        ('Instantiation\n','Instantiation'),
-        ('Config Persona','Config\nPersona'),
-        ('SecureComponent\n','SecureComponent'),
-        ('AuthorizedDevice\n','AuthorizedDevice'),
-        ('DataBlock boolean','DataBlock\nboolean'),
-        ('Configs EntityList','Configs\nEntityList'),
-        ('ApplicationInstanti\n','ApplicationInstanti'),
-        ('boolean Flag, whether ','boolean\nFlag, whether '),
-        ('Requirements Technical ','Requirements\nTechnical '),
-        ('entProfiles EntityList<','entProfiles\nEntityList<'),
-        ('contextSpecificAttribut\n','contextSpecificAttribut'),
-        ('accessAuthorizedDeviceA\n','accessAuthorizedDeviceA'),
-        ('contextSpecificAttribute\n','contextSpecificAttribute'),
-
+        ('tiatio\n', 'tiatio'),
+        ('nstant\n', 'nstant'),
+        (' string\n', '\nstring\n'),
+        ('<string,\n', '<string, '),
+        ('Mand. Ed.\n', 'Mand.\nEd.\n'),
+        (' string[]\n', '\nstring[]\n'),
+        ('Config Config', 'Config\nConfig'),
+        ('allowedDeploy\n', 'allowedDeploy'),
+        ('Instantiation\n', 'Instantiation'),
+        ('Config Persona', 'Config\nPersona'),
+        ('SecureComponent\n', 'SecureComponent'),
+        ('AuthorizedDevice\n', 'AuthorizedDevice'),
+        ('DataBlock boolean', 'DataBlock\nboolean'),
+        ('ApplicationInstan\n', 'ApplicationInstan'),  ##############
+        ('Configs EntityList', 'Configs\nEntityList'),
+        ('ApplicationInstanti\n', 'ApplicationInstanti'),
+        ('Attributes Map<string', 'Attributes\nMap<string'),  #########
+        ('boolean Flag, whether ', 'boolean\nFlag, whether '),
+        ('Requirements Technical ', 'Requirements\nTechnical '),
+        ('entProfiles EntityList<', 'entProfiles\nEntityList<'),
+        ('contextSpecificAttribut\n', 'contextSpecificAttribut'),
+        ('accessAuthorizedDeviceA\n', 'accessAuthorizedDeviceA'),
+        ('contextSpecificAttribute\n', 'contextSpecificAttribute'),
+        ('applicationInstantiationCo\n', 'applicationInstantiationCo'),  #########
+        ('DiversificationData boolean', 'DiversificationData\nboolean'),  #########
         ## Key-Description
-        (' is\n',' is '),
-        (' the\n',' the '),
-        (' this\n',' this '),
-        (' this ELF\n',' this ELF '),
-        (' the ApplicationConfig\n',' the ApplicationConfig '),
-        (' the PersonalizationConfig\n',' the PersonalizationConfig '),
-
+        (' is\n', ' is '),
+        (' the\n', ' the '),
+        (' this\n', ' this '),
+        (' this ELF\n', ' this ELF '),
+        (' the ApplicationConfig\n', ' the ApplicationConfig '),
+        (' the PersonalizationConfig\n', ' the PersonalizationConfig '),
         ## Att-Description [MANDATORY]
-        (' provide\n',' provide '),
-
+        (' provide\n', ' provide '),
         ## Att-Description, normal Description [OPTIONAL, time consuming, no benefit ...]
         # (' a\n',' a '),
         # (' A\n',' A '),
@@ -275,11 +282,10 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
     # section 4.1.6
     replace_b = [
         ## Content
-        (' the\n',' the '),
-        ('to be\n','to be '),
-        ('-file”,\n','-file”, '),
-        ('<string,\n','<string, '),
-
+        (' the\n', ' the '),
+        ('to be\n', 'to be '),
+        ('-file”,\n', '-file”, '),
+        ('<string,\n', '<string, '),
         ## Description [OPTIONAL, time consuming, no benefit ...]
         # (' in\n',' in '),
         # (' an\n',' an '),
@@ -318,25 +324,24 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
     counter_b = [0] * len(replace_b)
 
     # combine long lines
-    for i in range(chap_a,chap_b):
+    for i in range(chap_a, chap_b):
         for j, repl_a in enumerate(replace_a):
             if repl_a[0] in text[i]:
-                text[i] = text[i].replace(repl_a[0],repl_a[1])
+                text[i] = text[i].replace(repl_a[0], repl_a[1])
                 counter_a[j] += 1
-    for i in range(chap_c,chap_d):
+    for i in range(chap_c, chap_d):
         for j, repl_b in enumerate(replace_b):
             if repl_b[0] in text[i]:
-                text[i] = text[i].replace(repl_b[0],repl_b[1])
+                text[i] = text[i].replace(repl_b[0], repl_b[1])
                 counter_b[j] += 1
 
     with open(txt_file, 'wt', encoding='utf-8') as file:
         file.writelines(text)
 
-    #print(msgs(['pdf2txt timing (part)','',str(time.time() - txt_time)[:6]+' seconds','']))
+    # print(msgs(['pdf2txt timing (part)','',str(time.time() - txt_time)[:6]+' seconds','']))
     print('pdf2txt timing (part)')
-    print(str(time.time() - txt_time)[:6]+' seconds')
+    print(str(time.time() - txt_time)[:6] + ' seconds')
     print()
-
 
 
 ###########
@@ -344,9 +349,9 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
 ###########
 
 if __name__ == '__main__':
-    os.chdir(pathSplitL(__file__,2))
+    os.chdir(pathSplitL(__file__, 2))
 
-    FILENAME_PDF = os.path.join('.','pdf','TR-TSMS_V1.0_20220603.pdf')
-    FILENAME_TXT = FILENAME_PDF.replace('.pdf','')+'.txt'
+    FILENAME_PDF = os.path.join('.', 'pdf', 'TR-TSMS_V1.0_20220603.pdf')
+    FILENAME_TXT = FILENAME_PDF.replace('.pdf', '') + '.txt'
 
     parseTR(FILENAME_PDF, FILENAME_TXT)

@@ -73,7 +73,6 @@ Perform the following steps to set up a development environment to use the Pytho
 2. Install required Python extensions
 	```
 	 py -m pip install PyMuPDF
-	 py -m pip install fitz
 	```
 
 <a name="build"></a>
@@ -95,11 +94,12 @@ Perform the following steps to run the scripts:
 	```
 
 3. __Optional script parameters:__
-	* use `latest` as parameter to select the latest available PDF document by date (this option is used in the Maven script)
-	* use the main program without parameters, also defaulting to the latest available PDF version
-	* you can parse earlier PDF versions by passing the respective date (`<YYYYMMDD>`)
-	* when you specify a faulty date-parameter (e.g. `2013456`) or the date you were looking for is missing, the last version used will be selected (saved as `./pdf/tr_03165_source.txt`); this is used as a stable backup option
-	* even a call by absolute path (e.g. `python C:\Users\<NAME>\Documents\Python\pdf2yaml\src\pdf2yaml.py 20211122`) without cd in step 2 is possible, the current working directory is changed in the python main routine for the sake of robustness
+	* when no parameter is provided `latest` available TR document in directory './pdf' is used (this option is used in the Maven script)
+	* optional you can pass the filename of the TR document. The file must be located inside the './pdf' directory, e.g. 
+    ```
+	 cd ./generate-code/pdf2yaml
+	 py ./src/pdf2yaml.py TR-TSMS_V1.0.pdf
+	```
 
 4. __Configure correct version of TR for maven integration:__
    * Maven will default to the latest available PDF version

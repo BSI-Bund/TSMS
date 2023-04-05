@@ -5,9 +5,9 @@
     <packaging>pom</packaging>
     
     <parent>
-        <groupId>de.bsi.tsms.tsm-rest-api</groupId>
+        <groupId>de.bund.bsi.tsms.tsm-rest-api</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     
@@ -17,7 +17,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <configuration>
                     <filesets>
                         <!-- remove dist/tsm-rest-api-*.yaml file -->
@@ -41,7 +41,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <configuration>
@@ -49,8 +49,7 @@
                             <workingDirectory>${project.basedir}</workingDirectory>
                             <arguments>
                                 <argument>./src/pdf2yaml.py</argument>
-                                <argument>latest</argument>
-                                <argument>pdf</argument>
+                                <argument>TR-TSMS_V1.0.2.pdf</argument>
                             </arguments>
                         </configuration>
                         <id>python-build</id>

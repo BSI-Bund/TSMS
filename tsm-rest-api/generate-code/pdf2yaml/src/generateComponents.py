@@ -9,6 +9,7 @@ from sourceHandling import Source
 from requestBodyDict import makeStringCamelCase
 from utilityFunctions import pathSplitL
 
+
 class Components:
     """definition of Components Class"""
 
@@ -16,12 +17,12 @@ class Components:
         """initialize object"""
 
         # define relative paths from src subfolder to pdf subfolder
-        source_path = os.path.join('.','pdf',source_file)
-        self.destination_path = os.path.join('.','pdf',destination_file)
+        source_path = os.path.join('.', 'pdf', source_file)
+        self.destination_path = os.path.join('.', 'pdf', destination_file)
         # from source separated parts
-        self.source_obj = Source(source_path,'')
+        self.source_obj = Source(source_path, '')
         # whole result
-        self.result = ['components:\n','\n']
+        self.result = ['components:\n', '\n']
         # fixed examples
         self.uuid_examples = [
             'e59d3d32-6756-76ac-ffff-feeba10c081a',
@@ -52,7 +53,8 @@ class Components:
             '060dc3ac-71dd-3bae-e00a-a8fe85ceb022',
             '2355d041-c1c6-4ab1-e0d2-a15a41e85351',
             '6cda80a1-efb3-acf3-8b18-14a10ff2ad24',
-            'f36d5f2e-0950-6e80-6367-fe7e6250a713']
+            'f36d5f2e-0950-6e80-6367-fe7e6250a713',
+        ]
         self.aid_examples = [
             'A00000025128620C1110',
             'A00000039998960C1111',
@@ -60,14 +62,9 @@ class Components:
             'A00000052220986C0110',
             'A00000030027697C0110',
             'A00000065553856C1001',
-            'A00000037797423C1100']
-        self.version_examples = [
-            '4.31.005',
-            '3.1.4',
-            '5.12',
-            '2.2',
-            '1.2',
-            '3.1']
+            'A00000037797423C1100',
+        ]
+        self.version_examples = ['4.31.005', '3.1.4', '5.12', '2.2', '1.2', '3.1']
         self.name_examples = [
             'nameOfTheSP',
             'nameOfTheService',
@@ -77,9 +74,9 @@ class Components:
             'nameOfThisApplicationConfig',
             'A description of this ApplicationConfig is stored here.',
             'nameOfThisPersonalizationScript',
-            'nameOfTheFileTheCertificateWasCreatedFrom']
-        self.uri_examples = [
-            '/relative/link/to/resource']
+            'nameOfTheFileTheCertificateWasCreatedFrom',
+        ]
+        self.uri_examples = ['/relative/link/to/resource']
 
     ############################################
     def addParameters(self) -> None:
@@ -91,34 +88,48 @@ class Components:
         self.result.append('  \n')
         parameter_list = []
         for i in self.source_obj.source_interface_methods:
-            re_result = re.findall(r'/\{[\w]+\}',i)
+            re_result = re.findall(r'/\{[\w]+\}', i)
             for j in re_result:
                 parameter_list.append(j[2:-1])
         parameter_list = list(dict.fromkeys(parameter_list))
         for i in parameter_list:
-            self.result.append('    '+i+':\n')
+            self.result.append('    ' + i + ':\n')
             self.result.append('      in: path\n')
-            self.result.append('      name: '+i+'\n')
+            self.result.append('      name: ' + i + '\n')
             self.result.append('      required: true\n')
             self.result.append('      schema:\n')
             self.result.append('        type: string\n')
             if 'Id' in i:
                 self.result.append('        format: uuid\n')
-                self.result.append('        maxLength: 36\n')
-                self.result.append('        minLength: 36\n')
-                self.result.append('        example: "'+self.uuid_examples.pop(0)+'"\n')
+                # uuid-length shall not be specified
+                # self.result.append('        maxLength: 36\n')
+                # self.result.append('        minLength: 36\n')
+                self.result.append(
+                    '        example: "' + self.uuid_examples.pop(0) + '"\n'
+                )
             else:
                 self.result.append('        format: version\n')
                 self.result.append('        maxLength: 11\n')
                 self.result.append('        minLength: 5\n')
-                self.result.append(r"        pattern: '^\d{1:3}.\d{1:3}.\d{1:3}$'" + "\n")
-                self.result.append('        example: "'+self.version_examples.pop(0)+'"\n')
-            self.result.append('      description: identifier of the referred '+i[0].upper()+i[1:].replace('Id','')+'\n')
+                self.result.append(
+                    r"        pattern: '^\d{1:3}.\d{1:3}.\d{1:3}$'" + "\n"
+                )
+                self.result.append(
+                    '        example: "' + self.version_examples.pop(0) + '"\n'
+                )
+            self.result.append(
+                '      description: identifier of the referred '
+                + i[0].upper()
+                + i[1:].replace('Id', '')
+                + '\n'
+            )
             self.result.append('    \n')
 
     def appendFileToResult(self, source_file: str) -> None:
         """append content of file to result"""
-        with open(os.path.join('.','pdf',source_file),'rt',encoding='utf-8') as file:
+        with open(
+            os.path.join('.', 'pdf', source_file), 'rt', encoding='utf-8'
+        ) as file:
             for i in file.readlines():
                 self.result.append(i)
 
@@ -155,9 +166,9 @@ class Components:
             schema_titles.append(i.title)
         for d_type in self.source_obj.data_types:
             # head
-            self.result.append('### '+d_type.num+' ###\n')
-            self.result.append('    '+d_type.title+':\n')
-            self.result.append('      description: "'+d_type.description+'"\n')
+            self.result.append('### ' + d_type.num + ' ###\n')
+            self.result.append('    ' + d_type.title + ':\n')
+            self.result.append('      description: "' + d_type.description + '"\n')
             self.result.append('      type: object\n')
             mandatory = ""
             for i, _ in enumerate(d_type.att4mand):
@@ -165,18 +176,36 @@ class Components:
                     mandatory += d_type.att1[i] + ', '
             # required
             if len(mandatory) > 0:
-                self.result.append('      required: ['+mandatory[:-2]+']\n')
+                self.result.append('      required: [' + mandatory[:-2] + ']\n')
             else:
                 self.result.append('      #required: []\n')
             self.result.append('      properties:\n')
             for i, _ in enumerate(d_type.att1):
-                self.result.append('        '+d_type.att1[i]+': # '+d_type.att4mand[i]+', '+d_type.att5ed[i]+'\n')
+                self.result.append(
+                    '        '
+                    + d_type.att1[i]
+                    + ': # '
+                    + d_type.att4mand[i]
+                    + ', '
+                    + d_type.att5ed[i]
+                    + '\n'
+                )
                 if d_type.att2type[i] in schema_titles:
                     # schema
-                    self.result.append('          $ref: "#/components/schemas/'+d_type.att2type[i]+'" # "'+d_type.att3desc[i]+'"\n')
+                    self.result.append(
+                        '          $ref: "#/components/schemas/'
+                        + d_type.att2type[i]
+                        + '" # "'
+                        + d_type.att3desc[i]
+                        + '"\n'
+                    )
                 else:
                     # description
-                    self.result.append('          description: "'+d_type.att3desc[i].replace(':','')+'"\n')
+                    self.result.append(
+                        '          description: "'
+                        + d_type.att3desc[i].replace(':', '')
+                        + '"\n'
+                    )
                     type_ = ""
                     # string
                     if d_type.att2type[i] == 'string':
@@ -187,7 +216,9 @@ class Components:
                             self.result.append('          format: version\n')
                             self.result.append('          maxLength: 7\n')
                             self.result.append('          minLength: 3\n')
-                            self.result.append(r"          pattern: '^\d{1:3}.\d{1:3}$" + "'\n")
+                            self.result.append(
+                                r"          pattern: '^\d{1:3}.\d{1:3}$" + "'\n"
+                            )
                         # aid
                         elif ('AID' in d_type.att3desc[i]) or ('aid' == d_type.att1[i]):
                             type_ = "aid"
@@ -252,7 +283,11 @@ class Components:
                         self.result.append('          type: array\n')
                         self.result.append('          items:\n')
                         if d_type.att2type[i][:-2] in schema_titles:
-                            self.result.append('            $ref: "#/components/schemas/'+d_type.att2type[i][:-2]+'"\n')
+                            self.result.append(
+                                '            $ref: "#/components/schemas/'
+                                + d_type.att2type[i][:-2]
+                                + '"\n'
+                            )
                         # pair
                         elif 'cspELFsVersions' == d_type.att1[i]:
                             self.result.append('            type: array\n')
@@ -298,51 +333,87 @@ class Components:
                         self.result.append('          readOnly: true\n')
                     # example section
                     if type_ == "version":
-                        self.result.append('          example: "'+self.version_examples.pop(0)+'"\n')
+                        self.result.append(
+                            '          example: "'
+                            + self.version_examples.pop(0)
+                            + '"\n'
+                        )
                     elif type_ == "uuid":
-                        self.result.append('          example: "'+self.uuid_examples.pop(0)+'"\n')
+                        self.result.append(
+                            '          example: "' + self.uuid_examples.pop(0) + '"\n'
+                        )
                     elif type_ == "aid":
-                        self.result.append('          example: "'+self.aid_examples.pop(0)+'"\n')
+                        self.result.append(
+                            '          example: "' + self.aid_examples.pop(0) + '"\n'
+                        )
                     elif type_ == "uri":
-                        self.result.append('          example: "/relative/link/to/resource"\n')
+                        self.result.append(
+                            '          example: "/relative/link/to/resource"\n'
+                        )
                     # elif type_ == "tlv":
                     #     self.result.append('          example: "'+self.tlvExamples.pop(0)+'"\n')
                     elif type_ == "name":
-                        self.result.append('          example: "'+makeStringCamelCase(d_type.att3desc[i],' ').replace('.','')+'"\n')
+                        self.result.append(
+                            '          example: "'
+                            + makeStringCamelCase(d_type.att3desc[i], ' ').replace(
+                                '.', ''
+                            )
+                            + '"\n'
+                        )
                     elif type_ == "description":
-                        self.result.append('          example: "'+d_type.att3desc[i]+'"\n')
+                        self.result.append(
+                            '          example: "' + d_type.att3desc[i] + '"\n'
+                        )
                     elif type_ == "spParameters":
                         examples = ''
-                        for i in range(1,4):
-                            examples+='param'+str(i)+': "Value'+str(i)+' which can be evaluated by the App.", '
-                        self.result.append('          example: { '+examples[:-2]+' }\n')
+                        for i in range(1, 4):
+                            examples += (
+                                'param'
+                                + str(i)
+                                + ': "Value'
+                                + str(i)
+                                + ' which can be evaluated by the App.", '
+                            )
+                        self.result.append(
+                            '          example: { ' + examples[:-2] + ' }\n'
+                        )
                     elif type_ == "uuid[]":
                         examples = ''
-                        for i in range(1,4):
-                            examples+='"'+self.uuid_examples.pop(0)+'", '
-                        self.result.append('          example: [ '+examples[:-2]+' ]\n')
+                        for i in range(1, 4):
+                            examples += '"' + self.uuid_examples.pop(0) + '", '
+                        self.result.append(
+                            '          example: [ ' + examples[:-2] + ' ]\n'
+                        )
                     elif type_ == "aid[]":
                         examples = ''
-                        for i in range(1,4):
-                            examples+='"'+self.aid_examples.pop(0)+'", '
-                        self.result.append('          example: [ '+examples[:-2]+' ]\n')
+                        for i in range(1, 4):
+                            examples += '"' + self.aid_examples.pop(0) + '", '
+                        self.result.append(
+                            '          example: [ ' + examples[:-2] + ' ]\n'
+                        )
             if d_type.att1[i] == "_links":
                 if d_type.key1:
                     self.result.append('          example:\n')
                     for i in enumerate(d_type.key1):
-                        self.result.append('            '+d_type.key1[i]+': '+d_type.key3Desc[i]+'\n')
+                        self.result.append(
+                            '            '
+                            + d_type.key1[i]
+                            + ': '
+                            + d_type.key3Desc[i]
+                            + '\n'
+                        )
                 else:
-                    self.result.append('          # KEINE ANGABEN FÜR LINKS, DAHER KEINE BEISPIELE\n')
+                    self.result.append(
+                        '          # KEINE ANGABEN FÜR LINKS, DAHER KEINE BEISPIELE\n'
+                    )
 
             self.result.append('\n')
-
 
     def saveResult(self) -> None:
         """write self.result to file for later use
         save to previous specified destination"""
-        with open(self.destination_path,'wt',encoding='utf-8') as file:
+        with open(self.destination_path, 'wt', encoding='utf-8') as file:
             file.writelines(self.result)
-
 
     def process(self) -> None:
         """process function"""
@@ -351,7 +422,6 @@ class Components:
         self.addResponses()
         self.addSecuritySchemes()
         self.addSchemas()
-
 
     def generate(self) -> None:
         """generate result by combining functions: load AND save"""
@@ -366,7 +436,6 @@ class Components:
         return self.result
 
 
-
 def fromTo(source: str, destination: str) -> None:
     """
     set locations of source and destination in pdf folder
@@ -377,7 +446,7 @@ def fromTo(source: str, destination: str) -> None:
     # store cwd for end of function
     temp_cwd = os.getcwd()
     # change cwd to upper folder of sourcefile-folder
-    os.chdir(pathSplitL(__file__,2))
+    os.chdir(pathSplitL(__file__, 2))
     # define proper components object
     content = Components(source, destination)
     # call generate-method
@@ -396,7 +465,7 @@ def fromReturn(source: str) -> list:
     # store cwd for end of function
     temp_cwd = os.getcwd()
     # change cwd to upper folder of sourcefile-folder
-    os.chdir(pathSplitL(__file__,2))
+    os.chdir(pathSplitL(__file__, 2))
     # define proper components object
     content = Components(source, '')
     # return to previous cwd
@@ -406,4 +475,4 @@ def fromReturn(source: str) -> list:
 
 
 if __name__ == '__main__':
-    fromTo('tr_03165_source.txt','source_components.yaml')
+    fromTo('tr_03165_source.txt', 'source_components.yaml')

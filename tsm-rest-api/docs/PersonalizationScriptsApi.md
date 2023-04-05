@@ -4,8 +4,8 @@ All URIs are relative to */*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**createPersoScriptAndUploadBinary**](PersonalizationScriptsApi.md#createPersoScriptAndUploadBinary) | **POST** /personalization-scripts | Create a new PersonalizationScript and upload corresponding binary...
-[**deletePersoScript**](PersonalizationScriptsApi.md#deletePersoScript) | **DELETE** /personalization-scripts/{personalizationScriptId} | Delete a certain PersonalizationScript. All data, including binary...
+[**createPersoScriptAndUploadBinary**](PersonalizationScriptsApi.md#createPersoScriptAndUploadBinary) | **POST** /personalization-scripts | Create a new PersonalizationScript and upload corresponding binar...
+[**deletePersoScript**](PersonalizationScriptsApi.md#deletePersoScript) | **DELETE** /personalization-scripts/{personalizationScriptId} | Delete a certain PersonalizationScript. All data, including binar...
 [**getPersoScript**](PersonalizationScriptsApi.md#getPersoScript) | **GET** /personalization-scripts/{personalizationScriptId} | Get details of a certain PersonalizationScript.
 [**getScriptBinary**](PersonalizationScriptsApi.md#getScriptBinary) | **GET** /personalization-scripts/{personalizationScriptId}/binary | Get binary data of a certain PersonalizationScript.
 [**listPersoScripts**](PersonalizationScriptsApi.md#listPersoScripts) | **GET** /personalization-scripts | List all PersonalizationScripts of the authenticated ServiceProvider.
@@ -18,18 +18,18 @@ Method | HTTP request | Description
 # **createPersoScriptAndUploadBinary**
 > PersonalizationScript createPersoScriptAndUploadBinary(scriptFilename, scriptFile)
 
-Create a new PersonalizationScript and upload corresponding binary...
+Create a new PersonalizationScript and upload corresponding binar...
 
 Create a new PersonalizationScript and upload corresponding binary data.
 
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -70,18 +70,18 @@ Name | Type | Description  | Notes
 # **deletePersoScript**
 > deletePersoScript(personalizationScriptId)
 
-Delete a certain PersonalizationScript. All data, including binary...
+Delete a certain PersonalizationScript. All data, including binar...
 
 Delete a certain PersonalizationScript. All data, including binary data, is deleted. Deletion SHALL only be possible if the PersonalizationScript is not referenced in any ApplicationConfig and thus is not in use anywhere.
 
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -126,11 +126,11 @@ Get details of a certain PersonalizationScript.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -176,11 +176,11 @@ Get binary data of a certain PersonalizationScript.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -226,11 +226,11 @@ List all PersonalizationScripts of the authenticated ServiceProvider.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -272,11 +272,11 @@ List all ApplicationConfigs that use a certain PersonalizationScript.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -322,11 +322,11 @@ List all Flavors that use a certain PersonalizationScript.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -372,11 +372,11 @@ List all Services that use a certain PersonalizationScript.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
@@ -422,11 +422,11 @@ Update details and overwrite binary data of an existing PersonalizationScript.
 ### Example
 ```java
 // Import classes:
-//import de.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bsi.tsms.tsmrestapi.ApiException;
-//import de.bsi.tsms.tsmrestapi.Configuration;
-//import de.bsi.tsms.tsmrestapi.auth.*;
-//import de.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.PersonalizationScriptsApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
