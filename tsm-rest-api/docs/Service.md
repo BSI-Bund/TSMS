@@ -4,7 +4,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | [**UUID**](UUID.md) | Unique identification of the Service. |  [optional]
-**spId** | [**UUID**](UUID.md) | ID of the ServiceProvider owning the Service. | 
+**spId** | [**UUID**](UUID.md) | ID of the ServiceProvider owning the Service. |  [optional]
 **name** | **String** | Name of the Service. | 
 **creationDate** | [**DateTime**](DateTime.md) | A datetime string (creation of Service). |  [optional]
 **sdAid** | **String** | AID of the specific security domain that is created for every Service Instance. The AID format follows [ISO/IEC7816-4]. |  [optional]

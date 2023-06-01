@@ -12,6 +12,28 @@ from utilityFunctions import returnTextLineFromList
 class InterfaceMethod:
     """definition of InterfaceMethod Class"""
 
+    _request_body_examples = {}
+
+    @property
+    def request_body_examples(self):
+        """request_body_examples for all interfaceMethods"""
+        return self.__class__._request_body_examples
+
+    @request_body_examples.setter
+    def request_body_examples(self, value: dict):
+        self.__class__._request_body_examples = value
+
+    _last_url = ''
+
+    @property
+    def last_url(self):
+        """last_url for all interfaceMethods"""
+        return self.__class__._last_url
+
+    @last_url.setter
+    def last_url(self, value):
+        self.__class__._last_url = value
+
     # pylint: disable=inconsistent-return-statements
     def __init__(self, interface_method_text: list):
         """initialize object"""
@@ -258,8 +280,14 @@ class InterfaceMethod:
             self.ref400 = self.ref400[:-1] + '"'
             self.ref401 = self.ref401[:-1] + '"'
             self.ref500 = self.ref500[:-1] + '"'
-
         del self.interface_method_text
+        self.operation_ids = {}
+
+    def refer_to_operation_id(self, ext_dict) -> None:
+        """
+        needs to be executed before output, to refer to all operation ids
+        """
+        self.operation_ids = ext_dict
 
     def printContent(self) -> None:
         """
@@ -310,6 +338,151 @@ class InterfaceMethod:
             print()
         else:
             print('INCORRECT INPUT TO INTERFACEMETHOD, OBJ BUILD FAILED')
+
+    def __str__(self) -> str:
+        """
+        convert contents to openapi yaml-format
+        """
+        result = ''
+        result += f'### {self.num} {self.title} ###\n'
+        if self.type_ == 'supkapitel':
+            result += '#'
+            for j in self.description:
+                result += f' {j}'
+                if j[-1] == '.':
+                    result += '\n#'
+            result = result[:-1]
+            result += '\n'
+        if self.type_ == 'kapitel':
+            if self.rest_url != self.last_url:
+                result += f'  {self.rest_url}:\n'
+                self.last_url = self.rest_url
+            else:
+                result += f'  #{self.rest_url}:\n'
+            result += f'    {self.request_method}:\n'
+            result += '      tags:\n'
+            result += f'        - {self.tag}\n'
+            if len(self.description) > 70:
+                result += f'      summary: "{self.description[:65]}..."\n'
+            else:
+                result += f'      summary: "{self.description}"\n'
+            result += f'      description: "{self.description}"\n'
+            result += f'      operationId: {self.operation_ids[self.num]}\n'
+            # headers
+            if '4.1.6.5.4' in self.num:
+                pass
+            result += '      ##### Request Headers:\n'
+            if 'Authorization' in self.request_headers:
+                result += '      security:\n'
+                result += f'        - {self.request_headers["Authorization"].replace("<<","").replace(">>","").replace("-","")}: []\n'
+            if 'Content-Type' in self.request_headers:
+                result += f'      ##### Content-Type: {self.request_headers["Content-Type"]}\n'
+            if 'Accept' in self.request_headers:
+                result += f'      ##### Accept: {self.request_headers["Accept"]}\n'
+            # request body
+            if self.request_file:
+                result += '      requestBody:\n'
+                if self.tag == '/executable-load-files':
+                    result += '        $ref: "#/components/requestBodies/binaryELF"\n'
+                elif self.tag == '/personalization-scripts':
+                    result += (
+                        '        $ref: "#/components/requestBodies/binaryPersoScript"\n'
+                    )
+                elif self.tag == '/certificates':
+                    result += (
+                        '        $ref: "#/components/requestBodies/binaryCertificate"\n'
+                    )
+            elif self.request_body:
+                result += '      requestBody:\n'
+                if len(self.request_body) == 1:
+                    result += '        required: true\n'
+                    result += '        content:\n'
+                    result += '          application/json:\n'
+                    result += '            schema:\n'
+                    result += f'              $ref: "#/components/schemas/{self.request_body[0].strip()}"\n'
+                    key = self.request_body[0].strip()
+                    if key in self.request_body_examples:
+                        result += '            example:\n'
+                        for request_body_example in self.request_body_examples[key]:
+                            result += f'              {request_body_example}\n'
+                elif len(self.request_body) == 2:
+                    result += f'        description: "{self.request_body[1].strip()}"\n'
+                    result += '        required: true\n'
+                    result += '        content:\n'
+                    result += f'          {self.request_headers["Accept"]}:\n'
+                    result += '            schema:\n'
+                    if self.request_body[0].strip()[-2:] == '[]':
+                        result += '              type: array\n'
+                        result += '              items:\n'
+                        result += f'                type: {self.request_body[0].strip()[:-2]}\n'
+                    elif 'Map<string,' in self.request_body[0]:
+                        result += '              type: object\n'
+                        result += '              additionalProperties:\n'
+                        if 'string>' in self.request_body[0]:
+                            result += '                type: string\n'
+                        elif 'string[]>' in self.request_body[0]:
+                            result += '                type: array\n'
+                            result += '                items:\n'
+                            result += '                  type: string\n'
+                            result += '                  maxLength: 255\n'
+                else:
+                    for body in self.request_body:
+                        result += f'        {body}\n'
+            else:
+                result += '      ##### Request Body: -\n'
+            # parameters
+            if self.parameters:
+                result += '      parameters:\n'
+                for param in self.parameters:
+                    result += f'        {param}\n'
+            # response on success
+            result += '      responses:\n'
+            if self.response_headers_success['Status Code'] == '200':
+                result += '        200:\n'
+                if self.response_body_success == 'byte[]':
+                    if self.tag == '/executable-load-files':
+                        result += (
+                            '          $ref: "#/components/responses/200Binary_ELF"\n'
+                        )
+                    elif self.tag == '/personalization-scripts':
+                        result += '          $ref: "#/components/responses/200Binary_Script"\n'
+                    elif self.tag == '/certificates':
+                        result += (
+                            '          $ref: "#/components/responses/200Binary_Cert"\n'
+                        )
+                else:
+                    result += '          description: Ok\n'
+                    result += '          content:\n'
+                    result += '            application/json:\n'
+                    result += '              schema:\n'
+                    if '[]' in self.response_body_success:
+                        result += '                type: array\n'
+                        result += '                items:\n'
+                        if 'ExecutableLoadFile' in self.response_body_success:
+                            result += f'                  oneOf:\n'
+                            result += f'                    - $ref: "#/components/schemas/{self.response_body_success.replace("[]","")}"\n'
+                            result += f'                    - $ref: "#/components/schemas/CAP"\n'
+                        else:
+                            result += f'                  $ref: "#/components/schemas/{self.response_body_success.replace("[]","")}"\n'
+                    else:
+                        if 'ExecutableLoadFile' in self.response_body_success:
+                            result += f'                oneOf:\n'
+                            result += f'                  - $ref: "#/components/schemas/{self.response_body_success.replace("[]","")}"\n'
+                            result += f'                  - $ref: "#/components/schemas/CAP"\n'
+                        else:
+                            result += f'                $ref: "#/components/schemas/{self.response_body_success}"\n'
+            elif self.response_headers_success['Status Code'] == '204':
+                result += '        204:\n'
+                result += '          description: "item deleted successfully"\n'
+            # response on failure
+            if '400' in self.response_headers_failure['Status Code']:
+                result += f'        400:\n          {self.ref400}\n'
+            if '401' in self.response_headers_failure['Status Code']:
+                result += f'        401:\n          {self.ref401}\n'
+            if '500' in self.response_headers_failure['Status Code']:
+                result += f'        500:\n          {self.ref500}\n'
+            result += '\n'
+        return result
 
 
 ###########

@@ -3,22 +3,22 @@ tba
 """
 
 import re
-import os
+from pathlib import Path
 
 from sourceHandling import Source
 from requestBodyDict import makeStringCamelCase
-from utilityFunctions import pathSplitL
 
 
 class Components:
     """definition of Components Class"""
 
+    cwd = Path(__file__).parents[1]
+
     def __init__(self, source_file: str, destination_file: str):
         """initialize object"""
-
         # define relative paths from src subfolder to pdf subfolder
-        source_path = os.path.join('.', 'pdf', source_file)
-        self.destination_path = os.path.join('.', 'pdf', destination_file)
+        source_path = Path(self.cwd, 'pdf', source_file)
+        self.destination_path = Path(self.cwd, 'pdf', destination_file)
         # from source separated parts
         self.source_obj = Source(source_path, '')
         # whole result
@@ -127,9 +127,7 @@ class Components:
 
     def appendFileToResult(self, source_file: str) -> None:
         """append content of file to result"""
-        with open(
-            os.path.join('.', 'pdf', source_file), 'rt', encoding='utf-8'
-        ) as file:
+        with open(Path(self.cwd, 'pdf', source_file), 'rt', encoding='utf-8') as file:
             for i in file.readlines():
                 self.result.append(i)
 
@@ -438,38 +436,24 @@ class Components:
 
 def fromTo(source: str, destination: str) -> None:
     """
-    set locations of source and destination in pdf folder
     use this as handling function from outside:
     import generateComponents
     generateComponents.fromTo('...','...')
     """
-    # store cwd for end of function
-    temp_cwd = os.getcwd()
-    # change cwd to upper folder of sourcefile-folder
-    os.chdir(pathSplitL(__file__, 2))
     # define proper components object
     content = Components(source, destination)
     # call generate-method
     content.generate()
-    # return to previous cwd
-    os.chdir(temp_cwd)
 
 
 def fromReturn(source: str) -> list:
     """
-    set locations of source and destination in pdf folder
     use this as handling function from outside:
     import generateComponents
     generateComponents.fromTo('...','...')
     """
-    # store cwd for end of function
-    temp_cwd = os.getcwd()
-    # change cwd to upper folder of sourcefile-folder
-    os.chdir(pathSplitL(__file__, 2))
     # define proper components object
     content = Components(source, '')
-    # return to previous cwd
-    os.chdir(temp_cwd)
     # call generate-method
     return content.generateReturn()
 

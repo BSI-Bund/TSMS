@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.bund.bsi.tsms.tsm-rest-api</groupId>
+    <artifactId>generate-java-client</artifactId>
+    <version>1.0.3</version>
+    <packaging>pom</packaging>
+
+    <build>
+        <plugins>
+            <!-- clean up -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <filesets>
+                        <!-- remove java-client -->
+                        <fileset>
+                            <directory>${dest}</directory>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+
+            <!-- generate java-client -->
+            <plugin>
+                <groupId>io.swagger.codegen.v3</groupId>
+                <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>3.0.36</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <!-- specify the swagger yaml -->
+                            <inputSpec>${yaml}</inputSpec>
+
+                            <!-- target to generate java client code -->
+                            <language>java</language>
+                            <addCompileSourceRoot>true</addCompileSourceRoot>
+                            <invokerPackage>de.bund.bsi.tsms.tsmrestapi</invokerPackage>
+                            <modelPackage>de.bund.bsi.tsms.tsmrestapi.model</modelPackage>
+                            <apiPackage>de.bund.bsi.tsms.tsmrestapi.api</apiPackage>
+                            <withXml>false</withXml>
+                            <output>${dest}</output>
+                            <groupId>de.bund.bsi.tsms.tsm-rest-api</groupId>
+                            <artifactId>java-client</artifactId>
+                            <artifactVersion>${project.version}</artifactVersion>
+
+                            <!-- hint: if you want to generate java server code, e.g. based on Spring Boot,
+                                 you can use the following target: <language>spring</language> -->
+
+                            <!-- pass any necessary config options -->
+                            <configOptions>
+                                <dateLibrary>joda</dateLibrary>
+                            </configOptions>
+
+                            <!-- override the default library to jersey2 -->
+                            <library>jersey2</library>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- modify java-client/pom.xml via regex -->
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>maven-replacer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>${dest}/pom.xml</file>
+                    <regex>true</regex>
+                    <replacements>
+                        <replacement>
+                            <token><![CDATA[<artifactId>build-helper-maven-plugin</artifactId>
+        <executions>]]></token>
+                            <value><![CDATA[
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+]]></value>
+                        </replacement>
+                        <replacement>
+                            <token><![CDATA[<artifactId>maven-javadoc-plugin</artifactId>.*<version>3.2.0</version>
+        <executions>]]></token>
+                            <value><![CDATA[
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <source>8</source>
+        </configuration>
+        <executions>
+]]></value>
+                        </replacement>
+                        <replacement>
+                            <token><![CDATA[<prerequisites>.*<maven>2.2.0</maven>.*</prerequisites>]]></token>
+                            <value></value>
+                        </replacement>
+                        <replacement>
+                            <token><![CDATA[<properties>
+    <swagger-core-version>2.0.0</swagger-core-version>]]></token>
+                            <value><![CDATA[
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <swagger-core-version>2.0.0</swagger-core-version>
+]]></value>
+                        </replacement>
+                    </replacements>
+                    <regexFlags>
+                        <regexFlag>CASE_INSENSITIVE</regexFlag>
+                        <regexFlag>MULTILINE</regexFlag>
+                        <regexFlag>DOTALL</regexFlag>
+                    </regexFlags>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- dependencies are needed for the client being generated -->
+
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations-v3-version}</version>
+        </dependency>
+
+        <!-- You can find the dependencies for the library configuration you chose by looking in JavaClientCodegen.
+             Then find the corresponding dependency on Maven Central, and set the versions in the property section below -->
+
+        <!-- HTTP client: jersey-client -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey-version}</version>
+        </dependency>
+
+        <!-- JSON processing: jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-base</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+
+        <!-- Joda time: if you use it -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-joda</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${jodatime-version}</version>
+        </dependency>
+
+        <!-- Base64 encoding that works in both JVM and Android -->
+        <dependency>
+            <groupId>com.brsanthu</groupId>
+            <artifactId>migbase64</artifactId>
+            <version>2.2</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <java.version>1.7</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <swagger-annotations-version>1.6.9</swagger-annotations-version>
+        <swagger-annotations-v3-version>2.2.8</swagger-annotations-v3-version>
+        <jersey-version>2.38</jersey-version>
+        <jackson-version>2.14.2</jackson-version>
+        <jodatime-version>2.12.2</jodatime-version>
+        <junit-version>4.13.2</junit-version>
+
+        <yaml>tsm-rest-api-1.0.3.yaml</yaml>
+        <dest>java-client</dest>
+    </properties>
+
+</project>

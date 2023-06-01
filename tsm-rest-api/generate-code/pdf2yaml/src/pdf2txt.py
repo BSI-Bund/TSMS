@@ -30,13 +30,11 @@ done in around 0.3s, versus 4 min in manual copy-paste-extraction
 ## ReportLab: An ambitious, industrial-strength library largely focused on precise creation of PDF documents. Available freely as an Open Source version as well as a commercial, enhanced version named ReportLab PLUS.
 ## pdfrw: A pure Python-based PDF parser to read and write PDF. It faithfully reproduces vector formats without rasterization. In conjunction with ReportLab, it helps to re-use portions of existing PDFs in new PDFs created with ReportLab.
 
-import os
+from pathlib import Path
 import re
 import time
 
 import fitz
-
-from utilityFunctions import pathSplitL  # , msgs
 
 
 def pyMuPdfParser(source_file: str, dest_file: str) -> None:
@@ -158,169 +156,20 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
             text[i] = line.strip()
 
     # section 4.1.4
-    replace_a = [
-        ## Content
-        ('tiatio\n', 'tiatio'),
-        ('nstant\n', 'nstant'),
-        (' string\n', '\nstring\n'),
-        ('<string,\n', '<string, '),
-        ('Mand. Ed.\n', 'Mand.\nEd.\n'),
-        (' string[]\n', '\nstring[]\n'),
-        ('Config Config', 'Config\nConfig'),
-        ('allowedDeploy\n', 'allowedDeploy'),
-        ('Instantiation\n', 'Instantiation'),
-        ('Config Persona', 'Config\nPersona'),
-        ('SecureComponent\n', 'SecureComponent'),
-        ('AuthorizedDevice\n', 'AuthorizedDevice'),
-        ('DataBlock boolean', 'DataBlock\nboolean'),
-        ('ApplicationInstan\n', 'ApplicationInstan'),  ##############
-        ('Configs EntityList', 'Configs\nEntityList'),
-        ('ApplicationInstanti\n', 'ApplicationInstanti'),
-        ('Attributes Map<string', 'Attributes\nMap<string'),  #########
-        ('boolean Flag, whether ', 'boolean\nFlag, whether '),
-        ('Requirements Technical ', 'Requirements\nTechnical '),
-        ('entProfiles EntityList<', 'entProfiles\nEntityList<'),
-        ('contextSpecificAttribut\n', 'contextSpecificAttribut'),
-        ('accessAuthorizedDeviceA\n', 'accessAuthorizedDeviceA'),
-        ('contextSpecificAttribute\n', 'contextSpecificAttribute'),
-        ('applicationInstantiationCo\n', 'applicationInstantiationCo'),  #########
-        ('DiversificationData boolean', 'DiversificationData\nboolean'),  #########
-        ## Key-Description
-        (' is\n', ' is '),
-        (' the\n', ' the '),
-        (' this\n', ' this '),
-        (' this ELF\n', ' this ELF '),
-        (' the ApplicationConfig\n', ' the ApplicationConfig '),
-        (' the PersonalizationConfig\n', ' the PersonalizationConfig '),
-        ## Att-Description [MANDATORY]
-        (' provide\n', ' provide '),
-        ## Att-Description, normal Description [OPTIONAL, time consuming, no benefit ...]
-        # (' a\n',' a '),
-        # (' A\n',' A '),
-        # (' as\n',' as '),
-        # (' an\n',' an '),
-        # (' if\n',' if '),
-        # (' it\n',' it '),
-        # (' in\n',' in '),
-        # (' In\n',' In '),
-        # (' be\n',' be '),
-        # (' of\n',' of '),
-        # (' or\n',' or '),
-        # (' to\n',' to '),
-        # (' yet\n',' yet '),
-        # (' can\n',' can '),
-        # (' are\n',' are '),
-        # (' its\n',' its '),
-        # (' not\n',' not '),
-        # (' via\n',' via '),
-        # (' and\n',' and '),
-        # (' for\n',' for '),
-        # (' data\n',' data '),
-        # (' Data\n',' Data '),
-        # (' must\n',' must '),
-        # ('. The\n','. The '),
-        # (' from\n',' from '),
-        # (' used\n',' used '),
-        # (' only\n',' only '),
-        # (' when\n',' when '),
-        # (' that\n',' that '),
-        # (' ELFs.\n',' ELFs. '),
-        # (' state\n',' state '),
-        # (' valid\n',' valid '),
-        # (' value\n',' value '),
-        # (' which\n',' which '),
-        # (' model\n',' model '),
-        # (' first.\n',' first. '),
-        # (' longer\n',' longer '),
-        # (' a CAP.\n',' a CAP. '),
-        # (' update\n',' update '),
-        # (' deploy\n',' deploy '),
-        # (' related\n',' related '),
-        # (' example\n',' example '),
-        # (' certain\n',' certain '),
-        # (' backend\n',' backend '),
-        # (' extends\n',' extends '),
-        # (' follows\n',' follows '),
-        # (' hidden.\n',' hidden. '),
-        # (' instance\n',' instance '),
-        # (' JavaCard\n',' JavaCard '),
-        # (' only CAP\n',' only CAP '),
-        # (' existing\n',' existing '),
-        # (' specific\n',' specific '),
-        # (' omitted,\n',' omitted, '),
-        # (' Subset of ',' Subset of\n'),
-        # (' technical\n',' technical '),
-        # (' following\n',' following '),
-        # (' interface\n',' interface '),
-        # (' lifecycle\n',' lifecycle '),
-        # (' different\n',' different '),
-        # (' AID format\n',' AID format '),
-        # (' a Service,\n',' a Service, '),
-        # (' considered\n',' considered '),
-        # (' identifies\n',' identifies '),
-        # (' parameters\n',' parameters '),
-        # (' referenced\n',' referenced '),
-        # (' the Flavor\n',' the Flavor '),
-        # (' the Flavor.\n',' the Flavor. '),
-        # (' attestation\n',' attestation '),
-        # (' application\n',' application '),
-        # (' TSM-support\n',' TSM-support '),
-        # (' provisioning\n',' provisioning '),
-        # (' communication\n',' communication '),
-        # (' modifications\n',' modifications '),
-        # (' Automatically\n',' Automatically '),
-        # (' during Version\n',' during Version '),
-        # (' [GPC_SPE_034].\n',' [GPC_SPE_034]. '),
-        # (' AttestationToken\n',' AttestationToken '),
-        # ('InstantiationConfigs,\n','InstantiationConfigs, '),
-        # (' applicationInstantation\n',' applicationInstantation '),
-        # (' identification of this ELF.\n',' identification of this ELF. '),
-        # ('iple ApplicationInstantiationConfigs\n','iple ApplicationInstantiationConfigs '),
-        # (' identification of this Certificate.\n',' identification of this Certificate. '),
-    ]
-
-    # section 4.1.6
-    replace_b = [
-        ## Content
-        (' the\n', ' the '),
-        ('to be\n', 'to be '),
-        ('-file”,\n', '-file”, '),
-        ('<string,\n', '<string, '),
-        ## Description [OPTIONAL, time consuming, no benefit ...]
-        # (' in\n',' in '),
-        # (' an\n',' an '),
-        # (' or\n',' or '),
-        # (' of\n',' of '),
-        # (' use\n',' use '),
-        # (' and\n',' and '),
-        # (' both\n',' both '),
-        # ('. The\n','. The '),
-        # (' method\n',' method '),
-        # (' create\n',' create '),
-        # (' to this\n',' to this '),
-        # (' are not\n',' are not '),
-        # (' to link\n',' to link '),
-        # ('. Linking\n','. Linking '),
-        # (' a binary\n',' a binary '),
-        # (' and their\n',' and their '),
-        # (' with a SP\n',' with a SP '),
-        # (' attributes\n',' attributes '),
-        # (' associated\n',' associated '),
-        # (' to provide\n',' to provide '),
-        # (' of specific\n',' of specific '),
-        # (' via methods\n',' via methods '),
-        # (' this Flavor,\n',' this Flavor, '),
-        # (' this Version,\n',' this Version, '),
-        # (' or SposConfig\n',' or SposConfig '),
-        # (' personalization\n',' personalization '),
-        # ('figs, is deleted.\n','figs, is deleted. '),
-        # ('sions and Flavors\n','sions and Flavors '),
-        # (' 4.1.5.4. Managing\n',' 4.1.5.4. Managing '),
-        # ('. An ApplicationConfig\n','. An ApplicationConfig '),
-        # (' and PersonalizationScripts\n',' and PersonalizationScripts '),
-    ]
-
+    with open(
+        Path(pdf_file).parent / 'repl_list_a.csv', 'rt', encoding='utf-8'
+    ) as fobj:
+        replace_a = [
+            line[:-1].replace('\\n', '\n').split(';') for line in fobj if line[0] != '#'
+        ]
     counter_a = [0] * len(replace_a)
+    # section 4.1.6
+    with open(
+        Path(pdf_file).parent / 'repl_list_b.csv', 'rt', encoding='utf-8'
+    ) as fobj:
+        replace_b = [
+            line[:-1].replace('\\n', '\n').split(';') for line in fobj if line[0] != '#'
+        ]
     counter_b = [0] * len(replace_b)
 
     # combine long lines
@@ -338,7 +187,6 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
     with open(txt_file, 'wt', encoding='utf-8') as file:
         file.writelines(text)
 
-    # print(msgs(['pdf2txt timing (part)','',str(time.time() - txt_time)[:6]+' seconds','']))
     print('pdf2txt timing (part)')
     print(str(time.time() - txt_time)[:6] + ' seconds')
     print()
@@ -349,9 +197,7 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
 ###########
 
 if __name__ == '__main__':
-    os.chdir(pathSplitL(__file__, 2))
-
-    FILENAME_PDF = os.path.join('.', 'pdf', 'TR-TSMS_V1.0_20220603.pdf')
-    FILENAME_TXT = FILENAME_PDF.replace('.pdf', '') + '.txt'
+    FILENAME_PDF = Path(__file__).parents[1] / 'pdf' / 'TR-TSMS_V1.0_20220603.pdf'
+    FILENAME_TXT = FILENAME_PDF.parent / (FILENAME_PDF.stem + '.txt')
 
     parseTR(FILENAME_PDF, FILENAME_TXT)

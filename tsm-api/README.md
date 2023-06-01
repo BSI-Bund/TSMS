@@ -46,13 +46,13 @@ Installing JavaCard applets on a secure component of a smartphone is step three 
 
 The resulting build artifacts of this module are:
 
-* **[tsm-api-1.0.2.jar](dist/1.0.2/tsm-api-1.0.2.jar)**
+* **[tsm-api-1.0.3.jar](dist/1.0.3/tsm-api-1.0.3.jar)**
   * can be included into an Android app to use a TSMS by calling TSM-API methods
   * provide default implementations for all data types required by the TSM-API
   * can be used to implement a TSM-API-SDK according to BSI-TR-03165 
-* **[tsm-api-1.0.2-javadoc.jar](dist/1.0.2/tsm-api-1.0.2-javadoc.jar)**
+* **[tsm-api-1.0.3-javadoc.jar](dist/1.0.3/tsm-api-1.0.3-javadoc.jar)**
   * JavaDoc documentation of the TSM-API interfaces, enums and classes
-* **[tsm-api-1.0.2-sources.jar](dist/1.0.2/tsm-api-1.0.2-sources.jar)**
+* **[tsm-api-1.0.3-sources.jar](dist/1.0.3/tsm-api-1.0.3-sources.jar)**
   * source code of the TSM-API
 
 
@@ -127,7 +127,7 @@ The interface [ITsmApiService](src/main/java/de/bund/bsi/tsms/tsmapi/ITsmApiServ
 | updateService(..)                   | Remove old and install new version of JavaCard applet(s) configured in the TSM-Backend.                                                                                     |
 | suspendOrResumeService(..)          | Disable or enable the main JavaCard applet on the smartphone.                                                                                                               |
 | terminateService(..)                | Remove a Service and its JavaCard applet(s) from the smartphone.                                                                                                            |
-| setCustomAccessToken(..)                | An optional method to specify a custom access token to authenticate against the TSM-Backend. |
+| setAccessToken(..)                  | An optional method to specify a custom access token to authenticate against the TSM-Backend. |
 
 
 <a name="prerequisites"></a>

@@ -6,10 +6,8 @@ sequence coordination is carried out by pdf2yaml
 """
 
 import re
-import os
+from pathlib import Path
 from datetime import datetime
-
-# from functools import partialmethod
 
 from dataType import DataType
 from interfaceMethod import InterfaceMethod
@@ -19,7 +17,6 @@ from exampleValues import FixedValueExamples as ExampleValues
 from utilityFunctions import (
     getOperationIdsWithoutDoubles,
     renameOperationIdsWithOneUnderscore,
-    pathSplitL,
     returnTextLineFromList,
     makeStringCamelCase,
     upperFirstChar,
@@ -30,34 +27,31 @@ from requestBodyDict import generateRequestBodyExamples
 class Source:
     """definition of DataType Class"""
 
-    def __init__(self, source_path: str, destination_name: str):
+    def __init__(self, source_path: Path, destination_name: str):
         """initialize object"""
 
         # take optional ending away
         destination_name = destination_name.split('.')[0]
         # current date and time
         now = datetime.now()
+        f_date = f'{now.year:04d}{now.month:02d}{now.day:02d}'
         # define paths, including archive path
         self.source_path = source_path
-        if 'tsm-rest-api' in os.path.abspath(os.getcwd()):
-            self.destination_path = os.path.join(
-                os.path.abspath(os.getcwd()).split('tsm-rest-api')[0],
-                'tsm-rest-api',
-                'tsm-rest-api.yaml',
-            )
-            self.markdown_path = os.path.join(
-                os.path.abspath(os.getcwd()).split('tsm-rest-api')[0],
-                'tsm-rest-api',
-                'README.md',
-            )
+
+        dest_folder = Path.cwd()
+        if 'tsm-rest-api' in Path.cwd().parts:
+            while dest_folder.parts[-1] != 'tsm-rest-api':
+                dest_folder = dest_folder.parents[0]
+            self.destination_path = dest_folder / 'tsm-rest-api.yaml'
+            self.markdown_path = dest_folder / 'README.md'
         else:
-            self.destination_path = os.path.join('.', f'{destination_name}.yaml')
-            self.markdown_path = os.path.join('.', 'ref_table.md')
-        archive_path = os.path.join('.', 'archive')
-        if not os.path.exists(archive_path):
-            os.mkdir(archive_path)
-        self.destination_path_archive = os.path.join(
-            archive_path, f'{destination_name}_{now.strftime("%Y%m%d")}.yaml'
+            self.destination_path = Path(dest_folder, destination_name + '.yaml')
+            self.markdown_path = Path(dest_folder, 'ref_table.md')
+        archive_path = Path(dest_folder, 'generate-code', 'pdf2yaml', 'archive')
+        if not archive_path.is_dir():
+            archive_path.mkdir()
+        self.destination_path_archive = (
+            archive_path / f'{destination_name}_{f_date}.yaml'
         )
         # read source, replace headers/footers, normalize chars
         self.readSourceContent()
@@ -65,12 +59,12 @@ class Source:
         self.splitSourceContent()
         # define data_types, based upon '4.1.3 Data Types'
         self.defDataTypeObj()
-        ###self.data_types[0].printContent()
         # define data_types, based upon '4.1.5 Interface Methods'
         self.defInterfaceMethodObj()
-        ###self.interface_methods[1].printContent()
-        # generate dict for request body examples
-        self.request_body_examples = generateRequestBodyExamples(self.destination_path)
+        # generate dict for request body examples, announce to all interface methods
+        InterfaceMethod.request_body_examples = generateRequestBodyExamples(
+            self.destination_path
+        )
         # define yaml-variable, that will contain the yaml-result later on
         self.yaml = []
         # define markdown-variable, that will contain the markdown-result later on
@@ -90,7 +84,9 @@ class Source:
             self.source_text = file.readlines()
         # save source contents to general source
         with open(
-            os.path.join('.', 'pdf', 'tr_03165_source.txt'), 'wt', encoding='utf-8'
+            Path(Path(__file__).parents[1], 'pdf', 'tr_03165_source.txt'),
+            'wt',
+            encoding='utf-8',
         ) as file:
             file.writelines(self.source_text)
         # regular expressions
@@ -182,8 +178,8 @@ class Source:
 
     def appendFileToYAML(self, source_file: str, ignore_comments=False) -> None:
         """append input to specified yaml file"""
-        file_path = os.path.join('.', 'pdf', source_file)
-        if os.path.isfile(file_path):
+        file_path = Path(__file__).parents[1] / 'pdf' / source_file
+        if file_path.is_file():
             with open(file_path, 'rt', encoding='utf-8') as file:
                 for i in file.readlines():
                     if i[0] == '#':
@@ -237,180 +233,16 @@ class Source:
         """add paths section to yaml"""
         self.yaml.append('paths:\n')
         self.yaml.append('\n')
-        last_url = ''
         # get operation_ids, no doubles should be in this list
         operation_ids = getOperationIdsWithoutDoubles(self.interface_methods)
         # rename operation_ids for better readable names
-        operation_ids = renameOperationIdsWithOneUnderscore(operation_ids)
+        renameOperationIdsWithOneUnderscore(operation_ids)
+        # refer to operation ids in all interface Methods
+        for i, _ in enumerate(self.interface_methods):
+            self.interface_methods[i].refer_to_operation_id(operation_ids)
         # handle every interfaceMethod to generate /paths
-        for i, interface_method_ in enumerate(self.interface_methods):
-            self.interface_methods[i].operation_id = operation_ids[i]
-            self.yaml.append(
-                f'### {interface_method_.num} {interface_method_.title} ###\n'
-            )
-            if interface_method_.type_ == 'supkapitel':
-                self.yaml.append('#')
-                for j in interface_method_.description:
-                    self.yaml.append(f' {j}')
-                    if j[-1] == '.':
-                        self.yaml.append('\n#')
-                self.yaml[-1] = self.yaml[-1].replace('#', '')
-                self.yaml.append('\n')
-            if interface_method_.type_ == 'kapitel':
-                if interface_method_.rest_url != last_url:
-                    self.yaml.append(f'  {interface_method_.rest_url}:\n')
-                    last_url = interface_method_.rest_url
-                else:
-                    self.yaml.append(f'  #{interface_method_.rest_url}:\n')
-                self.yaml.append(f'    {interface_method_.request_method}:\n')
-                self.yaml.append('      tags:\n')
-                self.yaml.append(f'      - {interface_method_.tag}\n')
-                if len(interface_method_.description) > 70:
-                    self.yaml.append(
-                        f'      summary: "{interface_method_.description[:65]}..."\n'
-                    )
-                else:
-                    self.yaml.append(
-                        f'      summary: "{interface_method_.description}"\n'
-                    )
-                self.yaml.append(
-                    f'      description: "{interface_method_.description}"\n'
-                )
-                self.yaml.append(f'      operationId: {operation_ids[i]}\n')
-                # headers
-                if '4.1.6.5.4' in interface_method_.num:
-                    pass
-                self.yaml.append('      ##### Request Headers:\n')
-                if 'Authorization' in interface_method_.request_headers:
-                    self.yaml.append('      security:\n')
-                    self.yaml.append(
-                        f'        - {interface_method_.request_headers["Authorization"].replace("<<","").replace(">>","").replace("-","")}: []\n'
-                    )
-                if 'Content-Type' in interface_method_.request_headers:
-                    self.yaml.append(
-                        f'      ##### Content-Type: {interface_method_.request_headers["Content-Type"]}\n'
-                    )
-                if 'Accept' in interface_method_.request_headers:
-                    self.yaml.append(
-                        f'      ##### Accept: {interface_method_.request_headers["Accept"]}\n'
-                    )
-                # request body
-                if interface_method_.request_file:
-                    self.yaml.append('      requestBody:\n')
-                    if interface_method_.tag == '/executable-load-files':
-                        self.yaml.append(
-                            '        $ref: "#/components/requestBodies/binaryELF"\n'
-                        )
-                    elif interface_method_.tag == '/personalization-scripts':
-                        self.yaml.append(
-                            '        $ref: "#/components/requestBodies/binaryPersoScript"\n'
-                        )
-                    elif interface_method_.tag == '/certificates':
-                        self.yaml.append(
-                            '        $ref: "#/components/requestBodies/binaryCertificate"\n'
-                        )
-                elif interface_method_.request_body:
-                    self.yaml.append('      requestBody:\n')
-                    if len(interface_method_.request_body) == 1:
-                        self.yaml.append('        required: true\n')
-                        self.yaml.append('        content:\n')
-                        self.yaml.append('          application/json:\n')
-                        self.yaml.append('            schema:\n')
-                        self.yaml.append(
-                            f'              $ref: "#/components/schemas/{interface_method_.request_body[0].strip()}"\n'
-                        )
-                        key = interface_method_.request_body[0].strip()
-                        if key in self.request_body_examples:
-                            self.yaml.append('            example:\n')
-                            for request_body_example in self.request_body_examples[key]:
-                                self.yaml.append(
-                                    f'              {request_body_example}\n'
-                                )
-                    elif len(interface_method_.request_body) == 2:
-                        self.yaml.append(
-                            f'        description: "{interface_method_.request_body[1].strip()}"\n'
-                        )
-                        self.yaml.append('        required: true\n')
-                        self.yaml.append('        content:\n')
-                        self.yaml.append(
-                            f'          {interface_method_.request_headers["Accept"]}:\n'
-                        )
-                        self.yaml.append('            schema:\n')
-                        if interface_method_.request_body[0].strip()[-2:] == '[]':
-                            self.yaml.append('              type: array\n')
-                            self.yaml.append('              items:\n')
-                            self.yaml.append(
-                                f'                type: {interface_method_.request_body[0].strip()[:-2]}\n'
-                            )
-                        elif 'Map<string,' in interface_method_.request_body[0]:
-                            self.yaml.append('              type: object\n')
-                            self.yaml.append('              additionalProperties:\n')
-                            if 'string[]>' in interface_method_.request_body[0]:
-                                self.yaml.append('                type: array\n')
-                                self.yaml.append('                items:\n')
-                                self.yaml.append('                  type: string\n')
-                                self.yaml.append('                  maxLength: 255\n')
-                    else:
-                        for body in interface_method_.request_body:
-                            self.yaml.append(f'        {body}\n')
-                else:
-                    self.yaml.append('      ##### Request Body: -\n')
-                # parameters
-                if interface_method_.parameters:
-                    self.yaml.append('      parameters:\n')
-                    for param in interface_method_.parameters:
-                        self.yaml.append(f'      {param}\n')
-                # response on success
-                self.yaml.append('      responses:\n')
-                if interface_method_.response_headers_success['Status Code'] == '200':
-                    self.yaml.append('        200:\n')
-                    if interface_method_.response_body_success == 'byte[]':
-                        if interface_method_.tag == '/executable-load-files':
-                            self.yaml.append(
-                                '          $ref: "#/components/responses/200Binary_ELF"\n'
-                            )
-                        elif interface_method_.tag == '/personalization-scripts':
-                            self.yaml.append(
-                                '          $ref: "#/components/responses/200Binary_Script"\n'
-                            )
-                        elif interface_method_.tag == '/certificates':
-                            self.yaml.append(
-                                '          $ref: "#/components/responses/200Binary_Cert"\n'
-                            )
-                    else:
-                        self.yaml.append('          description: Ok\n')
-                        self.yaml.append('          content:\n')
-                        self.yaml.append('            application/json:\n')
-                        self.yaml.append('              schema:\n')
-                        if interface_method_.response_body_success[-2:] == '[]':
-                            self.yaml.append('                type: array\n')
-                            self.yaml.append('                items:\n')
-                            self.yaml.append(
-                                f'                  $ref: "#/components/schemas/{interface_method_.response_body_success.replace("[]","")}"\n'
-                            )
-                        else:
-                            self.yaml.append(
-                                f'                $ref: "#/components/schemas/{interface_method_.response_body_success}"\n'
-                            )
-                elif interface_method_.response_headers_success['Status Code'] == '204':
-                    self.yaml.append('        204:\n')
-                    self.yaml.append(
-                        '          description: "item deleted successfully"\n'
-                    )
-                # response on failure
-                if '400' in interface_method_.response_headers_failure['Status Code']:
-                    self.yaml.append(
-                        f'        400:\n          {interface_method_.ref400}\n'
-                    )  # .replace('__','_')
-                if '401' in interface_method_.response_headers_failure['Status Code']:
-                    self.yaml.append(
-                        f'        401:\n          {interface_method_.ref401}\n'
-                    )  # .replace('__','_')
-                if '500' in interface_method_.response_headers_failure['Status Code']:
-                    self.yaml.append(
-                        f'        500:\n          {interface_method_.ref500}\n'
-                    )  # .replace('__','_')
-                self.yaml.append('\n')
+        for interface_method_ in self.interface_methods:
+            self.yaml.append(str(interface_method_))
 
     ############################################
     # add path-parameter section               #
@@ -484,423 +316,17 @@ class Source:
     #######################
     def addSchemas(self) -> None:
         """add schemas section to yaml"""
-        # compile regular expressions
-        re_default = re.compile('default value')
         # append to result
         self.yaml.append('### 4.1.4 ###\n')
         self.yaml.append('  schemas:\n')
         self.yaml.append('  \n')
         self.appendFileToYAML('source_components_schemas_separate.yaml')
         schema_titles = []
-        for i in self.data_types:
-            schema_titles.append(i.title)
+        for i, item in enumerate(self.data_types):
+            self.data_types[i].refer_to_schema_titles(schema_titles)
+            schema_titles.append(item.title)
         for d_type in self.data_types:
-            # head
-            self.yaml.append(f'### {d_type.num} ###\n')
-            self.yaml.append(f'    {d_type.title}:\n')
-            self.yaml.append(f'      description: "{d_type.description}"\n')
-            if d_type.title == 'ExecutableLoadFile':
-                self.yaml.append('      discriminator:\n')
-                self.yaml.append('        propertyName: type\n')
-                self.yaml.append('        mapping:\n')
-                self.yaml.append('          cap: "#/components/schemas/CAP"\n')
-            if d_type.title == 'CAP':
-                self.yaml.append('      allOf:\n')
-                self.yaml.append(
-                    '        - $ref: "#/components/schemas/ExecutableLoadFile"\n'
-                )
-            self.yaml.append('      type: object\n')
-            mandatory = ''
-            for i, att4mand in enumerate(d_type.att4mand):
-                if att4mand == 'M':
-                    mandatory += f'{d_type.att1[i]}, '
-            # required
-            if len(mandatory) > 0:
-                self.yaml.append(f'      required: [{mandatory[:-2]}]\n')
-            else:
-                self.yaml.append('      #required: []\n')
-            self.yaml.append('      properties:\n')
-            for i, att1 in enumerate(d_type.att1):
-                self.yaml.append(
-                    f'        {att1}: # {d_type.att4mand[i]}, {d_type.att5ed[i]}\n'
-                )
-                if d_type.att2type[i] in schema_titles:
-                    # schema
-                    self.yaml.append(
-                        f'          $ref: "#/components/schemas/{d_type.att2type[i]}" # "{d_type.att3desc[i]}"\n'
-                    )
-                else:
-                    # description
-                    self.yaml.append(
-                        f'          description: "{d_type.att3desc[i].replace(":","")}"\n'
-                    )
-                    type_ = ""
-                    # string
-                    if d_type.att2type[i] == 'string':
-                        self.yaml.append('          type: string\n')
-                        # version
-                        if (
-                            'gpSpec' == d_type.att1[i]
-                            or 'javaCardVersion' == d_type.att1[i]
-                            or 'javaCard' == d_type.att1[i]
-                        ):
-                            type_ = 'version'
-                            self.yaml.append('          format: version\n')
-                            self.yaml.append('          maxLength: 11\n')
-                            self.yaml.append('          minLength: 5\n')
-                            self.yaml.append(
-                                r"          pattern: '^\d{1,3}.\d{1,3}.\d{1,3}$'" + "\n"
-                            )
-                        # versionMM
-                        elif (
-                            ("('major.minor')" in d_type.att3desc[i])
-                            or 'gpApi' == d_type.att1[i]
-                            or 'gpApiVersion' == d_type.att1[i]
-                        ):
-                            type_ = 'versionMM'
-                            self.yaml.append('          format: version\n')
-                            self.yaml.append('          maxLength: 7\n')
-                            self.yaml.append('          minLength: 3\n')
-                            self.yaml.append(
-                                r"          pattern: '^\d{1,3}.\d{1,3}$" + "'\n"
-                            )
-                        # aid
-                        elif ('AID' in d_type.att3desc[i]) or ('aid' == d_type.att1[i]):
-                            type_ = "aid"
-                            self.yaml.append('          format: aid\n')
-                        # uuid
-                        elif d_type.att1[i][-2:].lower() == 'id':
-                            type_ = "uuid"
-                            self.yaml.append('          format: uuid\n')
-                        # date-time
-                        elif "Date" in d_type.att1[i]:
-                            type_ = "date-time"
-                            self.yaml.append('          format: date-time\n')
-                        # uri
-                        elif "URL" in d_type.att3desc[i]:
-                            type_ = "uri"
-                            self.yaml.append('          format: uri\n')
-                            self.yaml.append('          maxLength: 500\n')
-                        # tlv
-                        elif "TLV" in d_type.att3desc[i]:
-                            type_ = "tlv"
-                            self.yaml.append('          format: tlv\n')
-                            self.yaml.append('          maxLength: 255\n')
-                        # hardwarePlatform
-                        elif 'hardwarePlatform' == d_type.att1[i]:
-                            type_ = 'platform'
-                            self.yaml.append('          maxLength: 255\n')
-                        # operatingSystem
-                        elif 'os' == d_type.att1[i]:
-                            type_ = 'os'
-                            self.yaml.append('          maxLength: 255\n')
-                        # osVersion
-                        elif 'osVersion' == d_type.att1[i]:
-                            type_ = 'osVersion'
-                            self.yaml.append('          maxLength: 7\n')
-                            self.yaml.append('          minLength: 3\n')
-                            self.yaml.append(
-                                r"          pattern: '^\d{1,3}.\d{1,3}$'" + "\n"
-                            )
-                        # operatingSystem
-                        elif 'operatingSystemCode' == d_type.att1[i]:
-                            type_ = 'osCode'
-                            self.yaml.append('          maxLength: 255\n')
-                        # platformCertification
-                        elif 'certifications' == d_type.att1[i]:
-                            type_ = 'platformCert'
-                            self.yaml.append('          maxLength: 255\n')
-                        # cspVendor
-                        elif 'cspVendor' == d_type.att1[i]:
-                            type_ = 'cspVendor'
-                            self.yaml.append('          maxLength: 255\n')
-                        # cspVendor
-                        elif 'cspApiVersion' == d_type.att1[i]:
-                            self.yaml.append('          maxLength: 7\n')
-                            self.yaml.append('          minLength: 0\n')
-                            self.yaml.append(
-                                r"          pattern: '^\d{1,3}.\d{1,3}$'" + "\n"
-                            )
-                        # name
-                        elif "name" in d_type.att1[i].lower():
-                            type_ = "name"
-                            self.yaml.append('          maxLength: 255\n')
-                        # name
-                        elif "description" in d_type.att1[i].lower():
-                            type_ = "description"
-                            self.yaml.append('          maxLength: 255\n')
-                        # general
-                        else:
-                            type_ = "generalString"
-                            self.yaml.append('          maxLength: 255\n')
-                    # version
-                    elif '<Major>.<Minor>.<Revision>' in d_type.att3desc[i]:
-                        type_ = "version"
-                        self.yaml.append('          type: string\n')
-                        self.yaml.append('          format: version\n')
-                        self.yaml.append('          maxLength: 11\n')
-                        self.yaml.append('          minLength: 5\n')
-                        self.yaml.append(
-                            r"          pattern: '^\d{1,3}.\d{1,3}.\d{1,3}$'" + "\n"
-                        )
-                    # string-vektor
-                    elif d_type.att2type[i] == 'string[]':
-                        self.yaml.append('          type: array\n')
-                        self.yaml.append('          items:\n')
-                        self.yaml.append('            type: string\n')
-                        if 'Versions' in d_type.att3desc[i]:
-                            type_ = "version[]"
-                            self.yaml.append('            format: version\n')
-                            self.yaml.append('            maxLength: 11\n')
-                            self.yaml.append('            minLength: 5\n')
-                            self.yaml.append(
-                                r"            pattern: '^\d{1,3}.\d{1,3}.\d{1,3}$'"
-                                + "\n"
-                            )
-                        elif 'accessAuthorizedDeviceApps' == d_type.att1[i]:
-                            type_ = "aid[]"
-                            self.yaml.append('            format: aid\n')
-                        elif 'List of IDs' in d_type.att3desc[i]:
-                            type_ = 'uuid[]'
-                            self.yaml.append('            format: uuid\n')
-                        else:
-                            self.yaml.append('            maxLength: 255\n')
-                    # general vector
-                    elif d_type.att2type[i][-2:] == '[]':
-                        self.yaml.append('          type: array\n')
-                        self.yaml.append('          items:\n')
-                        if d_type.att2type[i][:-2] in schema_titles:
-                            self.yaml.append(
-                                f'            $ref: "#/components/schemas/{d_type.att2type[i][:-2]}"\n'
-                            )
-                        # pair
-                        elif 'cspELFsVersions' == d_type.att1[i]:
-                            type_ = 'pair[]'
-                            self.yaml.append('            type: array\n')
-                            self.yaml.append('            minLength: 2\n')
-                            self.yaml.append('            maxLength: 2 # == Pair\n')
-                            self.yaml.append('            items:\n')
-                            self.yaml.append('              type: string\n')
-                            self.yaml.append('              maxLength: 11\n')
-                            self.yaml.append('              minLength: 5\n')
-                            self.yaml.append(
-                                r"              pattern: '^\d{1,3}.\d{1,3}.\d{1,3}$'"
-                                + "\n"
-                            )
-                    # integer
-                    elif d_type.att2type[i][:3] == 'int':
-                        type_ = 'int'
-                        self.yaml.append('          type: integer\n')
-                        if 'priority' == d_type.att1[i]:
-                            self.yaml.append('          minimum: 1\n')
-                            self.yaml.append('          maximum: 255\n')
-                        elif 'errorCategory' == d_type.att1[i]:
-                            self.yaml.append('          minimum: 1000\n')
-                            self.yaml.append('          maximum: 9999\n')
-                        elif 'scType' == d_type.att1[i]:
-                            type_ = 'scType'
-                            self.yaml.append('          minimum: 1\n')
-                            self.yaml.append('          maximum: 4\n')
-                    # boolean
-                    elif d_type.att2type[i] == 'boolean':
-                        type_ = 'boolean'
-                        self.yaml.append('          type: boolean\n')
-                        # default values, especially relevant for boolean
-                        default_result = re_default.search(d_type.att3desc[i].lower())
-                        if default_result:
-                            _, default_end = default_result.span()
-                            if (
-                                'true'
-                                in d_type.att3desc[i][
-                                    default_end : default_end + 9
-                                ].lower()
-                            ):
-                                self.yaml.append('          default: true\n')
-                            elif (
-                                'false'
-                                in d_type.att3desc[i].lower()[
-                                    default_end : default_end + 9
-                                ]
-                            ):
-                                self.yaml.append('          default: false\n')
-                            else:
-                                print('EXCEPTION AT DEFAULT HANDLING:')
-                                print(d_type.att1[i])
-                                print(d_type.att3desc[i])
-                                print(
-                                    d_type.att3desc[i][
-                                        default_end : default_end + 9
-                                    ].lower()
-                                )
-                                print()
-                    # Map<string, string>
-                    elif d_type.att2type[i] == 'Map<string, string>':
-                        type_ = 'stringMap'
-                        self.yaml.append('          type: object\n')
-                        self.yaml.append('          additionalProperties:\n')
-                        self.yaml.append('            type: string\n')
-                        self.yaml.append('            maxLength: 255\n')
-                        if d_type.att1[i] == 'spParameters':
-                            type_ = 'spParametersMap'
-                        elif d_type.att1[i] == 'contextSpecificAttributes':
-                            type_ = 'spParametersMap'
-                        elif d_type.att1[i] == 'gpSpecVersions':
-                            type_ = 'gpSpecVersionsMap'
-                        elif d_type.att1[i] == 'gpApiVersions':
-                            type_ = 'gpApiVersionsMap'
-                        elif d_type.att1[i] == 'csp':
-                            type_ = 'cspMap'
-                        elif d_type.att1[i] == 'certifications':
-                            type_ = 'certificationsMap'
-                    # Map<string, string[]>
-                    elif d_type.att2type[i] == 'Map<string, string[]>':
-                        type_ = 'stringVecMap'
-                        self.yaml.append('          type: object\n')
-                        self.yaml.append('          additionalProperties:\n')
-                        self.yaml.append('            type: array\n')
-                        self.yaml.append('            items:\n')
-                        self.yaml.append('              type: string\n')
-                        self.yaml.append('              maxLength: 255\n')
-                        if d_type.att1[i] == 'features':
-                            type_ = 'featuresMap'
-                    # Map<string, string[]>
-                    elif d_type.att2type[i] == 'Map<string, boolean>':
-                        type_ = 'booleanMap'
-                        self.yaml.append('          type: object\n')
-                        self.yaml.append('          additionalProperties:\n')
-                        self.yaml.append('            type: boolean\n')
-                        if d_type.att1[i] == 'genericOptions':
-                            type_ = 'genericOptions'
-                            self.yaml.append('          default: {}\n')
-                    # _links
-                    elif d_type.att2type[i] == 'Map<string, Link>':
-                        type_ = '_links'
-                        self.yaml.append('          type: object\n')
-                        self.yaml.append('          additionalProperties:\n')
-                        self.yaml.append('            type: string\n')
-                        self.yaml.append('            format: uri\n')
-                        self.yaml.append('            maxLength: 500\n')
-                    # key-value map
-                    elif 'Map<string,' in d_type.att2type[i]:
-                        self.yaml.append('          type: object\n')
-                        self.yaml.append('          additionalProperties:\n')
-                        # values are string-lists
-                        if 'string[]>' in d_type.att2type[i]:
-                            self.yaml.append('            type: array\n')
-                            self.yaml.append('            items:\n')
-                            self.yaml.append('              type: string\n')
-                            self.yaml.append('              maxLength: 255\n')
-                    if d_type.att5ed[i] == 'No':
-                        # readOnly
-                        self.yaml.append('          readOnly: true\n')
-                    # example section
-                    if type_ == 'version':
-                        self.yaml.append(
-                            f'          example: "{ExampleValues.get("version")}"\n'
-                        )
-                    elif type_ == 'versionMM':
-                        self.yaml.append(
-                            f'          example: "{ExampleValues.get("versionMM")}"\n'
-                        )
-                    elif type_ == 'uuid':
-                        self.yaml.append(
-                            f'          example: "{ExampleValues.get("uuid")}"\n'
-                        )
-                    elif type_ == 'aid':
-                        self.yaml.append(
-                            f'          example: "{ExampleValues.get("aid")}"\n'
-                        )
-                    elif type_ == 'uri':
-                        self.yaml.append(
-                            f'          example: "{ExampleValues.get("uri")}"\n'
-                        )
-                    elif type_ == 'tlv':
-                        self.yaml.append(
-                            f'          example: "{ExampleValues.get("tlv")}"\n'
-                        )
-                    elif type_ == 'boolean':
-                        if not default_result:
-                            if d_type.att1[i] == 'csp':
-                                self.yaml.append('          example: true\n')
-                            else:
-                                self.yaml.append(
-                                    f'          example: {ExampleValues.get("bool")}\n'
-                                )
-                    elif type_ == 'scType':
-                        self.yaml.append('          example: 1\n')
-                    elif type_ == 'platform':
-                        self.yaml.append('          example: "P62G98"\n')
-                    elif type_ == 'os':
-                        self.yaml.append('          example: "JCOP"\n')
-                    elif type_ == 'osVersion':
-                        self.yaml.append('          example: "4.7"\n')
-                    elif type_ == 'featuresMap':
-                        self.yaml.append(
-                            '          example: { "cypher": [ "alg1", "alg2" ], "signature": [ "alg3" ], "checksum": [ "alg4", "alg5", "alg6" ] }\n'
-                        )
-                    elif type_ == 'gpSpecVersionsMap':
-                        self.yaml.append(
-                            '          example: { "card": "2.3.1", "contactlessServices": "2.3" }\n'
-                        )
-                    elif type_ == 'gpApiVersionsMap':
-                        self.yaml.append(
-                            '          example: { "card": "1.7", "contactless": "1.6" }\n'
-                        )
-                    elif type_ == 'cspMap':
-                        self.yaml.append(
-                            '          example: { "apiVersion": "1.0", "vendor": "nxp" }\n'
-                        )
-                    elif type_ == 'certificationsMap':
-                        self.yaml.append(
-                            '          example: { "BSI-CC-PP-0084-2014": "link/to/letter/of/approval/1", "BSI-CC-PP-0100-2018": "link/to/letter/of/approval/2" }\n'
-                        )
-                    elif type_ == 'osCode':
-                        self.yaml.append('          example: "H145G"\n')
-                    elif type_ == 'platformCert':
-                        self.yaml.append('          example: "CC EAL5"\n')
-                    elif type_ == 'cspVendor':
-                        self.yaml.append('          example: "nxp"\n')
-                    elif type_ == 'cspApiVersion':
-                        self.yaml.append('          example: "1.0"\n')
-                    elif type_ == 'name':
-                        self.yaml.append(
-                            f'          example: "{makeStringCamelCase(d_type.att3desc[i]," ").replace(".","")}"\n'
-                        )
-                    elif type_ == 'description':
-                        self.yaml.append(f'          example: "{d_type.att3desc[i]}"\n')
-                    elif type_ == 'spParametersMap':
-                        examples = ''
-                        for i in range(1, 4):
-                            examples += f'param{str(i)}: "Value{str(i)} which can be evaluated by the App.", '
-                        self.yaml.append(
-                            '          example: { ' + examples[:-2] + ' }\n'
-                        )
-                    elif type_ == 'uuid[]':
-                        examples = ''
-                        for i in range(1, 4):
-                            examples += f'"{ExampleValues.get("uuid")}", '
-                        self.yaml.append(f'          example: [ {examples[:-2]} ]\n')
-                    elif type_ == 'aid[]':
-                        examples = ''
-                        for i in range(1, 4):
-                            examples += f'"{ExampleValues.get("aid")}", '
-                        self.yaml.append(f'          example: [ {examples[:-2]} ]\n')
-                    elif type_ == 'pair[]':
-                        examples = ''
-                        for i in range(1, 4):
-                            examples += f'["{ExampleValues.get("version")}", "{ExampleValues.get("version")}"], '
-                        self.yaml.append(f'          example: [ {examples[:-2]} ]\n')
-            if d_type.att1[i] == '_links':
-                if d_type.key1:
-                    self.yaml.append('          example:\n')
-                    for i, key1 in enumerate(d_type.key1):
-                        self.yaml.append(f'            {key1}: {d_type.key3Desc[i]}\n')
-                else:
-                    self.yaml.append(
-                        '          # KEINE ANGABEN FÜR LINKS, DAHER KEINE BEISPIELE\n'
-                    )
-
-            self.yaml.append('\n')
+            self.yaml.append(str(d_type))
 
     def markdownTable(self) -> None:
         """
@@ -939,7 +365,7 @@ class Source:
             elif i.type_ == 'kapitel':
                 last_type_ = i.type_
                 self.markdown.append(
-                    f'<li> {i.request_method.upper()} [**{i.operation_id}**](./docs/{upperFirstChar(makeStringCamelCase(i.tag[1:],"-"))}Api.md#{i.operation_id})</li>'
+                    f'<li> {i.request_method.upper()} [**{i.operation_ids[i.num]}**](./docs/{upperFirstChar(makeStringCamelCase(i.tag[1:],"-"))}Api.md#{i.operation_ids[i.num]})</li>'
                 )
         self.markdown.append('</ul> | \n\n\n')
         self.markdown.append('[Back to Overview](../README.md)\n')
@@ -1008,9 +434,9 @@ class Source:
 # test environment
 if __name__ == '__main__':
     # change folder to projfolder
-    os.chdir(pathSplitL(__file__, 2))
+    cwd = Path(__file__).parents[1]
     # Path to source.txt
-    source_path_test = os.path.join('.', 'pdf', 'tr_03165_source.txt')
+    source_path_test = Path(cwd, 'pdf', 'tr_03165_source.txt')
     # Path to source.txt
     DESTINATION_NAME = 'sourceHandling.yaml'
     # generate example

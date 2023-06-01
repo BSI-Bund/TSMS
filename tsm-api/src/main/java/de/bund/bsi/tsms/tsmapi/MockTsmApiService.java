@@ -17,8 +17,8 @@ import de.bund.bsi.tsms.tsmapi.results.IServiceDeploymentAvailableResult;
 import de.bund.bsi.tsms.tsmapi.results.ServiceDeploymentAvailableResult;
 import de.bund.bsi.tsms.tsmapi.results.IServiceUpdateAvailableResult;
 import de.bund.bsi.tsms.tsmapi.results.ServiceUpdateAvailableResult;
-import de.bund.bsi.tsms.tsmapi.results.ISetCustomAccessTokenResult;
-import de.bund.bsi.tsms.tsmapi.results.SetCustomAccessTokenResult;
+import de.bund.bsi.tsms.tsmapi.results.ISetAccessTokenResult;
+import de.bund.bsi.tsms.tsmapi.results.SetAccessTokenResult;
 import de.bund.bsi.tsms.tsmapi.results.ITechnicalInformation;
 import de.bund.bsi.tsms.tsmapi.results.TechnicalInformation;
 import de.bund.bsi.tsms.tsmapi.results.IServiceInstance;
@@ -416,17 +416,9 @@ public class MockTsmApiService implements ITsmApiService {
      *         </ul>
      */
     @Override
-    public CompletableFuture<ISetCustomAccessTokenResult> setCustomAccessToken(final String token) {
-        CompletableFuture<ISetCustomAccessTokenResult> future = new CompletableFuture<>();
+    public ISetAccessTokenResult setAccessToken(final ITsmAccessToken token) {
+        SetAccessTokenResult result = new SetAccessTokenResult(EErrorType.NO_ERROR, "");
 
-        Executors.newCachedThreadPool().submit(() -> {
-            SetCustomAccessTokenResult result = new SetCustomAccessTokenResult(EErrorType.NO_ERROR,
-                    "");
-
-            future.complete(result);
-            return null;
-        });
-
-        return future;
+        return result;
     }
 }

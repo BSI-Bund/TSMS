@@ -568,7 +568,7 @@ ApiClient defaultClient = Configuration.getDefaultApiClient();
 
 
 ServicesApi apiInstance = new ServicesApi();
-Map<String, List<String>> body = new Map(); // Map<String, List<String>> | Map keys: flavorIds, Map values: list of secureComponentProfileIds
+Map<String, List<String>> body = new Map(); // Map<String, List<String>> | Map key: flavorId, Map values: list of secureComponentProfileIds
 UUID serviceId = new UUID(); // UUID | identifier of the referred Service
 String tag = "tag_example"; // String | identifier of the referred Tag
 try {
@@ -584,7 +584,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**Map&lt;String, List&lt;String&gt;&gt;**](Map.md)| Map keys: flavorIds, Map values: list of secureComponentProfileIds |
+ **body** | [**Map&lt;String, List&lt;String&gt;&gt;**](Map.md)| Map key: flavorId, Map values: list of secureComponentProfileIds |
  **serviceId** | [**UUID**](.md)| identifier of the referred Service |
  **tag** | **String**| identifier of the referred Tag |
 
@@ -607,7 +607,7 @@ Name | Type | Description  | Notes
 
 Add additional SecureComponentProfiles to a certain Version and c...
 
-Add additional SecureComponentProfiles to a certain Version and configure the Flavors supported. In case SecureComponentProfile Ids provided are already linked to this Version, the method will still be successful and it will just modify the list of supported Flavors.
+Add additional SecureComponentProfiles to a certain Version and configure the corresponding Flavors. In case SecureComponentProfile Ids provided are already linked to this Version, the method will still be successful and it will just modify the list of supported Flavors.
 
 ### Example
 ```java
@@ -622,7 +622,7 @@ ApiClient defaultClient = Configuration.getDefaultApiClient();
 
 
 ServicesApi apiInstance = new ServicesApi();
-Map<String, List<String>> body = new Map(); // Map<String, List<String>> | Map keys: secureComponentProfileIds, Map values: list of flavorIds
+Map<String, String> body = new Map(); // Map<String, String> | Map key: secureComponentProfileId, Map value: flavorId of the corresponding Flavor
 UUID serviceId = new UUID(); // UUID | identifier of the referred Service
 String tag = "tag_example"; // String | identifier of the referred Tag
 try {
@@ -638,7 +638,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**Map&lt;String, List&lt;String&gt;&gt;**](Map.md)| Map keys: secureComponentProfileIds, Map values: list of flavorIds |
+ **body** | [**Map&lt;String, String&gt;**](Map.md)| Map key: secureComponentProfileId, Map value: flavorId of the corresponding Flavor |
  **serviceId** | [**UUID**](.md)| identifier of the referred Service |
  **tag** | **String**| identifier of the referred Tag |
 
@@ -813,7 +813,7 @@ Name | Type | Description  | Notes
 
 <a name="listLinkedElfs"></a>
 # **listLinkedElfs**
-> List&lt;ExecutableLoadFile&gt; listLinkedElfs(serviceId, flavorId)
+> List&lt;Object&gt; listLinkedElfs(serviceId, flavorId)
 
 List all ExecutableLoadFiles used by a certain Flavor.
 
@@ -835,7 +835,7 @@ ServicesApi apiInstance = new ServicesApi();
 UUID serviceId = new UUID(); // UUID | identifier of the referred Service
 UUID flavorId = new UUID(); // UUID | identifier of the referred Flavor
 try {
-    List<ExecutableLoadFile> result = apiInstance.listLinkedElfs(serviceId, flavorId);
+    List<Object> result = apiInstance.listLinkedElfs(serviceId, flavorId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ServicesApi#listLinkedElfs");
@@ -852,7 +852,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;ExecutableLoadFile&gt;**](ExecutableLoadFile.md)
+**List&lt;Object&gt;**
 
 ### Authorization
 

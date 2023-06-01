@@ -1,0 +1,36 @@
+## Content;
+tiatio\n;tiatio
+nstant\n;nstant
+ string\n;\nstring\n
+<string,\n;<string, 
+Mand. Ed.\n;Mand.\nEd.\n
+ string[]\n;\nstring[]\n
+Config Config;Config\nConfig
+allowedDeploy\n;allowedDeploy
+Instantiation\n;Instantiation
+Config Persona;Config\nPersona
+SecureComponent\n;SecureComponent
+AuthorizedDevice\n;AuthorizedDevice
+DataBlock boolean;DataBlock\nboolean
+ApplicationInstan\n;ApplicationInstan
+Configs EntityList;Configs\nEntityList
+ApplicationInstanti\n;ApplicationInstanti
+Attributes Map<string;Attributes\nMap<string
+boolean Flag, whether ;boolean\nFlag, whether 
+Requirements Technical ;Requirements\nTechnical 
+entProfiles EntityList<;entProfiles\nEntityList<
+contextSpecificAttribut\n;contextSpecificAttribut
+accessAuthorizedDeviceA\n;accessAuthorizedDeviceA
+contextSpecificAttribute\n;contextSpecificAttribute
+applicationInstantiationCo\n;applicationInstantiationCo
+DiversificationData boolean;DiversificationData\nboolean
+## Key-Description;
+ is\n; is 
+ the\n; the 
+ this\n; this 
+ this ELF\n; this ELF 
+ the ApplicationConfig\n; the ApplicationConfig 
+ the PersonalizationConfig\n; the PersonalizationConfig 
+## Att-Description [MANDATORY];
+ provide\n; provide 
+#

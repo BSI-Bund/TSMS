@@ -1,0 +1,1 @@
+black --skip-string-normalization --diff --color contents2latex.py dataType.py exampleValues.py generateComponents.py interfaceMethod.py pdf2txt.py pdf2yaml.py requestBodyDict.py sourceHandling.py utilityFunctions.py

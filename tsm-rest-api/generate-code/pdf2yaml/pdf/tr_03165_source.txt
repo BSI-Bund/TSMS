@@ -1,7 +1,7 @@
 Technical Guideline TR-03165 Trusted
 Service Management System
-Version 1.0.2 (internal draft)
-March 1st, 2022
+Version 1.0.3 (internal draft)
+May 16th, 2023
 Document History
 Vers.
 Date
@@ -10,6 +10,7 @@ Description
 • created initial document
 • REST-API changes:
 • added several conditional rules for data modifications
+• ApplicationConfig: changed installConfig from “Mandatory” to “Optional”
 • FeatureConfig: renamed cspFull to useCspFull
 • FeatureConfig: added keyProvisioningMode and keyIndex
 • PersonalizationConfig: added includeSecurityDomainDiversificationData
@@ -17,79 +18,83 @@ Description
 SposConfig
 • added serviceId to Version, Flavor
 • added elfId to EM
-• added certificateId to ApplicationConfig
+• widened scope of Error Category 1002
+• changed API method parameter in linkSecureComponentProfiles from
+Map<string,string[]>
+to Map<string,string>
 • TSM-API changes:
-• added new method setCustomAccessToken
+• added new method setAccessToken
 • Error Types: renamed INVALID_REQUEST to INVALID_ARGUMENT
 • Error Types: renamed CONTENT_RELATED_E to SECURE_COMPONENT_E
 • Error Types: renamed INVALID_STATE to NOT_ALLOWED
 • Error Types: added ALREADY_EXISTS, UNAUTHORIZED, ISSUER_ERROR,
 NOT_FOUND, OVERLOAD_PROTECTION, UNDER_MAINTENANCE
+• Error Types: Clarified some Descriptions
 • AttestationToken: changed type of masterKeyIndex to UUID
 Federal Office for Information Security
 Post Box 20 03 63
 D-53133 Bonn
 E-Mail: mobile-eid@bsi.bund.de
-Internet: https://www.bsi.bund.de
+Document History
+Federal Office for Information Security 3 Internet: https://www.bsi.bund.de
 © Federal Office for Information Security 2023
 Table of Contents
-Federal Office for Information Security 3 Table of Contents
-1 Introduction ............................................................................................................. 5
-2 Overview ................................................................................................................. 6
-2.1 Roles ......................................................................................................................................................... 6
-2.1.1 Handset User ......................................................................................................................................... 6
-2.1.2 Secure Component Issuer ..................................................................................................................... 6
-2.1.3 Service Provider .................................................................................................................................... 6
-2.1.4 Trusted Service Manager ...................................................................................................................... 7
-2.2 Infrastructure Components ........................................................................................................................ 7
-2.2.1 Handset ................................................................................................................................................. 8
-2.2.2 Secure Component ................................................................................................................................ 8
-2.2.3 Cryptographic Service Provider ............................................................................................................ 8
-2.2.4 SP App .................................................................................................................................................. 9
-2.2.5 SP Secure Application .......................................................................................................................... 9
-2.2.6 TSM-Backend ....................................................................................................................................... 9
-2.2.7 TSM-API SDK ..................................................................................................................................... 9
-2.2.8 Service Provider Online System ........................................................................................................... 9
-3 Implementation ...................................................................................................... 10
-3.1 Data Model ............................................................................................................................................. 10
-3.2 Life-cycle Management .......................................................................................................................... 11
-3.2.1 Life-cycle Management Processes of Secure Applications ................................................................ 11
-3.2.2 Service Instances and Service Instance Life-cycle ............................................................................. 13
-3.2.3 Orphaned Service Instances ................................................................................................................ 15
-3.3 Eligibility Check and Device Check ....................................................................................................... 15
-3.3.1 Eligibility Check ................................................................................................................................. 15
-3.3.2 Device Check ...................................................................................................................................... 18
-3.4 Secure Application Attestation Mechanism ............................................................................................ 18
-3.5 Logging and Error Handling ................................................................................................................... 19
-3.5.1 Sequence Logging with History.......................................................................................................... 19
-3.5.2 TSM-API Logging Callback ............................................................................................................... 20
-4 Interfaces ............................................................................................................... 21
-4.1 TSM-Backend REST-API....................................................................................................................... 21
-4.1.1 TSM Base URL .................................................................................................................................. 21
-4.1.2 Overview ............................................................................................................................................. 21
-4.1.3 Security ............................................................................................................................................... 24
-4.1.4 Data Types .......................................................................................................................................... 24
-4.1.5 Common Definitions ........................................................................................................................... 37
-Table of Contents
-4 Federal Office for Information Security
-4.1.6 Interface Methods ............................................................................................................................... 40
-4.2 TSM-API ................................................................................................................................................ 87
-4.2.1 Overview ............................................................................................................................................. 87
-4.2.2 Security ............................................................................................................................................... 88
-4.2.3 Data Types .......................................................................................................................................... 89
-4.2.4 Common Definitions ........................................................................................................................... 94
-4.2.5 Interface Methods ............................................................................................................................... 98
-4.2.6 Usage Example ................................................................................................................................. 107
-4.3 SPOS-Service ........................................................................................................................................ 110
-4.3.1 Base URL .......................................................................................................................................... 110
-4.3.2 Overview ........................................................................................................................................... 110
-4.3.3 Data Types ........................................................................................................................................ 110
-4.3.4 Interface Methods ............................................................................................................................. 112
-Appendix A: Attestation Token ................................................................................ 113
-Terms and Abbreviations .......................................................................................... 116
-References ................................................................................................................. 117
+Federal Office for Information Security 4 Table of Contents
+1 Introduction ............................................................................................................. 6
+2 Overview ................................................................................................................. 7
+2.1 Roles ......................................................................................................................................................... 7
+2.1.1 Handset User ......................................................................................................................................... 7
+2.1.2 Secure Component Issuer ..................................................................................................................... 7
+2.1.3 Service Provider .................................................................................................................................... 7
+2.1.4 Trusted Service Manager ...................................................................................................................... 8
+2.2 Infrastructure Components ........................................................................................................................ 8
+2.2.1 Handset ................................................................................................................................................. 9
+2.2.2 Secure Component ................................................................................................................................ 9
+2.2.3 Cryptographic Service Provider ............................................................................................................ 9
+2.2.4 SP App ................................................................................................................................................ 10
+2.2.5 SP Secure Application ........................................................................................................................ 10
+2.2.6 TSM-Backend ..................................................................................................................................... 10
+2.2.7 TSM-API SDK ................................................................................................................................... 10
+2.2.8 Service Provider Online System ......................................................................................................... 10
+3 Implementation ...................................................................................................... 11
+3.1 Data Model ............................................................................................................................................. 11
+3.2 Life-cycle Management .......................................................................................................................... 12
+3.2.1 Life-cycle Management Processes of Secure Applications ................................................................ 12
+3.2.2 Service Instances and Service Instance Life-cycle ............................................................................. 14
+3.2.3 Orphaned Service Instances ................................................................................................................ 16
+3.3 Eligibility Check and Device Check ....................................................................................................... 16
+3.3.1 Eligibility Check ................................................................................................................................. 16
+3.3.2 Device Check ...................................................................................................................................... 19
+3.4 Secure Application Attestation Mechanism ............................................................................................ 19
+3.5 Logging and Error Handling ................................................................................................................... 20
+3.5.1 Sequence Logging with History.......................................................................................................... 20
+3.5.2 TSM-API Logging Callback ............................................................................................................... 21
+4 Interfaces ............................................................................................................... 22
+4.1 TSM-Backend REST-API....................................................................................................................... 22
+4.1.1 TSM Base URL .................................................................................................................................. 22
+4.1.2 Overview ............................................................................................................................................. 22
+4.1.3 Security ............................................................................................................................................... 25
+4.1.4 Data Types .......................................................................................................................................... 25
+4.1.5 Common Definitions ........................................................................................................................... 38
 1 Introduction
-5 Federal Office for Information Security
+Federal Office for Information Security 5 4.1.6 Interface Methods ............................................................................................................................... 41
+4.2 TSM-API ................................................................................................................................................ 88
+4.2.1 Overview ............................................................................................................................................. 88
+4.2.2 Security ............................................................................................................................................... 89
+4.2.3 Data Types .......................................................................................................................................... 90
+4.2.4 Common Definitions ........................................................................................................................... 94
+4.2.5 Interface Methods ............................................................................................................................... 99
+4.2.6 Usage Example ................................................................................................................................. 109
+4.3 SPOS-Service ........................................................................................................................................ 112
+4.3.1 Base URL .......................................................................................................................................... 112
+4.3.2 Overview ........................................................................................................................................... 112
+4.3.3 Data Types ........................................................................................................................................ 112
+4.3.4 Interface Methods ............................................................................................................................. 114
+Appendix A: Attestation Token ................................................................................ 115
+Terms and Abbreviations .......................................................................................... 118
+References ................................................................................................................. 119
+1 Introduction
+6 Federal Office for Information Security
 1 Introduction
 Many aspects of everyday life have changed over the last years due to the ubiquitous market penetration of mobile
 devices. However, the use of these devices for online government and business comes with a high security
@@ -125,8 +130,7 @@ This TR is organized as follows. In Chapter 2, an overview over the roles and in
 TSMS is given. Chapter 3 covers the data model and life-cycle management of secure applications. In Chapter 4,
 the interfaces between TSM and SPs are specified.
 2 Overview
-6 Federal Office for Information Security
-2 Overview
+Federal Office for Information Security 7 2 Overview
 The term TSMS describes a system consisting of handset users, service providers, secure component issuers, and
 trusted service managers that aims to provide services with high security demand for mobile handsets. In this
 chapter, an overview over the general concept of a TSMS as well as the different roles and infrastructure
@@ -167,7 +171,8 @@ personal data of the handset user.
 For service providers, participation in the TSMS SHALL be possible without the necessity for direct
 communication or direct business relations between SP and SCI.
 2 Overview
-Federal Office for Information Security 7 2.1.4 Trusted Service Manager
+8 Federal Office for Information Security
+2.1.4 Trusted Service Manager
 A TSM provides and operates the infrastructure for the provisioning and life-cycle management of SP’s secure
 applications. A TSM maintains business relations to various SCIs, and holds the necessary rights contracted by the
 SCIs to gain access to their SCs. Furthermore, a TSM acts as a single point of contact for SPs.
@@ -196,8 +201,7 @@ application is functional and ready to be personalized with customer data by the
 the SP’s app and secure application is based on mechanisms provided by the handset only, without necessity for
 further involvement of the TSM-API SDK. If the installed secure application requires an update or should be
 2 Overview
-8 Federal Office for Information Security
-deleted, the corresponding processes are triggered by the SP app via the TSM-API, after which the TSM performs
+Federal Office for Information Security 9 deleted, the corresponding processes are triggered by the SP app via the TSM-API, after which the TSM performs
 the requested services. Communication between SP app and TSM-API SDK is limited to technical necessities, but
 additional information accompanying life-cycle management processes may be exchanged between TSM-Backend and SPOS. At any time, independent of the provisioning process, the SP app may trigger a device check
 via the TSM-API. Scope of this comparably fast check is to yield an educated guess if a device will be eligible for
@@ -238,7 +242,8 @@ certification of a secure application on top of each type of secure component, i
 cryptographic functionalities in a Cryptographic Service Provider [TR-CSP], which provides secure cryptographic
 service to secure applications. The CSP’s security services are logically separated from the secure application and
 2 Overview
-Federal Office for Information Security 9 provided through well-defined external interfaces. Consequently, the security functionalities of the secure
+10 Federal Office for Information Security
+provided through well-defined external interfaces. Consequently, the security functionalities of the secure
 application can be certified independently.
 Due to these benefits, secure components with CSP according to [PP-CSP] or CSP Light according to [PP-CSP-Light] are preferable over secure components without CSP.
 2.2.4 SP App
@@ -276,7 +281,7 @@ Providing a SPOS is optional for SPs.
 The communication between TSM-Backend and SPOS SHALL take place via mutual HTTP with TLS (HTTPS)
 encryption.
 3 Implementation
-10 Federal Office for Information Security
+Federal Office for Information Security 11
 3 Implementation
 A TSMS implementation consists of at least two parts:
 • TSM-Backend
@@ -320,7 +325,7 @@ omitted for this overview, but will be discussed in Section 4.1.3.
 Last but not least, the SposConfig is used to configure access to a SP backend for the delivery of order- and status
 management related data. A single SposConfig may be used by multiple Services.
 3 Implementation
-Federal Office for Information Security 11
+12 Federal Office for Information Security
 Figure 2: Overview of the secure application data model as discussed in the text.
 3.2 Life-cycle Management
 This section is concerned with life-cycle management processes of secure applications. Section 3.2.1 covers
@@ -340,7 +345,7 @@ the secure application Service Instance, that is
 Apart from that, the TSM provides functions as part of TSM-API SDK which are not associated with the
 execution of a lifecycle management process. These are
 3 Implementation
-12 Federal Office for Information Security
+Federal Office for Information Security 13
 • functions to obtain a Service Instance ID or to query the current state of a Service Instance (see Section 3.2.2),
 • operations provided to perform the Device Check (see Section 3.3.2).
 A process starts with the successful submission of a request from the TSM-API to the TSM-Backend and ends
@@ -367,7 +372,7 @@ SHALL be supplied to the TSM by the SP in advance.
 After an update, a secure application MUST be fully functional. The update process SHOULD NOT come with
 the necessity for a new personalization with personal data of the handset user, i.e. the data stored in the secure
 3 Implementation
-Federal Office for Information Security 13
+14 Federal Office for Information Security
 application SHOULD be maintained, if the SC and the secure application provide the necessary mechanisms. If
 maintaining the respective data is not possible, the SP, not the TSM, is responsible for the new personalization
 with personal data of the handset user.
@@ -391,7 +396,7 @@ The life-cycle of a Service Instance begins with a successful createServiceInsta
 with a successful call to terminateService. The different life-cycle states and their transitions are shown in Figure
 4 and described in the following.
 3 Implementation
-14 Federal Office for Information Security
+Federal Office for Information Security 15
 Figure 4: Flow chart of the Service Instance life-cycle.
 • Not Deployed
 The state Not deployed is the initial state for each Service Instance. In this state, no components of the Service
@@ -410,7 +415,7 @@ A Service Instance reaches the optional UnderDeployment:Personalized state when 
 PersonalizeServiceCommand of a deployService or updateService function call has finished. In this state, the
 Service has been personalized (e.g., by executing personalization scripts) as required by the SP.
 3 Implementation
-Federal Office for Information Security 15
+16 Federal Office for Information Security
 • UnderDeployment:Activated (Optional)
 A Service Instance reaches the optional UnderDeployment:Activated state when the execution of the
 ActivateServiceCommand of a deployService or updateService function call has finished. The transition from
@@ -455,7 +460,7 @@ eligibility of a SC depends on the specific Service and secure application to be
 performing the EC. For a SC to be eligible, the following conditions MUST be fulfilled:
 • The SC SHALL successfully pass an authenticity check (see Section 3.3.1.1).
 3 Implementation
-16 Federal Office for Information Security
+Federal Office for Information Security 17
 • The SC SHALL be in accordance with technical requirements and security requirements of the TSM and of
 the secure application to be provisioned. This includes the availability of a matching Flavor of the secure
 application (see Section 3.3.1.2).
@@ -500,7 +505,7 @@ securely exchanged between TSM and SCI. The attestation proceeds as follows:
 2. The TSM contacts the SCI via mutual-TLS and requests the creation of a SD on the specific SC, including
 creation and distribution of the keys required by SCP.
 3 Implementation
-Federal Office for Information Security 17
+18 Federal Office for Information Security
 3. The SCI authenticates to the Issuer SD on the specific SC, instantiates the requested SD, and personalizes the
 new SD with the required SCP keys.
 4. The SCI encrypts the SCP keys with the transport key exchanged / derived in advance and sends them to the
@@ -547,7 +552,7 @@ For a better understanding of the mapping of a Flavor, respectively a SC profile
 displayed in Figure 5. Note that this is a simplified visualization for a fixed version of the Service, since the
 allocation of a SC profile to a specific Flavor may be changed when creating a new Version.
 3 Implementation
-18 Federal Office for Information Security
+Federal Office for Information Security 19
 Figure 5: Exemplary situations of the mapping between Flavors and specific handsets for a specific Version of a
 Service.
 3.3.2 Device Check
@@ -574,7 +579,7 @@ application has been provisioned by the TSM and thus an eligibility check of the
 performed. To clarify, this verification is important for a closed chain of trust from point of view of the SP. It is
 not meant to assess the quality of services provided by the TSM. The verification of the token by the SP SHALL
 3 Implementation
-Federal Office for Information Security 19
+20 Federal Office for Information Security
 be possible without involvement of the TSM or the TSM-API SDK and without the need to understand SCI
 specific protocols of the underlying SC.
 The content of the Attestation Token SHALL be cryptographically signed by the TSM with a signature according
@@ -617,7 +622,7 @@ database for an adequate period of time (e.g. several weeks). This includes the 
 the secure component, e.g. initialize security domain and access rules and also all communication to install,
 configure, manage and uninstall secure applications.
 3 Implementation
-20 Federal Office for Information Security
+Federal Office for Information Security 21
 3.5.2 TSM-API Logging Callback
 To be able to participate in the TSMS, the SP App has to integrate the TSM-API SDK as library. To be able to
 analyze the behavior of the TSM-API SDK in case of errors, the SDK should provide a mechanism to forward
@@ -625,7 +630,7 @@ current log messages generated by the SDK to the SP App. This could be done via 
 logging frameworks, or other solutions. Latest at the moment when an issue occurs, the SP app shall have the
 possibility to receive log and error messages for the period shortly before the error occurred.
 4 Interfaces
-Federal Office for Information Security 21
+22 Federal Office for Information Security
 4 Interfaces
 In this chapter, the interfaces between TSM and SP are defined:
 • TSM-Backend REST-API (provided by the TSM, used by the SP),
@@ -669,7 +674,7 @@ interface methods.
 4.1.2.2 /service-providers
 The following methods for the management of SP accounts are available:
 4 Interfaces
-22 Federal Office for Information Security
+Federal Office for Information Security 23
 Method
 REST-URL
 Short Description
@@ -776,7 +781,7 @@ POST
 /services/{serviceId}/versions/{tag}/flavors
 Link Flavors.
 4 Interfaces
-Federal Office for Information Security 23
+24 Federal Office for Information Security
 Method
 REST-URL
 Short Description
@@ -874,7 +879,7 @@ List related Services.
 4.1.2.7 /personalization-scripts
 The following methods for the management of PersonalizationScripts are available:
 4 Interfaces
-24 Federal Office for Information Security
+Federal Office for Information Security 25
 Method
 REST-URL
 Short Description
@@ -969,7 +974,7 @@ and adding a secure access mechanism on top to the HTTP REST-API.
 4.1.4 Data Types
 In this section, the data model and data types introduced in Section 3.1 are specified. Each entity is defined
 including all attributes and data types. The entities and their relations are visualized in Figure 6, which extends the 4 Interfaces
-Federal Office for Information Security 25
+26 Federal Office for Information Security
 overview given in Figure 2. The entities FeatureConfig, ApplicationInstantiationConfig, and
 TechnicalRequirements are helper classes providing additional complex data structures for their corresponding
 holder (Flavor, and ExecutableLoadFile). For all other entities, API methods for management are available and
@@ -983,7 +988,7 @@ Mandatory:
 • Mandatory (M): The attribute must be provided and its value cannot be empty or null. This is valid for
 request bodies of POST, PUT and also for return values of GET, POST, PUT, DELETE methods.
 4 Interfaces
-26 Federal Office for Information Security
+Federal Office for Information Security 27
 • Optional (O): The attribute may be provided, but could also be omitted and its value may be empty, null, or
 any certain value. This is valid for request bodies of POST, PUT. The attribute must always be present for
 return values of GET, POST, PUT, DELETE requests, but may be empty.
@@ -1039,7 +1044,7 @@ associated with a ServiceProvider is always restricted to the users that are ass
 ServiceProvider has one or more Service entities and zero or more SposConfig entities.
 The SP can check and modify account information via a REST-API with the following attributes:
 4 Interfaces
-Federal Office for Information Security 27
+28 Federal Office for Information Security
 Attribute
 Type
 Description
@@ -1073,7 +1078,7 @@ No
 spId
 string
 ID of the ServiceProvider owning the Service.
-M
+A
 No
 name
 string
@@ -1128,7 +1133,7 @@ supported by this Version. The SP can also remove SecureComponentProfiles from a
 case of a security incident.
 A Version has the following attributes:
 4 Interfaces
-28 Federal Office for Information Security
+Federal Office for Information Security 29
 Attribute
 Type
 Description
@@ -1144,7 +1149,7 @@ No
 serviceId
 string
 ID of the Service owning the Version.
-M
+A
 No
 allowedDeployments
 Map<string, string[]>
@@ -1189,7 +1194,7 @@ No
 serviceId
 string
 ID of the Service owning the Flavor.
-M
+A
 No
 name
 string
@@ -1207,7 +1212,7 @@ A datetime string (creation of Flavor).
 A
 No
 4 Interfaces
-Federal Office for Information Security 29
+30 Federal Office for Information Security
 Attribute
 Type
 Description
@@ -1287,7 +1292,7 @@ TSMS.
 A
 No
 4 Interfaces
-30 Federal Office for Information Security
+Federal Office for Information Security 31
 Attribute
 Type
 Description
@@ -1368,7 +1373,7 @@ Sample values are 2.3.1, 2.3, 2.2.1.
 M
 No
 4 Interfaces
-Federal Office for Information Security 31
+32 Federal Office for Information Security
 Attribute
 Type
 Description
@@ -1434,7 +1439,7 @@ If omitted, default value empty list will be used.
 O
 Yes
 4 Interfaces
-32 Federal Office for Information Security
+Federal Office for Information Security 33
 Attribute
 Type
 Description
@@ -1505,9 +1510,10 @@ An ExecutableLoadFile (ELF) is an executable binary file that can be loaded onto
 SmartCard terminology, the ELF is a container of executable code on a secure component [GPC_SPE_034]. ELFs
 are essential components of a Flavor used by a Version of a Service. ELFs are uploaded by the SP and may be
 4 Interfaces
-Federal Office for Information Security 33
+34 Federal Office for Information Security
 used in different Flavors. An ELF may contain zero or more ExecutableModule entities. The specific type of an
 ELF is determined at upload time. If the ELF is a CAP, the ELF AID is automatically extracted from the CAP.
+The binary of an ELF can be replaced only as long as the ELF is not linked to a published Flavor.
 An ELF has the following attributes:
 Attribute
 Type
@@ -1522,7 +1528,7 @@ No
 spId
 string
 ID of the ServiceProvider owning the ELF.
-M
+A
 No
 aid
 string
@@ -1547,7 +1553,6 @@ No
 uploadDate
 string
 A datetime string (upload of ELF binary).
-Binary of an ELF can be replaced only as long as the ELF is not linked to a published Flavor.
 A
 No
 4.1.4.9 CAP
@@ -1621,7 +1626,7 @@ ID of the ExecutableLoadFile owning the EM.
 A
 No
 4 Interfaces
-34 Federal Office for Information Security
+Federal Office for Information Security 35
 Attribute
 Type
 Description
@@ -1655,14 +1660,8 @@ No
 spId
 string
 ID of the ServiceProvider owning the ApplicationConfig.
-M
+A
 No
-certificateId
-string
-ID of the Certificate used in this ApplicationConfig. Empty, if no Certificate
-is used.
-O
-Yes
 instanceAid
 string
 AID of the running application instance
@@ -1685,7 +1684,7 @@ installConfig
 InstallConfig
 Configuration settings applied to the running application instance during
 transition to lifecycle state Installed.
-M
+O
 C
 activationConfig
 ActivationConfig
@@ -1705,10 +1704,10 @@ Installed. It defines configuration settings which are applied to the applet dur
 triggered with the TSM-API when using the InstallServiceCommand parameter.
 Modifications are only possible, as long as the corresponding ApplicationConfig is not yet linked to a published
 Flavor.
-4 Interfaces
-Federal Office for Information Security 35
 The InstallConfig data type is only used as a complex type inside ApplicationConfig and is not directly referenced
 in any API methods. It has the following attributes:
+4 Interfaces
+36 Federal Office for Information Security
 Attribute
 Type
 Description
@@ -1781,25 +1780,19 @@ Type
 Description
 Mand.
 Ed.
-certificateId
-string
-ID of the Certificate, if needed for a
-PersonalizationScript.
-O
-C
-4 Interfaces
-36 Federal Office for Information Security
-Attribute
-Type
-Description
-Mand.
-Ed.
 personalizationScriptId
 string
 ID of the PersonalizationScript used for
 personalization.
 O
 C
+4 Interfaces
+Federal Office for Information Security 37
+Attribute
+Type
+Description
+Mand.
+Ed.
 provideAttestationToken
 boolean
 Flag, whether an AttestationToken shall be
@@ -1843,7 +1836,7 @@ No
 spId
 string
 ID of the ServiceProvider owning the Personalization-Script.
-M
+A
 No
 fileName
 string
@@ -1860,6 +1853,12 @@ string
 A datetime string (upload of Personalization-Script binary).
 A
 No
+certificateId
+string
+ID of the Certificate used in this PersonalizationScript.
+Empty, if no Certificate is used.
+O
+Yes
 4.1.4.17 Certificate
 A Certificate is used for the communication between TSM and SP Online System and also in
 PersonalizationScripts for applet provisioning and personalization.
@@ -1877,7 +1876,7 @@ No
 spId
 string
 ID of the ServiceProvider owning the Certificate.
-M
+A
 No
 fileName
 string
@@ -1895,7 +1894,7 @@ A datetime string (upload of Certificate binary).
 A
 No
 4 Interfaces
-Federal Office for Information Security 37
+38 Federal Office for Information Security
 4.1.4.18 SposConfig
 SposConfig is used to configure communication with the Service Provider Online System. The aim is to enable a
 service provider to receive process success and process error messages sent by the TSM.
@@ -1913,7 +1912,7 @@ No
 spId
 string
 ID of the ServiceProvider owning the SposConfig.
-M
+A
 No
 url
 string
@@ -1980,9 +1979,9 @@ Not authenticated.
 1001
 Authentication failed.
 1002
-Invalid: request body not allowed.
+Invalid request: <<InvalidRequestReason>>.
 4 Interfaces
-38 Federal Office for Information Security
+Federal Office for Information Security 39
 Error Category
 Error Message
 1003
@@ -2052,7 +2051,7 @@ Name of the entity which contains the attribute affecting the error message.
 Example:
 • Modify failed: attribute tag is missing, but it is mandatory for Version.
 4 Interfaces
-Federal Office for Information Security 39
+40 Federal Office for Information Security
 Parameter
 Description
 << entityNameWhereUsed>>
@@ -2077,11 +2076,18 @@ Size of the file that was provided for uploading and maximal supported file size
 megabyte.
 Example:
 • Upload failed: 2,6MB exceeds maximum upload file size of 2MB.
+<<InvalidRequestReason>>
+Reason for invalid request issues, not covered by existing error categories.
+Example:
+• Invalid request: request body not allowed.
+• Invalid request: request body missing.
+• Invalid request: unsupported content type.
 <<InternalErrorReason>>
 Reason for internal error failure.
 Example:
 • Internal server error: service on maintenance, please try again later.
 In case multiple errors occurred during a request, the GeneralError still contains only one of those errors.
+Error category 1002 shall be thrown for invalid request not covered by any other of the following error categories.
 Error category 1003 shall be thrown for POST requests containing attributes which are marked automatically
 assigned (A) in Section 4.1.3.
 Error category 1004 shall be thrown for POST requests with missing attributes which are marked mandatory (M)
@@ -2095,14 +2101,14 @@ Error category 1008 shall be thrown for all requests containing attributes with 
 wrong format.
 Error category 1009 shall be thrown for all requests that refer to an entity which does not exist in the TSM, e.g. an
 identifier inside request path (URL) or request body (JSON).
+4 Interfaces
+Federal Office for Information Security 41
 Error category 1010 shall be thrown for all DELETE requests on entities which are still linked to other entities
 and thus are still in use. This affects all entities referenced by attributes of related entities with attributes named
 “[a-zA-Z]Id”. These are for example:
 • Flavor
 • ExecutableLoadFile
 • ApplicationConfig
-4 Interfaces
-40 Federal Office for Information Security
 • PersonalizationScript
 • Certificates
 Error categories 1011-2014 shall be thrown for requests of content type multipart/form-data when no file or too
@@ -2145,14 +2151,14 @@ Status Code
 Response Body
 GeneralError
 1001, 1002, 2000
+4 Interfaces
+42 Federal Office for Information Security
 4.1.6.2 Manage SP Account
 This section lists methods for the management of SP account information.
 4.1.6.2.1 Get Account Information
 Get details of the SP account.
 REST-URL
 <<tsmBaseURL>>/serviceproviders/current
-4 Interfaces
-Federal Office for Information Security 41
 Request Method
 GET
 Request Headers
@@ -2202,6 +2208,8 @@ Status Code
 200
 Response Body
 SecureComponentProfile[]
+4 Interfaces
+Federal Office for Information Security 43
 Responses on failures:
 Response Headers
 Content-Type
@@ -2211,8 +2219,6 @@ Status Code
 Response Body
 GeneralError
 1000, 1002, 2000
-4 Interfaces
-42 Federal Office for Information Security
 4.1.6.3.2 Get SecureComponentProfile
 Get details of a certain SecureComponentProfile.
 REST-URL
@@ -2264,6 +2270,8 @@ Status Code
 200
 Response Body
 ExecutableLoadFile[]
+4 Interfaces
+44 Federal Office for Information Security
 Responses on failures:
 Response Headers
 Content-Type
@@ -2273,8 +2281,6 @@ Status Code
 Response Body
 GeneralError
 1000, 1002, 1009, 2000
-4 Interfaces
-Federal Office for Information Security 43
 4.1.6.3.4 List Related Services
 List all Services that use a certain SecureComponentProfile.
 REST-URL
@@ -2319,6 +2325,8 @@ application/json
 Request Body
 -
 Response on success:
+4 Interfaces
+Federal Office for Information Security 45
 Response Headers
 Content-Type
 application/json
@@ -2327,8 +2335,6 @@ Status Code
 Response Body
 Flavor[]
 Responses on failures:
-4 Interfaces
-44 Federal Office for Information Security
 Response Headers
 Content-Type
 application/json
@@ -2376,6 +2382,8 @@ entities, and to link ExecutableModule entities and ApplicationConfig entities t
 The methods listed in this section do not provide functionality to upload binary data for ELFs or to create
 ApplicationConfigs. Uploading ELFs can be done via methods listed in Section 4.1.6.4.27. Managing
 ApplicationConfigs can be done via methods listed in Section 4.1.6.6.
+4 Interfaces
+46 Federal Office for Information Security
 4.1.6.4.1 List Services
 List all Services of the authenticated ServiceProvider.
 REST-URL
@@ -2385,8 +2393,6 @@ GET
 Request Headers
 Authorization
 <<auth-Token>>
-4 Interfaces
-Federal Office for Information Security 45
 Accept
 application/json
 Request Body
@@ -2432,6 +2438,8 @@ Status Code
 Response Body
 Service
 Responses on failures:
+4 Interfaces
+Federal Office for Information Security 47
 Response Headers
 Content-Type
 application/json
@@ -2444,8 +2452,6 @@ GeneralError
 Get details of a certain Service.
 REST-URL
 <<tsmBaseURL>>/services/{serviceId}
-4 Interfaces
-46 Federal Office for Information Security
 Request Method
 GET
 Request Headers
@@ -2495,6 +2501,8 @@ Status Code
 200
 Response Body
 Service
+4 Interfaces
+48 Federal Office for Information Security
 Responses on failures:
 Response Headers
 Content-Type
@@ -2504,8 +2512,6 @@ Status Code
 Response Body
 GeneralError
 1000, 1005, 1006, 1007, 1008, 1009, 2000
-4 Interfaces
-Federal Office for Information Security 47
 4.1.6.4.5 Delete Service
 Delete a certain Service. All data, including associated Versions, Flavors, and ApplicationInstantiationConfigs is
 deleted. Referenced ELFs, ApplicationConfigs, and SposConfigs are not deleted.
@@ -2549,6 +2555,8 @@ application/json
 Request Body
 -
 Response on success:
+4 Interfaces
+Federal Office for Information Security 49
 Response Headers
 Content-Type
 application/json
@@ -2565,8 +2573,6 @@ Status Code
 Response Body
 GeneralError
 1000, 1002, 1009, 2000
-4 Interfaces
-48 Federal Office for Information Security
 4.1.6.4.7 Create Flavor
 Create a new Flavor for a certain Service.
 REST-URL
@@ -2612,6 +2618,8 @@ Accept
 application/json
 Request Body
 -
+4 Interfaces
+50 Federal Office for Information Security
 Response on success:
 Response Headers
 Content-Type
@@ -2621,8 +2629,6 @@ Status Code
 Response Body
 Flavor
 Responses on failures:
-4 Interfaces
-Federal Office for Information Security 49
 Response Headers
 Content-Type
 application/json
@@ -2667,6 +2673,8 @@ GeneralError
 Delete a certain Flavor. All data, including associated ApplicationInstantiationConfigs, is deleted. Referenced
 ELFs and ApplicationConfigs are not deleted.
 Deletion SHALL only be possible if the Flavor is not referenced in any Version and thus is not in use anywhere.
+4 Interfaces
+Federal Office for Information Security 51
 REST-URL
 <<tsmBaseURL>>/services/{serviceId}/flavors/{flavorId}
 Request Method
@@ -2677,8 +2685,6 @@ Authorization
 Request Body
 -
 Response on success:
-4 Interfaces
-50 Federal Office for Information Security
 Response Headers
 Content-Type
 application/json
@@ -2725,6 +2731,8 @@ Status Code
 Response Body
 GeneralError
 1000, 1002, 1009, 2000
+4 Interfaces
+52 Federal Office for Information Security
 4.1.6.4.12 List Linked ELFs
 List all ExecutableLoadFiles used by a certain Flavor.
 REST-URL
@@ -2736,8 +2744,6 @@ Authorization
 <<auth-Token>>
 Accept
 application/json
-4 Interfaces
-Federal Office for Information Security 51
 Request Body
 -
 Response on success:
@@ -2783,6 +2789,8 @@ Status Code
 Response Body
 Flavor
 Responses on failures:
+4 Interfaces
+Federal Office for Information Security 53
 Response Headers
 Content-Type
 application/json
@@ -2791,8 +2799,6 @@ Status Code
 Response Body
 GeneralError
 1000, 1008, 1009, 1015, 1016, 2000
-4 Interfaces
-52 Federal Office for Information Security
 4.1.6.4.14 Unlink ELFs
 Remove ExecutableLoadFiles from a certain Flavor. In case ELF Ids provided are not linked to this Flavor,
 method will still be successful.
@@ -2843,11 +2849,11 @@ Content-Type
 application/json
 Accept
 application/json
+4 Interfaces
+54 Federal Office for Information Security
 Request Body
 -
 Response on success:
-4 Interfaces
-Federal Office for Information Security 53
 Response Headers
 Content-Type
 application/json
@@ -2903,12 +2909,12 @@ GET
 Request Headers
 Authorization
 <<auth-Token>>
+4 Interfaces
+Federal Office for Information Security 55
 Accept
 application/json
 Request Body
 -
-4 Interfaces
-54 Federal Office for Information Security
 Response on success:
 Response Headers
 Content-Type
@@ -2960,6 +2966,8 @@ GeneralError
 1000, 1003, 1004, 1007, 1008, 1009, 1016, 2000
 4.1.6.4.19 Get Version
 Get details of a certain Version.
+4 Interfaces
+56 Federal Office for Information Security
 REST-URL
 <<tsmBaseURL>>/services/{serviceId}/versions/{tag}
 Request Method
@@ -2967,8 +2975,6 @@ GET
 Request Headers
 Authorization
 <<auth-Token>>
-4 Interfaces
-Federal Office for Information Security 55
 Accept
 application/json
 Request Body
@@ -3022,10 +3028,10 @@ Status Code
 Response Body
 GeneralError
 1000, 1005, 1006, 1007, 1008, 1009, 1016, 2000
+4 Interfaces
+Federal Office for Information Security 57
 4.1.6.4.21 Delete Version
 Delete a certain Version. All data is deleted. Referenced Flavors are not deleted.
-4 Interfaces
-56 Federal Office for Information Security
 REST-URL
 <<tsmBaseURL>>/services/{serviceId}/versions/{tag}
 Request Method
@@ -3083,7 +3089,7 @@ Response Body
 GeneralError
 1000, 1002, 1009, 2000
 4 Interfaces
-Federal Office for Information Security 57
+58 Federal Office for Information Security
 4.1.6.4.23 Link Flavors
 Add additional Flavors to a certain Version and configure the SecureComponentProfiles supported by the Flavor.
 In case Flavor Ids provided are already linked to this Version, the method will still be successful and it will just
@@ -3101,7 +3107,7 @@ Accept
 application/json
 Request Body
 Map<string, string[]>
-Map keys: flavorIds
+Map key: flavorId
 Map values: list of
 secureComponentProfileIds
 Response on success:
@@ -3140,7 +3146,7 @@ string[]
 Ids of the flavors to be removed from the version (flavorIds)
 Response on success:
 4 Interfaces
-58 Federal Office for Information Security
+Federal Office for Information Security 59
 Response Headers
 Content-Type
 application/json
@@ -3200,7 +3206,7 @@ Authorization
 Accept
 application/json
 4 Interfaces
-Federal Office for Information Security 59
+60 Federal Office for Information Security
 Request Body
 -
 Response on success:
@@ -3221,7 +3227,7 @@ Response Body
 GeneralError
 1000, 1002, 1009, 2000
 4.1.6.4.27 Link SecureComponentProfiles
-Add additional SecureComponentProfiles to a certain Version and configure the Flavors supported. In case
+Add additional SecureComponentProfiles to a certain Version and configure the corresponding Flavors. In case
 SecureComponentProfile Ids provided are already linked to this Version, the method will still be successful and it
 will just modify the list of supported Flavors.
 REST-URL
@@ -3236,9 +3242,10 @@ application/json
 Accept
 application/json
 Request Body
-Map<string, string[]>
-Map keys: secureComponentProfileIds
-Map values: list of flavorIds
+Map<string, string>
+Map key: secureComponentProfileId
+Map value: flavorId of the corresponding
+Flavor
 Response on success:
 Response Headers
 Content-Type
@@ -3257,7 +3264,7 @@ Response Body
 GeneralError
 1000, 1008, 1009, 1016, 2000
 4 Interfaces
-60 Federal Office for Information Security
+Federal Office for Information Security 61
 4.1.6.4.28 Unlink SecureComponentProfiles
 Remove SecureComponentProfiles from a certain Version. In case SecureComponentProfile Ids provided are not
 linked to this Version, method will still be successful.
@@ -3313,7 +3320,7 @@ application/json
 Request Body
 -
 4 Interfaces
-Federal Office for Information Security 61
+62 Federal Office for Information Security
 Response on success:
 Response Headers
 Content-Type
@@ -3372,7 +3379,7 @@ Response Body
 ExecutableLoadFile
 Responses on failures:
 4 Interfaces
-62 Federal Office for Information Security
+Federal Office for Information Security 63
 Response Headers
 Content-Type
 application/json
@@ -3436,7 +3443,7 @@ Content-Disposition
 form-data; name=”elfFile”,
 filename=”<<fileName>>”
 4 Interfaces
-Federal Office for Information Security 63
+64 Federal Office for Information Security
 Content-Type
 application/octet-stream
 Body
@@ -3492,7 +3499,7 @@ GeneralError
 4.1.6.5.6 Get Binary
 Get binary data of a certain ExecutableLoadFile.
 4 Interfaces
-64 Federal Office for Information Security
+Federal Office for Information Security 65
 REST-URL
 <<tsmBaseURL>>/executable-load-files/{elfId}/binary
 Request Method
@@ -3552,7 +3559,7 @@ Response Body
 GeneralError
 1000, 1002, 1009, 2000
 4 Interfaces
-Federal Office for Information Security 65
+66 Federal Office for Information Security
 4.1.6.5.8 Get EM
 Get details of a certain ExecutableModule of a certain ExecutableLoadFile.
 REST-URL
@@ -3606,7 +3613,7 @@ Response Body
 ApplicationConfig[]
 Responses on failures:
 4 Interfaces
-66 Federal Office for Information Security
+Federal Office for Information Security 67
 Response Headers
 Content-Type
 application/json
@@ -3667,7 +3674,7 @@ Status Code
 Response Body
 Service[]
 4 Interfaces
-Federal Office for Information Security 67
+68 Federal Office for Information Security
 Responses on failures:
 Response Headers
 Content-Type
@@ -3723,7 +3730,7 @@ Request Body
 -
 Response on success:
 4 Interfaces
-68 Federal Office for Information Security
+Federal Office for Information Security 69
 Response Headers
 Content-Type
 application/json
@@ -3781,7 +3788,7 @@ Response Body
 GeneralError
 1000, 1002, 2000
 4 Interfaces
-Federal Office for Information Security 69
+70 Federal Office for Information Security
 4.1.6.6.2 Create ApplicationConfig
 Create a new ApplicationConfig.
 REST-URL
@@ -3837,7 +3844,7 @@ Response Body
 ApplicationConfig
 Responses on failures:
 4 Interfaces
-70 Federal Office for Information Security
+Federal Office for Information Security 71
 Response Headers
 Content-Type
 application/json
@@ -3894,7 +3901,7 @@ Request Body
 -
 Response on success:
 4 Interfaces
-Federal Office for Information Security 71
+72 Federal Office for Information Security
 Response Headers
 Content-Type
 application/json
@@ -3955,7 +3962,7 @@ application/json
 Request Body
 -
 4 Interfaces
-72 Federal Office for Information Security
+Federal Office for Information Security 73
 Response on success:
 Response Headers
 Content-Type
@@ -4010,7 +4017,7 @@ application during the provisioning process. A PersonalizationScript is independ
 linked to an ApplicationConfig.
 There are methods to list, get, upload, and delete PersonalizationScripts.
 4 Interfaces
-Federal Office for Information Security 73
+74 Federal Office for Information Security
 The methods listed here do not provide functionality to link a PersonalizationScript to an ApplicationConfig or
 EM. Linking a PersonalizationScript to an ApplicationConfig is done via methods listed in Section 4.1.6.6 ,
 indirect linking to EMs is done via methods listed in Section 4.1.6.4.
@@ -4074,7 +4081,7 @@ application/octet-stream
 Body
 byte[]
 4 Interfaces
-74 Federal Office for Information Security
+Federal Office for Information Security 75
 Response on success:
 Response Headers
 Content-Type
@@ -4134,7 +4141,7 @@ Authorization
 Content-Type
 multipart/form-data; boundary=<<boundary>>
 4 Interfaces
-Federal Office for Information Security 75
+76 Federal Office for Information Security
 Content-Length
 File length in bytes.
 Accept
@@ -4194,7 +4201,7 @@ Response Body
 GeneralError
 1000, 1002, 1009, 1010, 2000
 4 Interfaces
-76 Federal Office for Information Security
+Federal Office for Information Security 77
 4.1.6.7.6 List Related ApplicationConfigs
 List all ApplicationConfigs that use a certain PersonalizationScript.
 REST-URL
@@ -4248,7 +4255,7 @@ Response Body
 byte[]
 Responses on failures:
 4 Interfaces
-Federal Office for Information Security 77
+78 Federal Office for Information Security
 Response Headers
 Content-Type
 application/json
@@ -4302,7 +4309,7 @@ Request Body
 -
 Response on success:
 4 Interfaces
-78 Federal Office for Information Security
+Federal Office for Information Security 79
 Response Headers
 Content-Type
 application/json
@@ -4359,7 +4366,7 @@ GeneralError
 4.1.6.8.2 Create Certificate and Upload Binary
 Create a new Certificate and upload corresponding binary data.
 4 Interfaces
-Federal Office for Information Security 79
+80 Federal Office for Information Security
 REST-URL
 <<tsmBaseURL>>/certificates
 Request Method
@@ -4419,7 +4426,7 @@ Request Body
 -
 Response on success:
 4 Interfaces
-80 Federal Office for Information Security
+Federal Office for Information Security 81
 Response Headers
 Content-Type
 application/json
@@ -4480,7 +4487,7 @@ Delete a certain Certificate. All data, including binary data, is deleted.
 Deletion SHALL only be possible if the Certificate is not referenced in any ApplicationConfig or SposConfig and
 thus is not in use anywhere.
 4 Interfaces
-Federal Office for Information Security 81
+82 Federal Office for Information Security
 REST-URL
 <<tsmBaseURL>>/certificates/{certificateId}
 Request Method
@@ -4540,7 +4547,7 @@ GeneralError
 4.1.6.8.7 Get Binary
 Get binary data of a certain Certificate.
 4 Interfaces
-82 Federal Office for Information Security
+Federal Office for Information Security 83
 REST-URL
 <<tsmBaseURL>>/certificates/{certificateId}/binary
 Request Method
@@ -4600,7 +4607,7 @@ Response Body
 GeneralError
 1000, 1002, 1009, 2000
 4 Interfaces
-Federal Office for Information Security 83
+84 Federal Office for Information Security
 4.1.6.8.9 List Related Services
 List all Services that use a certain Certificate.
 REST-URL
@@ -4662,7 +4669,7 @@ Response Body
 GeneralError
 1000, 1002, 1009, 2000
 4 Interfaces
-84 Federal Office for Information Security
+Federal Office for Information Security 85
 4.1.6.9 Manage SposConfigs
 This section lists methods to manage SposConfigs.
 4.1.6.9.1 List SposConfigs
@@ -4719,7 +4726,7 @@ Status Code
 Response Body
 SposConfig
 4 Interfaces
-Federal Office for Information Security 85
+86 Federal Office for Information Security
 Responses on failures:
 Response Headers
 Content-Type
@@ -4776,7 +4783,7 @@ Request Body
 SposConfig
 Response on success:
 4 Interfaces
-86 Federal Office for Information Security
+Federal Office for Information Security 87
 Response Headers
 Content-Type
 application/json
@@ -4837,7 +4844,7 @@ application/json
 Request Body
 -
 4 Interfaces
-Federal Office for Information Security 87
+88 Federal Office for Information Security
 Response on success:
 Response Headers
 Content-Type
@@ -4886,7 +4893,7 @@ Instantiate a Service with the given ID and Version Tag on a SC
 selected by the eligibility check. It returns the created Service
 Instance.
 4 Interfaces
-88 Federal Office for Information Security
+Federal Office for Information Security 89
 TSM-API Method
 Short Description
 getServiceInstances(..)
@@ -4916,10 +4923,9 @@ checkServiceUpdateAvailable(..)
 Check for Update.
 Check for a Service Instance if there is an update that can be
 requested.
-setCustomAccessToken(..)
-Set Custom Access Token.
-Set a custom access token for custom authentication against
-TSM-Backend. When not set, a default built-in authentication
+setAccessToken(..)
+Set Access Token.
+Set a custom access token for authentication against TSM-Backend. When not set, a default built-in authentication
 mechanism is used.
 4.2.1.2 Function Callbacks
 It is possible to provide an optional ProcessListener object for the functions deployService, updateService,
@@ -4943,7 +4949,7 @@ from TSM-Backend REST-API (see Section 4.1).
 • The authentication check mechanism of the secure component issuer SHALL be used before accessing the
 secure component.
 4 Interfaces
-Federal Office for Information Security 89
+90 Federal Office for Information Security
 • A TSM provider SHALL configure restrictive database writing access, such that there is no direct or
 indirect writing access to any data type described in Section 4.1.4 from interface between TSM-API-SDK
 and TSM-Backend.
@@ -4994,7 +5000,7 @@ all parameters defined (by spParameters) for the Service or
 overwritten via certain Flavor in the TSM-Backend.
 M
 4 Interfaces
-90 Federal Office for Information Security
+Federal Office for Information Security 91
 Attribute
 Type
 Description
@@ -5055,7 +5061,7 @@ O
 An ActivateServiceCommand requests the activation of a Service, e.g. setting application states to
 “SELECTABLE” and creating Access Rules for device applications as configured by the SP via the REST-API.
 4 Interfaces
-Federal Office for Information Security 91
+92 Federal Office for Information Security
 After successful execution, the Service Instance reaches the UnderDeployment:Activated (14) state. Depending on
 the value of suspensionControl, the Service instance reaches either Deployed:Operational (21) or
 Deployed:Suspended (22) once the deployment, respective update, is complete.
@@ -5121,7 +5127,7 @@ A number representing a percentage value to indicate the relative
 progress of the action execution.
 M
 4 Interfaces
-92 Federal Office for Information Security
+Federal Office for Information Security 93
 Attribute
 Type
 Description
@@ -5194,7 +5200,7 @@ request and thus empty for install and activate
 requests.
 C
 4 Interfaces
-Federal Office for Information Security 93
+94 Federal Office for Information Security
 4.2.3.11 PersonalizationResult
 A PersonalizationResult contains data of an executed PersonalizeServiceCommand.
 Attribute
@@ -5272,8 +5278,21 @@ profileId
 string
 ID of the SecureComponentProfile.
 C
+4.2.3.14 AccessToken
+The AccessToken is an optional interface to register a custom access token for message authentication with TSM-Backend. The SP may provide an implementation of the AccessToken and register it via the TSM-API method
+setAccessToken (see Section 4.2.5.9). When registered, the TSM-API-SDK will call the method getToken of the
 4 Interfaces
-94 Federal Office for Information Security
+Federal Office for Information Security 95
+AccessToken to retrieve the authentication token for TSMS communication. The getToken method is called for
+each TSM-Backend request. Caching the token and re-questing a new one when expired, must be implemented by
+the SP.
+Callback method
+Description
+getToken()
+Callback method called for each request to TSM-Backend. The implementation of
+this interface handles token caching and token expiration. The access token is
+only active, if the implementation is registered via TSM-API method
+setAccessToken.
 4.2.4 Common Definitions
 4.2.4.1 Service Instance States
 List of possible states of a Service Instance. All life-cycle states of a Service Instance are described in detail in
@@ -5334,6 +5353,11 @@ DeployService method call with finalize true.
 SERVICE_UPDATE_INSTALLATION
 UpdateService method call with install command as
 last serviceCommand and finalize false.
+4 Interfaces
+96 Federal Office for Information Security
+#
+Operation Name
+Description
 21
 SERVICE_UPDATE_PERSONALIZATION
 UpdateService method call with personalization
@@ -5349,11 +5373,6 @@ UpdateService method call with finalize true.
 SERVICE_SUSPENSION
 SuspendOrResumeService method call with
 suspensionControl true.
-4 Interfaces
-Federal Office for Information Security 95
-#
-Operation Name
-Description
 31
 SERVICE_RESUMPTION
 SuspendOrResumeService method call with
@@ -5392,6 +5411,10 @@ TSM not available: <<details>>
 Internal error: <<details>>
 3: NETWORK_CONNECTION_ERROR
 Network connection error: <<details>>
+4 Interfaces
+Federal Office for Information Security 97
+Error Category: Name
+Error Message
 4: INVALID_ARGUMENT
 Invalid argument: <<details>>
 5: NOT_AUTHENTICATED
@@ -5404,10 +5427,6 @@ Secure component error: <<details>>
 No eligible SC: <<details>>
 9: SC_INACCESSIBLE
 SC inaccessible: <<details>
-4 Interfaces
-96 Federal Office for Information Security
-Error Category: Name
-Error Message
 10: SC_CHANNEL_NOT_AVAILABLE
 SC channel not available: <<details>
 11: NFC_NOT_ACTIVATED
@@ -5450,16 +5469,16 @@ are:
 • Invalid argument: serviceCommands in DeployServiceRequest is only allowed to be empty if the finalize
 deployment flag is set
 • Invalid argument: serviceCommands in DeployServiceRequest contain multiple InstallServiceCommands
+4 Interfaces
+98 Federal Office for Information Security
 • Invalid argument: serviceCommands in DeployServiceRequest contain multiple
 PersonalizeServiceCommands
 • Invalid argument: version in CheckServiceDeploymentAvailableRequest has invalid format
 • Invalid argument: version in CheckServiceDeploymentAvailableRequest uses an unsupported filter
 pattern
-Error category 5: NOT_AUTHENTICATED shall be thrown in case of authentication related issues, e.g. the
-attempt to access a resource without authorization. An example error message is:
-4 Interfaces
-Federal Office for Information Security 97
-• Not authenticated: authentication failed
+Error category 5: NOT_AUTHENTICATED shall be thrown in case of authentication related issues, e.g. an error
+during the request of an access token. An example error message is:
+• Not authenticated: could not retrieve access token
 Error category 6: EXECUTION_INTERRUPTED shall be thrown when a running process execution has been
 interrupted. The reason for this could be a broken connection, or that the user has manually stopped a service.
 Example error messages are:
@@ -5493,23 +5512,22 @@ state not supported by the method. Example error messages are:
 • Not allowed: invalid state transfer from DeployedOperational to UnderDeploymentInstalled
 • Not allowed: invalid state transfer from NotDeployed to UnderDeploymentActivated
 • Not allowed: invalid state transfer from UnderDeploymentPersonalized to UnderDeploymentPersonalized
+4 Interfaces
+Federal Office for Information Security 99
 • Not allowed: service command 'install' has already been executed
 Error category 14: ALREADY_EXISTS shall be thrown if a Service Provider tries to create a Service Instance
 although there already exists a Service Instance on one of the accessible Secure Components. Example error
 messages are:
 • Already exists: service already instantiated
-Error category 15: UNAUTHORIZED shall be thrown if a Service Provider tries to access a Service or Service
-Instance which he does not own. Example error messages are:
-4 Interfaces
-98 Federal Office for Information Security
+Error category 15: UNAUTHORIZED shall be thrown if an app is not authorized to use the services of the TSM.
+An example error message is:
 • Unauthorized: app not authorized
-• Unauthorized: could not retrieve access token
 Error category 16: ISSUER_ERROR shall be thrown when an error related to a Secure Component issuer
 infrastructure occurs. Example error messages are:
 • Issuer error: issuer TSM not available
 • Issuer error: SCI key management system caused an unexpected error
-Error category 17: NOT_FOUND shall be thrown when an operation, with a resource that does not exist, is
-requested via the TSM-API. Example error messages are:
+Error category 17: NOT_FOUND shall be thrown if an operation with a resource that does not exist, or that is not
+available for a SP, is requested via the TSM-API. Example error messages are:
 • Not found: serviceId 910bbd5a-1749-4737-b855-a520f1bc9da4 does not exist
 • Not found: serviceInstanceId d8c791a1-c39e-41f7-a2ec-f8cdfb57406a does not exist
 • Not found: version 1.1.1 does not exist
@@ -5537,6 +5555,8 @@ have the same result of the same set of accessible Secure Components.
 Once a TSM created a Service Instance for a certain Service, the Service Instance ID for this concrete Service on
 this concrete handset will be always the same, until the Service Instance is terminated. After the Termination of a
 Service Instance, this method must be used to create a new Service Instance ID.
+4 Interfaces
+100 Federal Office for Information Security
 In this way, a Service provisioned prior to a reinstallation of the SP app can be checked for its life-cycle state.
 With this, secure applications can be completed, updated, used or removed after a reinstallation of the
 corresponding SP app during any life-cycle state.
@@ -5549,12 +5569,6 @@ string
 Service for which a new service instance
 shall be created.
 M
-4 Interfaces
-Federal Office for Information Security 99
-Parameter
-Type
-Description
-Mand.
 version
 string
 Version of the Service that shall be
@@ -5620,6 +5634,12 @@ List<ServiceInstance>
 A list of ServiceInstances present on the device.
 Is empty if no Service Instance exists.
 M
+4 Interfaces
+Federal Office for Information Security 101
+Attribute
+Type
+Description
+Mand.
 executionStatus
 int
 An integer value indicating the method execution result.
@@ -5632,8 +5652,6 @@ executionMessage
 string
 An executionMessage, see Section 4.2.4.4.
 C
-4 Interfaces
-100 Federal Office for Information Security
 4.2.5.3 Deploy Service
 Deploy a Service and transfer the Service Instance to the desired state. All parts of the secure application (e.g. multiple Java Card Applets, if applicable) are deployed on the device.
 This method is used to deploy a Service Instance for the first time. If a Service Instance is already deployed on the
@@ -5681,6 +5699,12 @@ string
 Denotes the Service Instance for which
 deployment is requested.
 M
+4 Interfaces
+102 Federal Office for Information Security
+Parameter
+Type
+Description
+Mand.
 serviceCommands
 List<ServiceCommand>
 A list of service commands to be executed as
@@ -5693,12 +5717,6 @@ command entries of:
 The order of the commands depends on the
 live-cycle state of the Service.
 M
-4 Interfaces
-Federal Office for Information Security 101
-Parameter
-Type
-Description
-Mand.
 finalizeDeployment
 boolean
 Indicates whether the service deployment or
@@ -5758,6 +5776,8 @@ modifications. A Service Instance will only be removed and reinstalled, either i
 configurations and parameters of the install, activate or personalize commands changed. To prevent data loss
 during the update (see above), a SP may want to use a separate part of the secure application just for data
 management that is not modified during updates.
+4 Interfaces
+Federal Office for Information Security 103
 The method will fail if no Service Instance is deployed, i.e. if install, activate or personalize commands from the
 deployService method are not finished yet. This means the method will only be successful, when the Service
 Instance is in one of the following states:
@@ -5765,8 +5785,6 @@ Instance is in one of the following states:
 • SUSPENDED
 The method will fail if the requested Version of the service is already installed.
 For the service commands, the same restrictions as described in the deployService method are valid (see Section 4.2.5.3).
-4 Interfaces
-102 Federal Office for Information Security
 Parameter
 Type
 Description
@@ -5836,6 +5854,12 @@ esult>
 List of ServiceCommandResult that represent
 the results of the requested service commands.
 M
+4 Interfaces
+104 Federal Office for Information Security
+Attribute
+Type
+Description
+Mand.
 reader
 string
 The name of the SE reader that can be used to
@@ -5849,8 +5873,6 @@ If this method called with no Service deployed on the handset, it will fail (exe
 not fail, if a Service Instance is s suspended repeatedly in a row or resumed repeatedly in a row. This means the
 method will only be successful, when the Service Instance is in one of the following states:
 • OPERATIONAL
-4 Interfaces
-Federal Office for Information Security 103
 • SUSPENDED
 Parameter
 Type
@@ -5909,6 +5931,12 @@ listener
 ProcessListener
 Callback object. May be null.
 O
+4 Interfaces
+Federal Office for Information Security 105
+Parameter
+Type
+Description
+Mand.
 <<return type>>
 Future<TerminateServiceResult>
 Returns a proxy object indicating deferred
@@ -5928,8 +5956,6 @@ M
 4.2.5.7 Check Service Deployment Available
 Check if there is at least one secure component present on the handset for which an applicable Service deployment
 is available. A deployment is considered applicable if the SP has provided at least one entry in the
-4 Interfaces
-104 Federal Office for Information Security
 allowedDeployments of the requested Version that maps a Flavor to a SecureComponentProfile instantiated by the
 secure components present on the handset.
 This method is used to estimate the eligibility of a device for the deployment of the indicated Service. The result
@@ -5955,6 +5981,12 @@ string
 Service for which the availability of a deployment shall be
 checked.
 M
+4 Interfaces
+106 Federal Office for Information Security
+Parameter
+Type
+Description
+Mand.
 version
 string
 Version of the Service that shall be checked.
@@ -5984,8 +6016,6 @@ Returns a proxy object indicating deferred execution
 which will be fulfilled when the expected
 ServiceDeploymentAvailableResult response is available.
 M
-4 Interfaces
-Federal Office for Information Security 105
 The return type ServiceDeploymentAvailableResult has the following attributes:
 Attribute
 Type
@@ -6007,6 +6037,12 @@ Is empty if device is not eligible, if no Version is
 available, or if executionStatus >
 0.
 C
+4 Interfaces
+Federal Office for Information Security 107
+Attribute
+Type
+Description
+Mand.
 newTechnicalInformation
 TechnicalInformation
 Technical Information of the to be deployed
@@ -6048,8 +6084,6 @@ Even with a higher version of the service available (and thus an update availabl
 Service Instance and the Flavor of the future Service Instance may not differ. In this case, depending on the
 motivation for the update, a SP may decide not to perform an update. A SP can check for this situation by
 comparing the FlavorIds of the current and the future Service Instance prior to an update.
-4 Interfaces
-106 Federal Office for Information Security
 Parameter
 Type
 Description
@@ -6059,6 +6093,12 @@ string
 Service Instance for which the availability of an update
 shall be checked.
 M
+4 Interfaces
+108 Federal Office for Information Security
+Parameter
+Type
+Description
+Mand.
 newVersion
 string
 Version of the Service that shall be checked.
@@ -6110,7 +6150,7 @@ executionStatus >
 0.
 C
 4 Interfaces
-Federal Office for Information Security 107
+Federal Office for Information Security 109
 newTechnicalInformation TechnicalInformation TechnicalInformation of the updated Service
 Instance (not the currently present Service Instance). Information about the underlying
 platform profile and list of all parameters defined
@@ -6132,27 +6172,26 @@ executionMessage
 string
 An executionMessage (see Section 4.2.4.4).
 C
-4.2.5.9 Set Custom Access Token
+4.2.5.9 Set Access Token
 The TSM-API-SDK SHOULD have a default implementation to authenticate communication-requests with
 external servers like TSM-Backend. This means, all API methods (getServiceInstances, deployService etc.) are
 authenticated via built-in access control, also when the SP does not provide a custom access token.
-In case an SP does not want to use the default built-in authentication mechanism, the method
-setCustomAccessToken can be used to set a custom access token. The SDK uses this long-term token to create a
-short-term bearer token for each method call to external servers.
+In case an SP does not want to use the default built-in authentication mechanism, the method setAccessToken can
+be used to set a custom access token.
 Parameter
 Type
 Description
 Mand.
 token
-string
+AccessToken
 Custom access token to authenticate.
 M
 <<returnType>>
-SetCustomAccessTokenResult
+SetAccessTokenResult
 Returns an object which contains the result of
 the request.
 M
-The return type SetCustomAccessTokenResult has the following attributes:
+The return type SetAccessTokenResult has the following attributes:
 Attribute
 Type
 Description
@@ -6176,7 +6215,7 @@ following technologies:
 • JavaCard Applets as secure applications
 • Android as handset operation system
 4 Interfaces
-108 Federal Office for Information Security
+110 Federal Office for Information Security
 4.2.6.1 Prerequisites
 The TSM-API requires certain configurations before it can be used to install JavaCard Applets on a handset.
 Therefore usually the SP develops use-case specific JavaCard Applets and uploads them to the TSM-Backend via
@@ -6226,7 +6265,7 @@ serviceInstance = serviceInstances[0]
 // In Error state? ->
 remove the service
 4 Interfaces
-Federal Office for Information Security 109
+Federal Office for Information Security 111
 if (serviceInstance.state == IN_ERROR) {
 terminateService(serviceInstance.id)
 }
@@ -6270,7 +6309,7 @@ For secure components that are accessed by the Open Mobile API, an Access Contro
 device applications access based on access rules. On Android devices, a device application is identified by a
 “DeviceAppID” which is a hash value of the certificate of the device Application Provider (in this case, the SP).
 4 Interfaces
-110 Federal Office for Information Security
+112 Federal Office for Information Security
 When the TSM-API is integrated as a library the TSM-API itself carries no certificate that is retrievable by the
 Access Control Enforcer, which is why the TSM-API will use the DeviceAppID of the SP app it has been
 integrated into.
@@ -6323,7 +6362,7 @@ values are:
 0: ErrorType
 M
 4 Interfaces
-Federal Office for Information Security 111
+Federal Office for Information Security 113
 Attribute
 Type
 Description
@@ -6397,7 +6436,7 @@ executed. One of:
 • 25 IN_ERROR
 M
 4 Interfaces
-112 Federal Office for Information Security
+114 Federal Office for Information Security
 The executionStatus and executionMessage contain the information defined in TSM-API (see Section 4.2.4.4).
 4.3.4 Interface Methods
 4.3.4.1 Send Process Result
@@ -6416,7 +6455,7 @@ Status-Code
 Response Body
 -
 4 Interfaces
-Federal Office for Information Security 113
+Federal Office for Information Security 115
 Appendix A: Attestation Token
 A.1
 Attestation Token Provisioning
@@ -6497,7 +6536,7 @@ mandatory
 FlavorId
 mandatory
 4 Interfaces
-114 Federal Office for Information Security
+116 Federal Office for Information Security
 tag
 length
 data / description
@@ -6550,7 +6589,7 @@ attestationTokenBody AttestationTokenBody,
 attestationTokenSignature OCTET STRING -- the signature over the
 attestationTokenBody data
 4 Interfaces
-Federal Office for Information Security 115
+Federal Office for Information Security 117
 -- This version of the ASN.1 module assumes that ECDSA with the secp256r1 curve is
 applied
 -- Reference: SEC2 "Recommended Elliptic Curve Domain Parameters", v2.0, 2010, clause 2.4.2
@@ -6597,7 +6636,7 @@ SubjectKeyIdentifier::= OCTET STRING
 -- as defined in RFC 5280 section 4.2.1.2 (i.e. a 160 bit hash value)
 END
 Terms and Abbreviations
-116 Federal Office for Information Security
+118 Federal Office for Information Security
 Terms and Abbreviations
 Abbreviation
 Meaning
@@ -6670,7 +6709,7 @@ Coordinated Universal Time
 UUID
 Universally Unique Identifier
 4 Interfaces
-Federal Office for Information Security 117
+Federal Office for Information Security 119
 References
 [GPC_SPE_034]
 GlobalPlatform, “Card Specification, V2.3.1”, 2018.

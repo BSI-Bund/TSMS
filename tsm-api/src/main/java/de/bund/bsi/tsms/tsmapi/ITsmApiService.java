@@ -9,7 +9,7 @@ import de.bund.bsi.tsms.tsmapi.results.ISuspendOrResumeResult;
 import de.bund.bsi.tsms.tsmapi.results.ITerminateServiceResult;
 import de.bund.bsi.tsms.tsmapi.results.IServiceDeploymentAvailableResult;
 import de.bund.bsi.tsms.tsmapi.results.IServiceUpdateAvailableResult;
-import de.bund.bsi.tsms.tsmapi.results.ISetCustomAccessTokenResult;
+import de.bund.bsi.tsms.tsmapi.results.ISetAccessTokenResult;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -444,16 +444,12 @@ public interface ITsmApiService {
      * provide a custom access token.<br>
      * <br>
      * In case an SP does not want to use the default built-in authentication
-     * mechanism, the method setCustomAccessToken can be used to set a custom access
-     * token. The SDK uses this long-term token to create a short-term bearer token
-     * for each a method call to external servers.
+     * mechanism, this method can be used to set a custom access token.
      *
      * @param token
-     *            The new token.
-     * @return A proxy object indicating deferred execution which will be fulfilled
-     *         when the expected {@link ISetCustomAccessTokenResult} response is
-     *         available.
+     *            Custom access token implementation to authenticate.
+     * @return Returns an object which contains the result of the request.
      */
-    CompletableFuture<ISetCustomAccessTokenResult> setCustomAccessToken(String token);
+    ISetAccessTokenResult setAccessToken(ITsmAccessToken token);
 
 }

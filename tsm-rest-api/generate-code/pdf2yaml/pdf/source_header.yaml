@@ -37,7 +37,7 @@ info:
 #* PersonalizationScript - A PersonalizationScript is a script a SP may use to specify installation instructions or request TSM-support for, e.g., the personalization of a secure application during the provisioning process.
 #* Certificate - A Certificate is used for the communication between TSM and SP Online System and also in PersonalizationScripts for applet provisioning and personalization.
 #* SposConfig - SposConfig is used to configure communication with the Service Provider Online System.
-  version: "1.0.2"
+  version: "1.0.3"
   title: "BSI-TR-03165: TSM-Backend"
   termsOfService: https://www.bsi.bund.de/DE/Service/Nutzungsbedingungen/Nutzungsbedingungen_node.html
   contact:

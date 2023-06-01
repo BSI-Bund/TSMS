@@ -63,7 +63,7 @@ Name | Type | Description  | Notes
 
 <a name="listScpRelatedElfs"></a>
 # **listScpRelatedElfs**
-> List&lt;ExecutableLoadFile&gt; listScpRelatedElfs(scpId)
+> List&lt;Object&gt; listScpRelatedElfs(scpId)
 
 List all ELFs that use a certain SecureComponentProfile.
 
@@ -84,7 +84,7 @@ ApiClient defaultClient = Configuration.getDefaultApiClient();
 SecureComponentProfilesApi apiInstance = new SecureComponentProfilesApi();
 UUID scpId = new UUID(); // UUID | identifier of the referred Scp
 try {
-    List<ExecutableLoadFile> result = apiInstance.listScpRelatedElfs(scpId);
+    List<Object> result = apiInstance.listScpRelatedElfs(scpId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling SecureComponentProfilesApi#listScpRelatedElfs");
@@ -100,7 +100,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;ExecutableLoadFile&gt;**](ExecutableLoadFile.md)
+**List&lt;Object&gt;**
 
 ### Authorization
 

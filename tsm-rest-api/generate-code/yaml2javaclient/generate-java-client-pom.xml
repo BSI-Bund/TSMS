@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.bund.bsi.tsms.tsm-rest-api</groupId>
     <artifactId>generate-java-client</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>pom</packaging>
 
     <build>
@@ -226,7 +226,7 @@
         <jodatime-version>2.12.2</jodatime-version>
         <junit-version>4.13.2</junit-version>
 
-        <yaml>tsm-rest-api-1.0.2.yaml</yaml>
+        <yaml>tsm-rest-api-1.0.3.yaml</yaml>
         <dest>java-client</dest>
     </properties>
 

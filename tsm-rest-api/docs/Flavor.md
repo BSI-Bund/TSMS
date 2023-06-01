@@ -4,7 +4,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | [**UUID**](UUID.md) | Unique identification of the Flavor. The id shall be used to check the necessity of applet reinstallation during the Version update process, for use cases when the same Flavor is used for different Versions. |  [optional]
-**serviceId** | [**UUID**](UUID.md) | ID of the Service owning the Flavor. | 
+**serviceId** | [**UUID**](UUID.md) | ID of the Service owning the Flavor. |  [optional]
 **name** | **String** | Name of this Flavor. |  [optional]
 **description** | **String** | Additional description for this Flavor. |  [optional]
 **creationDate** | [**DateTime**](DateTime.md) | A datetime string (creation of Flavor). |  [optional]

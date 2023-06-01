@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.bund.bsi.tsms</groupId>
     <artifactId>tsm-api</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <name>TSM-API</name>
     <description>The TSM-API is a Java realization of the TSM-API interface specified in BSI-TR-03165. This interface offers methods to install and remove JavaCard applets on eSEs (embedded Secure Elements) or eSIMs.</description>

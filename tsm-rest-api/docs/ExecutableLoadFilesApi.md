@@ -19,7 +19,7 @@ Method | HTTP request | Description
 
 <a name="createElfAndUploadBinary"></a>
 # **createElfAndUploadBinary**
-> ExecutableLoadFile createElfAndUploadBinary(elfFilename, elfFile)
+> InlineResponse200 createElfAndUploadBinary(elfFilename, elfFile)
 
 Create a new ExecutableLoadFile and upload corresponding binary d...
 
@@ -41,7 +41,7 @@ ExecutableLoadFilesApi apiInstance = new ExecutableLoadFilesApi();
 String elfFilename = "elfFilename_example"; // String | 
 File elfFile = new File("elfFile_example"); // File | 
 try {
-    ExecutableLoadFile result = apiInstance.createElfAndUploadBinary(elfFilename, elfFile);
+    InlineResponse200 result = apiInstance.createElfAndUploadBinary(elfFilename, elfFile);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ExecutableLoadFilesApi#createElfAndUploadBinary");
@@ -58,7 +58,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ExecutableLoadFile**](ExecutableLoadFile.md)
+[**InlineResponse200**](InlineResponse200.md)
 
 ### Authorization
 
@@ -120,7 +120,7 @@ null (empty response body)
 
 <a name="getElf"></a>
 # **getElf**
-> ExecutableLoadFile getElf(elfId)
+> InlineResponse200 getElf(elfId)
 
 Get details of a certain ExecutableLoadFile.
 
@@ -141,7 +141,7 @@ ApiClient defaultClient = Configuration.getDefaultApiClient();
 ExecutableLoadFilesApi apiInstance = new ExecutableLoadFilesApi();
 UUID elfId = new UUID(); // UUID | identifier of the referred Elf
 try {
-    ExecutableLoadFile result = apiInstance.getElf(elfId);
+    InlineResponse200 result = apiInstance.getElf(elfId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ExecutableLoadFilesApi#getElf");
@@ -157,7 +157,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ExecutableLoadFile**](ExecutableLoadFile.md)
+[**InlineResponse200**](InlineResponse200.md)
 
 ### Authorization
 
@@ -478,7 +478,7 @@ Name | Type | Description  | Notes
 
 <a name="listElfs"></a>
 # **listElfs**
-> List&lt;ExecutableLoadFile&gt; listElfs()
+> List&lt;Object&gt; listElfs()
 
 List all ExecutableLoadFiles of the authenticated ServiceProvider.
 
@@ -498,7 +498,7 @@ ApiClient defaultClient = Configuration.getDefaultApiClient();
 
 ExecutableLoadFilesApi apiInstance = new ExecutableLoadFilesApi();
 try {
-    List<ExecutableLoadFile> result = apiInstance.listElfs();
+    List<Object> result = apiInstance.listElfs();
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ExecutableLoadFilesApi#listElfs");
@@ -511,7 +511,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**List&lt;ExecutableLoadFile&gt;**](ExecutableLoadFile.md)
+**List&lt;Object&gt;**
 
 ### Authorization
 
@@ -574,7 +574,7 @@ Name | Type | Description  | Notes
 
 <a name="modifyElfAndOverwriteBinary"></a>
 # **modifyElfAndOverwriteBinary**
-> ExecutableLoadFile modifyElfAndOverwriteBinary(elfFilename, elfFile, elfId)
+> InlineResponse200 modifyElfAndOverwriteBinary(elfFilename, elfFile, elfId)
 
 Update details and overwrite binary data of an existing Executabl...
 
@@ -597,7 +597,7 @@ String elfFilename = "elfFilename_example"; // String |
 File elfFile = new File("elfFile_example"); // File | 
 UUID elfId = new UUID(); // UUID | identifier of the referred Elf
 try {
-    ExecutableLoadFile result = apiInstance.modifyElfAndOverwriteBinary(elfFilename, elfFile, elfId);
+    InlineResponse200 result = apiInstance.modifyElfAndOverwriteBinary(elfFilename, elfFile, elfId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ExecutableLoadFilesApi#modifyElfAndOverwriteBinary");
@@ -615,7 +615,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ExecutableLoadFile**](ExecutableLoadFile.md)
+[**InlineResponse200**](InlineResponse200.md)
 
 ### Authorization
 

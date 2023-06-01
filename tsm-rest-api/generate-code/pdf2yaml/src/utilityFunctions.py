@@ -3,34 +3,7 @@ generally useful functions are kept here
 to handle the basic level of text processing
 """
 
-import os
 import re
-
-# from tabnanny import verbose
-
-###################
-# Path Operations #
-###################
-
-
-def pathSplitL(path: str, n_times: int) -> str:
-    """
-    walks back path n_times
-    returns resulting path
-    """
-    if n_times > 0:
-        return pathSplitL(os.path.split(os.path.abspath(path))[0], n_times - 1)
-    return path
-
-
-def pathSplitR(path: str, n_times: int) -> str:
-    """
-    walks back path n_times
-    returns right split of result
-    """
-    if n_times > 0:
-        return pathSplitR(os.path.split(os.path.abspath(path))[0], n_times - 1)
-    return os.path.split(path)[1]
 
 
 ######################
@@ -115,18 +88,16 @@ def getColumnFromTable(table: list, begin: int, end: int, step: int) -> list:
 ###############
 
 
-def getOperationIdsWithoutDoubles(interface_methods: list) -> list:
+def getOperationIdsWithoutDoubles(interface_methods: list) -> dict:
     """
     generate operation_ids without double entries
     if an entry is doubled, supkapitel is appended
     len of returned list == len of files list
     """
-    # re_list_linked = re.compile(r'}/[\w]+/{')
-
     # create result lists
     supkapitel = []
     kapitel = []
-    for i, interface_method in enumerate(interface_methods):
+    for _, interface_method in enumerate(interface_methods):
         # handle latest supkapitel name
         if interface_method.type_ == 'supkapitel':
             last_supkapitel = interface_method.title
@@ -136,7 +107,7 @@ def getOperationIdsWithoutDoubles(interface_methods: list) -> list:
             )
             # append kapitel and supkapitel lists
             supkapitel.append(last_supkapitel)
-            kapitel.append('_')
+            kapitel.append((interface_method.num, 'XXX', last_supkapitel))
         # handle latest kapitel name
         elif interface_method.type_ == 'kapitel':
             last_kapitel = interface_method.title
@@ -152,36 +123,35 @@ def getOperationIdsWithoutDoubles(interface_methods: list) -> list:
             last_kapitel = shortenCommonTerms(last_kapitel)
             last_kapitel = makeStringCamelCase(last_kapitel, ' ')
             # append kapitel and supkapitel lists
-            supkapitel.append(last_supkapitel)
-            kapitel.append(last_kapitel)
+            kapitel.append((interface_method.num, last_kapitel, last_supkapitel))
     # check for doubles in kapitel list
     doubles = []
-    for i, kap_i in enumerate(kapitel):
-        for j, kap_j in enumerate(kapitel):
-            if (kap_i == kap_j) and (i != j):
-                doubles.append(i)
+    for num_i, kap_i, _ in kapitel:
+        for num_j, kap_j, _ in kapitel:
+            if (kap_i == kap_j) and (num_i != num_j):
+                doubles.append(num_i)
                 break
     # construct operation_ids according to doubles
-    operation_ids = []
-    for i, kap in enumerate(kapitel):
-        if i in doubles or 'Related' in kap:
-            operation_ids.append(kap + '_' + supkapitel[i])
+    operation_ids = {}
+    for num, kap, supkap in kapitel:
+        if num in doubles or 'Related' in kap:
+            operation_ids[num] = kap + '_' + supkap
         else:
-            operation_ids.append(kap)
+            operation_ids[num] = kap
     return operation_ids
 
 
-def renameOperationIdsWithOneUnderscore(operation_ids: list) -> list:
+def renameOperationIdsWithOneUnderscore(operation_ids: dict) -> None:
     """
     combined operation_ids from previous doubles check are renamed
     this is for better readability
     """
-    for i, operation_id in enumerate(operation_ids):
+    for key in operation_ids.keys():
         # entries with exactly one underscore
-        if ('_' in operation_id) and not '__' in operation_id:
+        if ('_' in operation_ids[key]) and not '__' in operation_ids[key]:
             # general handling
-            front = operation_id.split('_', 1)[0]
-            back = upperFirstChar(operation_id.split('_', 1)[1])
+            front = operation_ids[key].split('_', 1)[0]
+            back = upperFirstChar(operation_ids[key].split('_', 1)[1])
             # singular enforced
             if back[-1] == 's':
                 back = back[:-1]
@@ -191,8 +161,7 @@ def renameOperationIdsWithOneUnderscore(operation_ids: list) -> list:
             back = back.replace('PersoScript', 'Script')
             # location of first upper
             first_upper = iFirstUpperChar(front)
-            operation_ids[i] = front[:first_upper] + back + front[first_upper:]
-    return operation_ids
+            operation_ids[key] = front[:first_upper] + back + front[first_upper:]
 
 
 ###################
@@ -291,14 +260,6 @@ class BColors:
 ###########
 
 if __name__ == '__main__':
-    print('__file__               =', __file__)
-    print()
-    print('pathSplitL(__file__,3) =', pathSplitL(__file__, 3))
-    print('pathSplitL(__file__,0) =', pathSplitL(__file__, 0))
-    print()
-    print('pathSplitR(__file__,3) =', pathSplitR(__file__, 3))
-    print('pathSplitR(__file__,0) =', pathSplitR(__file__, 0))
-    print()
     print(
         "shortenCommonTerms('ApplicationConfig','')      =",
         shortenCommonTerms('ApplicationConfig', ''),
@@ -338,10 +299,10 @@ if __name__ == '__main__':
     )
     print()
     _TABELLE_ = [
-        's0z0', 's1z0', 's2z0', 's3z0',
-        's0z1', 's1z1', 's2z1', 's3z1',
-        's0z2', 's1z2', 's2z2', 's3z2',
-        's0z3', 's1z3', 's2z3', 's3z3',
+        's0z0','s1z0','s2z0','s3z0',
+        's0z1','s1z1','s2z1','s3z1',
+        's0z2','s1z2','s2z2','s3z2',
+        's0z3','s1z3','s2z3','s3z3',
     ]
     print(
         'getColumnFromTable(_TABELLE_,1,len(_TABELLE_),4) = ',

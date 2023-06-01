@@ -1,8 +1,8 @@
 # java-client
 
 BSI-TR-03165: TSM-Backend
-- API version: 1.0.2
-  - Build date: 2023-04-05T12:51:54.686082800+02:00[Europe/Berlin]
+- API version: 1.0.3
+  - Build date: 2023-05-26T08:54:35.802428100+02:00[Europe/Berlin]
 
 This visual representation describes the TSM-Backend API for a Trusted Service Management System (TSMS) using Swagger UI. It serves as a complement to the [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html) guideline. In case of any discrepancies, please refer to the written guideline.  A TSM-Backend is an IT system within a TSMS that offers management functions in the form of a REST-API. The TSM-Backend is a secure repository for various configurations, flavors, and resources required for installing an JavaCard Applet on secure elements such as eSE and eSIM. With this API, service providers can create, read, update, and delete files and configuration settings required for managing their Applets.  __Functionality:__ * upload JavaCard *.cap files to TSM-Backend * define a service which consists of one or multiple *.cap files * versionize the service * define hardware variants for each service - called flavors  * specify technical requirements for each flavor, e.g. minimal JavaCard version 
 
@@ -40,7 +40,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>de.bund.bsi.tsms.tsm-rest-api</groupId>
   <artifactId>java-client</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -50,7 +50,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "de.bund.bsi.tsms.tsm-rest-api:java-client:1.0.2"
+compile "de.bund.bsi.tsms.tsm-rest-api:java-client:1.0.3"
 ```
 
 ### Others
@@ -63,7 +63,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/java-client-1.0.2.jar`
+* `target/java-client-1.0.3.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -373,6 +373,7 @@ Class | Method | HTTP request | Description
  - [FeatureConfig](docs/FeatureConfig.md)
  - [Flavor](docs/Flavor.md)
  - [GeneralError](docs/GeneralError.md)
+ - [InlineResponse200](docs/InlineResponse200.md)
  - [InstallConfig](docs/InstallConfig.md)
  - [PersonalizationConfig](docs/PersonalizationConfig.md)
  - [PersonalizationScript](docs/PersonalizationScript.md)

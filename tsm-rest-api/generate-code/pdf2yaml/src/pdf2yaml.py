@@ -6,11 +6,9 @@ to read the latest TR pdf-file stored in the pdf directory
 import time
 
 import sys
-import os
-import re
+from pathlib import Path
 
 from sourceHandling import Source
-from utilityFunctions import pathSplitL
 
 import pdf2txt
 
@@ -21,7 +19,7 @@ def dateKey(file):
     """
     key-function, to only point to dates at the end of a filename
     """
-    return file[-12:-4]
+    return str(file)[-12:-4]
 
 
 def chooseFile():
@@ -31,36 +29,35 @@ def chooseFile():
     choose the latest valid file with input parameter 'latest'
     """
 
-    filename = 'latest'
+    arg = 'latest'
     if len(sys.argv) == 2:
-      print("filename argument: " + sys.argv[1])
-      filename = sys.argv[1]
+        print('filename argument: ' + sys.argv[1] + '\n')
+        arg = sys.argv[1]
 
+    root_dir = Path(__file__).parents[1]
     # find latest TR file
-    if filename.lower() == 'latest':
-      files = []
-      filenames = []
-      for _, _, files in os.walk(os.path.join('.', 'pdf')):
-        pass
-      for file in files:
-        if "tr" in file.lower():
-            filenames.append(file)
-      filenames.sort(key=dateKey)
-      filename = os.path.join(os.getcwd(), 'pdf', filenames[-1])
+    if arg.lower() == 'latest':
+        files = []
+        for i in root_dir.glob('pdf/*.pdf'):
+            files.append(i.name)
+        files.sort(key=dateKey)
+        filename = root_dir / 'pdf' / files[-1]
+    elif arg == 'txt':
+        filename = root_dir / 'pdf' / 'tr_03165_source.txt'
     else:
-      filename = os.path.join(os.getcwd(), 'pdf', filename)
+        filename = root_dir / 'pdf' / arg
     
     print('TR TSMS sourcefile chosen:')
     print(filename)
     
     ## convert to TXT
-    if filename.lower().endswith("pdf"):
-      filename_pdf = filename;
-      filename = os.path.join(os.getcwd(), 'pdf', "tr_03165_source.txt")
-      pdf2txt.parseTR(filename_pdf, filename)
+    if filename.suffix == '.pdf':
+        filename_pdf = filename
+        filename = root_dir / 'pdf' / 'tr_03165_source.txt'
+        pdf2txt.parseTR(filename_pdf, filename)
 
-      print('PDF converted to text file:')
-      print(filename)
+        print('PDF converted to text file:')
+        print(filename)
 
     return filename
 
@@ -70,11 +67,11 @@ def main(yaml_name: str) -> None:
     main routine for the whole program
     """
     # choose root folder of python project as current working directory
-    os.chdir(pathSplitL(__file__, 2))
+    cwd = Path(__file__).parents[1]
 
     # define file paths
     source_name = chooseFile()
-    source_file = os.path.join('.', 'pdf', source_name)
+    source_file = Path(cwd, 'pdf', source_name)
 
     # run twice for robustness sake
     # needed if previous result is incomplete or missing

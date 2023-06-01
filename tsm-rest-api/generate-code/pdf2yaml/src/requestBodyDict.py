@@ -4,11 +4,11 @@ mode of random or fixed examples can be chosen
 """
 
 import re
-import os
+from pathlib import Path
 
 # choose 'fixedValueExamples' OR 'randomValueExamples' here
 from exampleValues import FixedValueExamples as ExampleValues
-from utilityFunctions import makeStringCamelCase, pathSplitL
+from utilityFunctions import makeStringCamelCase
 
 
 def deleteEmptyLines(text: list) -> list:
@@ -223,17 +223,15 @@ def listOfPropertyEntries(title: str, reduced_dict: dict) -> list:
     return property_entries
 
 
-def generateRequestBodyExamples(source_path: str) -> dict:
+def generateRequestBodyExamples(source_path: Path) -> dict:
     """
     function to generate examples of request bodies as dict
     """
     # define commonly used regular expressions
     re_schema_title = re.compile(r'\s{4}[\w-]+:')
 
-    # define source
-    # source_path = os.path.join('.','TSM_Backend_API.yaml')
     # check for source existence
-    if not os.path.isfile(source_path):
+    if not source_path.is_file():
         return {}
 
     # get editable-state from compiled schema-source
@@ -276,14 +274,9 @@ def generateRequestBodyExamples(source_path: str) -> dict:
 ###########
 
 if __name__ == '__main__':
-    yaml_dir = os.path.join(
-        os.getcwd().split('tsm-rest-api')[0], 'tsm-rest-api', 'tsm-rest-api.yaml'
-    )
+    yaml_dir = Path(__file__).parents[3] / 'tsm-rest-api.yaml'
 
     print(yaml_dir)
-
-    # choose root folder of python project as current working directory
-    os.chdir(pathSplitL(__file__, 2))
 
     test_dictionary = generateRequestBodyExamples(yaml_dir)
 

@@ -13,7 +13,7 @@ info:
     * define hardware variants for each service - called flavors 
     * specify technical requirements for each flavor, e.g. minimal JavaCard version
     
-  version: "1.0.2"
+  version: "1.0.3"
   title: "BSI-TR-03165: TSM-Backend"
   termsOfService: https://www.bsi.bund.de/DE/Service/Nutzungsbedingungen/Nutzungsbedingungen_node.html
   contact:
@@ -50,7 +50,7 @@ paths:
   /auth:
     post:
       tags:
-      - /auth
+        - /auth
       summary: "Authenticate to the TSM-Backend by sending a long-term token, and..."
       description: "Authenticate to the TSM-Backend by sending a long-term token, and receive a short-term bearer token. The short-term bearer token is used to access the other API functions. The long-term token is provided out of band."
       operationId: createAccessToken
@@ -81,7 +81,7 @@ paths:
   /serviceproviders/current:
     get:
       tags:
-      - /serviceproviders
+        - /serviceproviders
       summary: "Get details of the SP account."
       description: "Get details of the SP account."
       operationId: getAccountInformation
@@ -111,7 +111,7 @@ paths:
   /secure-component-profiles:
     get:
       tags:
-      - /secure-component-profiles
+        - /secure-component-profiles
       summary: "List all available SecureComponentProfiles."
       description: "List all available SecureComponentProfiles."
       operationId: listSecureComponentProfiles
@@ -140,7 +140,7 @@ paths:
   /secure-component-profiles/{scpId}:
     get:
       tags:
-      - /secure-component-profiles
+        - /secure-component-profiles
       summary: "Get details of a certain SecureComponentProfile."
       description: "Get details of a certain SecureComponentProfile."
       operationId: getSecureComponentProfile
@@ -150,7 +150,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/scpId"
+        - $ref: "#/components/parameters/scpId"
       responses:
         200:
           description: Ok
@@ -169,7 +169,7 @@ paths:
   /secure-component-profiles/{scpId}/elfs:
     get:
       tags:
-      - /secure-component-profiles
+        - /secure-component-profiles
       summary: "List all ELFs that use a certain SecureComponentProfile."
       description: "List all ELFs that use a certain SecureComponentProfile."
       operationId: listScpRelatedElfs
@@ -179,7 +179,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/scpId"
+        - $ref: "#/components/parameters/scpId"
       responses:
         200:
           description: Ok
@@ -188,7 +188,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ExecutableLoadFile"
+                  oneOf:
+                    - $ref: "#/components/schemas/ExecutableLoadFile"
+                    - $ref: "#/components/schemas/CAP"
         400:
           $ref: "#/components/responses/400Error_1002_1009"
         401:
@@ -200,7 +202,7 @@ paths:
   /secure-component-profiles/{scpId}/services:
     get:
       tags:
-      - /secure-component-profiles
+        - /secure-component-profiles
       summary: "List all Services that use a certain SecureComponentProfile."
       description: "List all Services that use a certain SecureComponentProfile."
       operationId: listScpRelatedServices
@@ -210,7 +212,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/scpId"
+        - $ref: "#/components/parameters/scpId"
       responses:
         200:
           description: Ok
@@ -231,7 +233,7 @@ paths:
   /secure-component-profiles/{scpId}/services/{serviceId}/flavors:
     get:
       tags:
-      - /secure-component-profiles
+        - /secure-component-profiles
       summary: "List all Flavors of a certain Service that use a certain SecureCo..."
       description: "List all Flavors of a certain Service that use a certain SecureComponentProfile."
       operationId: listScpRelatedFlavors
@@ -241,8 +243,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/scpId"
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/scpId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -263,7 +265,7 @@ paths:
   /secure-component-profiles/{scpId}/services/{serviceId}/versions:
     get:
       tags:
-      - /secure-component-profiles
+        - /secure-component-profiles
       summary: "List all Versions of a certain Service that use a certain SecureC..."
       description: "List all Versions of a certain Service that use a certain SecureComponentProfile."
       operationId: listScpRelatedVersions
@@ -273,8 +275,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/scpId"
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/scpId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -300,7 +302,7 @@ paths:
   /services:
     get:
       tags:
-      - /services
+        - /services
       summary: "List all Services of the authenticated ServiceProvider."
       description: "List all Services of the authenticated ServiceProvider."
       operationId: listServices
@@ -329,7 +331,7 @@ paths:
   #/services:
     post:
       tags:
-      - /services
+        - /services
       summary: "Create a new Service."
       description: "Create a new Service."
       operationId: createService
@@ -367,7 +369,7 @@ paths:
   /services/{serviceId}:
     get:
       tags:
-      - /services
+        - /services
       summary: "Get details of a certain Service."
       description: "Get details of a certain Service."
       operationId: getService
@@ -377,7 +379,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -396,7 +398,7 @@ paths:
   #/services/{serviceId}:
     put:
       tags:
-      - /services
+        - /services
       summary: "Update details of an existing Service."
       description: "Update details of an existing Service."
       operationId: modifyService
@@ -417,7 +419,7 @@ paths:
               sposConfigId: "62d2a5d8-f591-f9ec-32b3-558047c576a7"
               spParameters: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
       parameters:
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -436,7 +438,7 @@ paths:
   #/services/{serviceId}:
     delete:
       tags:
-      - /services
+        - /services
       summary: "Delete a certain Service. All data, including associated Versions..."
       description: "Delete a certain Service. All data, including associated Versions, Flavors, and ApplicationInstantiationConfigs is deleted. Referenced ELFs, ApplicationConfigs, and SposConfigs are not deleted."
       operationId: deleteService
@@ -445,7 +447,7 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         204:
           description: "item deleted successfully"
@@ -460,7 +462,7 @@ paths:
   /services/{serviceId}/flavors:
     get:
       tags:
-      - /services
+        - /services
       summary: "List all Flavors of a certain Service."
       description: "List all Flavors of a certain Service."
       operationId: listFlavors
@@ -470,7 +472,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -491,7 +493,7 @@ paths:
   #/services/{serviceId}/flavors:
     post:
       tags:
-      - /services
+        - /services
       summary: "Create a new Flavor for a certain Service."
       description: "Create a new Flavor for a certain Service."
       operationId: createFlavor
@@ -514,7 +516,7 @@ paths:
               spParameters: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
               contextSpecificAttributes: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
       parameters:
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -533,7 +535,7 @@ paths:
   /services/{serviceId}/flavors/{flavorId}:
     get:
       tags:
-      - /services
+        - /services
       summary: "Get details of a certain Flavor."
       description: "Get details of a certain Flavor."
       operationId: getFlavor
@@ -543,8 +545,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         200:
           description: Ok
@@ -563,7 +565,7 @@ paths:
   #/services/{serviceId}/flavors/{flavorId}:
     put:
       tags:
-      - /services
+        - /services
       summary: "Update details of an existing Flavor."
       description: "Update details of an existing Flavor."
       operationId: modifyFlavor
@@ -586,8 +588,8 @@ paths:
               spParameters: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
               contextSpecificAttributes: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         200:
           description: Ok
@@ -606,7 +608,7 @@ paths:
   #/services/{serviceId}/flavors/{flavorId}:
     delete:
       tags:
-      - /services
+        - /services
       summary: "Delete a certain Flavor. All data, including associated Applicati..."
       description: "Delete a certain Flavor. All data, including associated ApplicationInstantiationConfigs, is deleted. Referenced ELFs and ApplicationConfigs are not deleted. Deletion SHALL only be possible if the Flavor is not referenced in any Version and thus is not in use anywhere."
       operationId: deleteFlavor
@@ -615,8 +617,8 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         204:
           description: "item deleted successfully"
@@ -631,7 +633,7 @@ paths:
   /services/{serviceId}/flavors/{flavorId}/application-configs:
     get:
       tags:
-      - /services
+        - /services
       summary: "List all ApplicationConfigs that use a certain Flavor."
       description: "List all ApplicationConfigs that use a certain Flavor."
       operationId: listServiceRelatedAppConfigs
@@ -641,8 +643,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         200:
           description: Ok
@@ -663,7 +665,7 @@ paths:
   /services/{serviceId}/flavors/{flavorId}/executable-load-files:
     get:
       tags:
-      - /services
+        - /services
       summary: "List all ExecutableLoadFiles used by a certain Flavor."
       description: "List all ExecutableLoadFiles used by a certain Flavor."
       operationId: listLinkedElfs
@@ -673,8 +675,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         200:
           description: Ok
@@ -683,7 +685,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ExecutableLoadFile"
+                  oneOf:
+                    - $ref: "#/components/schemas/ExecutableLoadFile"
+                    - $ref: "#/components/schemas/CAP"
         400:
           $ref: "#/components/responses/400Error_1002_1009"
         401:
@@ -695,7 +699,7 @@ paths:
   #/services/{serviceId}/flavors/{flavorId}/executable-load-files:
     post:
       tags:
-      - /services
+        - /services
       summary: "Add additional ExecutableLoadFiles to a certain Flavor. In case E..."
       description: "Add additional ExecutableLoadFiles to a certain Flavor. In case ELF Ids provided are already linked to this Flavor, method will still be successful."
       operationId: linkElfs
@@ -714,8 +718,8 @@ paths:
               items:
                 type: string
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         200:
           description: Ok
@@ -734,7 +738,7 @@ paths:
   #/services/{serviceId}/flavors/{flavorId}/executable-load-files:
     put:
       tags:
-      - /services
+        - /services
       summary: "Remove ExecutableLoadFiles from a certain Flavor. In case ELF Ids..."
       description: "Remove ExecutableLoadFiles from a certain Flavor. In case ELF Ids provided are not linked to this Flavor, method will still be successful."
       operationId: unlinkElfs
@@ -753,8 +757,8 @@ paths:
               items:
                 type: string
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         200:
           description: Ok
@@ -773,7 +777,7 @@ paths:
   /services/{serviceId}/flavors/{flavorId}/publish:
     post:
       tags:
-      - /services
+        - /services
       summary: "Publish a Flavor. After publishing, the Flavor can be used for in..."
       description: "Publish a Flavor. After publishing, the Flavor can be used for installation on a handset and certain attributes cannot be modified anymore (see Section 4.1.6.4.6). The publishing status of a Flavor can be checked with the attribute publish of the Flavor. When a Flavor is once published, it is not possible to undo this process. It is valid to call this method multiple times, even if a Flavor is already published."
       operationId: publishFlavor
@@ -784,8 +788,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         200:
           description: Ok
@@ -804,7 +808,7 @@ paths:
   /services/{serviceId}/flavors/{flavorId}/versions:
     get:
       tags:
-      - /services
+        - /services
       summary: "List all Versions that use a certain Flavor."
       description: "List all Versions that use a certain Flavor."
       operationId: listServiceRelatedVersions
@@ -814,8 +818,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         200:
           description: Ok
@@ -836,7 +840,7 @@ paths:
   /services/{serviceId}/versions:
     get:
       tags:
-      - /services
+        - /services
       summary: "List all Versions of a certain Service."
       description: "List all Versions of a certain Service."
       operationId: listVersions
@@ -846,7 +850,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -867,7 +871,7 @@ paths:
   #/services/{serviceId}/versions:
     post:
       tags:
-      - /services
+        - /services
       summary: "Create a new Version of a certain Service."
       description: "Create a new Version of a certain Service."
       operationId: createVersion
@@ -885,7 +889,7 @@ paths:
             example:
               allowedDeployments: [ "c207b03f-75c5-c5ff-2460-fe6cec8ab803", "ca85a700-9b54-e89a-8b3f-60296b75c26f", "553e809b-5610-53f0-ed91-5a12fa0e65ac" ]
       parameters:
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -904,7 +908,7 @@ paths:
   /services/{serviceId}/versions/{tag}:
     get:
       tags:
-      - /services
+        - /services
       summary: "Get details of a certain Version."
       description: "Get details of a certain Version."
       operationId: getVersion
@@ -914,8 +918,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
       responses:
         200:
           description: Ok
@@ -934,7 +938,7 @@ paths:
   #/services/{serviceId}/versions/{tag}:
     put:
       tags:
-      - /services
+        - /services
       summary: "Update details of an existing Version."
       description: "Update details of an existing Version."
       operationId: modifyVersion
@@ -952,8 +956,8 @@ paths:
             example:
               allowedDeployments: [ "c207b03f-75c5-c5ff-2460-fe6cec8ab803", "ca85a700-9b54-e89a-8b3f-60296b75c26f", "553e809b-5610-53f0-ed91-5a12fa0e65ac" ]
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
       responses:
         200:
           description: Ok
@@ -972,7 +976,7 @@ paths:
   #/services/{serviceId}/versions/{tag}:
     delete:
       tags:
-      - /services
+        - /services
       summary: "Delete a certain Version. All data is deleted. Referenced Flavors..."
       description: "Delete a certain Version. All data is deleted. Referenced Flavors are not deleted."
       operationId: deleteVersion
@@ -981,8 +985,8 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
       responses:
         204:
           description: "item deleted successfully"
@@ -997,7 +1001,7 @@ paths:
   /services/{serviceId}/versions/{tag}/flavors:
     get:
       tags:
-      - /services
+        - /services
       summary: "List all Flavors used by a certain Version."
       description: "List all Flavors used by a certain Version."
       operationId: listLinkedFlavors
@@ -1007,8 +1011,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
       responses:
         200:
           description: Ok
@@ -1029,7 +1033,7 @@ paths:
   #/services/{serviceId}/versions/{tag}/flavors:
     post:
       tags:
-      - /services
+        - /services
       summary: "Add additional Flavors to a certain Version and configure the Sec..."
       description: "Add additional Flavors to a certain Version and configure the SecureComponentProfiles supported by the Flavor. In case Flavor Ids provided are already linked to this Version, the method will still be successful and it will just modify the list of supported SecureComponentProfiles."
       operationId: linkFlavors
@@ -1039,7 +1043,7 @@ paths:
       ##### Content-Type: application/json
       ##### Accept: application/json
       requestBody:
-        description: "Map keys: flavorIds, Map values: list of secureComponentProfileIds"
+        description: "Map key: flavorId, Map values: list of secureComponentProfileIds"
         required: true
         content:
           application/json:
@@ -1051,8 +1055,8 @@ paths:
                   type: string
                   maxLength: 255
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
       responses:
         200:
           description: Ok
@@ -1071,7 +1075,7 @@ paths:
   #/services/{serviceId}/versions/{tag}/flavors:
     put:
       tags:
-      - /services
+        - /services
       summary: "Remove Flavors from a certain Version. In case Flavor Ids provide..."
       description: "Remove Flavors from a certain Version. In case Flavor Ids provided are not linked to this Version, method will still be successful."
       operationId: unlinkFlavors
@@ -1090,8 +1094,8 @@ paths:
               items:
                 type: string
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
       responses:
         200:
           description: Ok
@@ -1110,7 +1114,7 @@ paths:
   /services/{serviceId}/versions/{tag}/flavors/{flavorId}/secure-component-profiles:
     get:
       tags:
-      - /services
+        - /services
       summary: "List SecureComponentProfiles associated to a certain Flavor of a ..."
       description: "List SecureComponentProfiles associated to a certain Flavor of a certain Version."
       operationId: listAssociatedSecureComponentProfiles
@@ -1120,9 +1124,9 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
-      - $ref: "#/components/parameters/flavorId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/flavorId"
       responses:
         200:
           description: Ok
@@ -1143,7 +1147,7 @@ paths:
   /services/{serviceId}/versions/{tag}/secure-component-profiles:
     get:
       tags:
-      - /services
+        - /services
       summary: "List all SecureComponentProfiles used by a certain Version."
       description: "List all SecureComponentProfiles used by a certain Version."
       operationId: listLinkedSecureComponentProfiles
@@ -1153,8 +1157,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
       responses:
         200:
           description: Ok
@@ -1175,9 +1179,9 @@ paths:
   #/services/{serviceId}/versions/{tag}/secure-component-profiles:
     post:
       tags:
-      - /services
+        - /services
       summary: "Add additional SecureComponentProfiles to a certain Version and c..."
-      description: "Add additional SecureComponentProfiles to a certain Version and configure the Flavors supported. In case SecureComponentProfile Ids provided are already linked to this Version, the method will still be successful and it will just modify the list of supported Flavors."
+      description: "Add additional SecureComponentProfiles to a certain Version and configure the corresponding Flavors. In case SecureComponentProfile Ids provided are already linked to this Version, the method will still be successful and it will just modify the list of supported Flavors."
       operationId: linkSecureComponentProfiles
       ##### Request Headers:
       security:
@@ -1185,20 +1189,17 @@ paths:
       ##### Content-Type: application/json
       ##### Accept: application/json
       requestBody:
-        description: "Map keys: secureComponentProfileIds, Map values: list of flavorIds"
+        description: "Map key: secureComponentProfileId, Map value: flavorId of the corresponding Flavor"
         required: true
         content:
           application/json:
             schema:
               type: object
               additionalProperties:
-                type: array
-                items:
-                  type: string
-                  maxLength: 255
+                type: string
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
       responses:
         200:
           description: Ok
@@ -1217,7 +1218,7 @@ paths:
   #/services/{serviceId}/versions/{tag}/secure-component-profiles:
     put:
       tags:
-      - /services
+        - /services
       summary: "Remove SecureComponentProfiles from a certain Version. In case Se..."
       description: "Remove SecureComponentProfiles from a certain Version. In case SecureComponentProfile Ids provided are not linked to this Version, method will still be successful."
       operationId: unlinkSecureComponentProfiles
@@ -1236,8 +1237,8 @@ paths:
               items:
                 type: string
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
       responses:
         200:
           description: Ok
@@ -1261,7 +1262,7 @@ paths:
   /executable-load-files:
     get:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "List all ExecutableLoadFiles of the authenticated ServiceProvider."
       description: "List all ExecutableLoadFiles of the authenticated ServiceProvider."
       operationId: listElfs
@@ -1278,7 +1279,9 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ExecutableLoadFile"
+                  oneOf:
+                    - $ref: "#/components/schemas/ExecutableLoadFile"
+                    - $ref: "#/components/schemas/CAP"
         400:
           $ref: "#/components/responses/400Error_1002"
         401:
@@ -1290,7 +1293,7 @@ paths:
   #/executable-load-files:
     post:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "Create a new ExecutableLoadFile and upload corresponding binary d..."
       description: "Create a new ExecutableLoadFile and upload corresponding binary data. ELF details and binary must both be provided to create a new ExecutableLoadFile."
       operationId: createElfAndUploadBinary
@@ -1307,7 +1310,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ExecutableLoadFile"
+                oneOf:
+                  - $ref: "#/components/schemas/ExecutableLoadFile"
+                  - $ref: "#/components/schemas/CAP"
         400:
           $ref: "#/components/responses/400Error_1003_1004_1007_1008_1009_1011_1012_1013_1014"
         401:
@@ -1319,7 +1324,7 @@ paths:
   /executable-load-files/{elfId}:
     get:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "Get details of a certain ExecutableLoadFile."
       description: "Get details of a certain ExecutableLoadFile."
       operationId: getElf
@@ -1329,14 +1334,16 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/elfId"
       responses:
         200:
           description: Ok
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ExecutableLoadFile"
+                oneOf:
+                  - $ref: "#/components/schemas/ExecutableLoadFile"
+                  - $ref: "#/components/schemas/CAP"
         400:
           $ref: "#/components/responses/400Error_1002_1009"
         401:
@@ -1348,7 +1355,7 @@ paths:
   #/executable-load-files/{elfId}:
     put:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "Update details and overwrite binary data of an existing Executabl..."
       description: "Update details and overwrite binary data of an existing ExecutableLoadFile. The binary of an ExecutableLoadFile can only be replaced, as long it is not yet linked to a published Flavor."
       operationId: modifyElfAndOverwriteBinary
@@ -1360,14 +1367,16 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/binaryELF"
       parameters:
-      - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/elfId"
       responses:
         200:
           description: Ok
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ExecutableLoadFile"
+                oneOf:
+                  - $ref: "#/components/schemas/ExecutableLoadFile"
+                  - $ref: "#/components/schemas/CAP"
         400:
           $ref: "#/components/responses/400Error_1005_1006_1007_1008_1009_1011_1012_1013_1014_1015_1016"
         401:
@@ -1379,7 +1388,7 @@ paths:
   #/executable-load-files/{elfId}:
     delete:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "Delete a certain ExecutableLoadFile. All data, including binary d..."
       description: "Delete a certain ExecutableLoadFile. All data, including binary data, meta-data, and associated TechnicalRequirements, is deleted. Deletion SHALL only be possible if the ExecutableLoadFile is not referenced in any Flavor and thus is not in use anywhere."
       operationId: deleteElf
@@ -1388,7 +1397,7 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/elfId"
       responses:
         204:
           description: "item deleted successfully"
@@ -1403,7 +1412,7 @@ paths:
   /executable-load-files/{elfId}/binary:
     get:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "Get binary data of a certain ExecutableLoadFile."
       description: "Get binary data of a certain ExecutableLoadFile."
       operationId: getElfBinary
@@ -1412,7 +1421,7 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/elfId"
       responses:
         200:
           $ref: "#/components/responses/200Binary_ELF"
@@ -1427,7 +1436,7 @@ paths:
   /executable-load-files/{elfId}/executable-modules:
     get:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "List all ExecutableModules of a certain ExecutableLoadFile."
       description: "List all ExecutableModules of a certain ExecutableLoadFile."
       operationId: listEms
@@ -1437,7 +1446,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/elfId"
       responses:
         200:
           description: Ok
@@ -1458,7 +1467,7 @@ paths:
   /executable-load-files/{elfId}/executable-modules/{emId}:
     get:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "Get details of a certain ExecutableModule of a certain Executable..."
       description: "Get details of a certain ExecutableModule of a certain ExecutableLoadFile."
       operationId: getEm
@@ -1468,8 +1477,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/elfId"
-      - $ref: "#/components/parameters/emId"
+        - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/emId"
       responses:
         200:
           description: Ok
@@ -1488,7 +1497,7 @@ paths:
   /executable-load-files/{elfId}/executable-modules/{emId}/application-configs:
     get:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "Return the ApplicationConfigs that apply to a certain ExecutableM..."
       description: "Return the ApplicationConfigs that apply to a certain ExecutableModule."
       operationId: listElfRelatedAppConfigs
@@ -1498,8 +1507,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/elfId"
-      - $ref: "#/components/parameters/emId"
+        - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/emId"
       responses:
         200:
           description: Ok
@@ -1520,7 +1529,7 @@ paths:
   /services/{serviceId}/executable-load-files/{elfId}/flavors:
     get:
       tags:
-      - /services
+        - /services
       summary: "List all Flavors that use a certain ExecutableLoadFile."
       description: "List all Flavors that use a certain ExecutableLoadFile."
       operationId: listElfRelatedFlavors
@@ -1530,8 +1539,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/serviceId"
-      - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/elfId"
       responses:
         200:
           description: Ok
@@ -1552,7 +1561,7 @@ paths:
   /executable-load-files/{elfId}/services:
     get:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "List all Services that use a certain ExecutableLoadFile."
       description: "List all Services that use a certain ExecutableLoadFile."
       operationId: listElfRelatedServices
@@ -1562,7 +1571,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/elfId"
       responses:
         200:
           description: Ok
@@ -1583,7 +1592,7 @@ paths:
   /executable-load-files/{elfId}/services/{servideId}/versions:
     get:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "List all Versions of a certain Service that use a certain Executa..."
       description: "List all Versions of a certain Service that use a certain ExecutableLoadFile."
       operationId: listElfRelatedVersions
@@ -1593,8 +1602,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/elfId"
-      - $ref: "#/components/parameters/servideId"
+        - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/servideId"
       responses:
         200:
           description: Ok
@@ -1615,7 +1624,7 @@ paths:
   /executable-load-files/{elfId}/services/{serviceId}/secure-component-profiles:
     get:
       tags:
-      - /executable-load-files
+        - /executable-load-files
       summary: "List all SecureComponentProfiles associated to certain Service th..."
       description: "List all SecureComponentProfiles associated to certain Service that use a certain ExecutableLoadFile. The returned list of SecureComponentProfiles SHALL not contain any duplicate entries."
       operationId: listElfRelatedSecureComponentProfiles
@@ -1625,8 +1634,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/elfId"
-      - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -1653,7 +1662,7 @@ paths:
   /application-configs:
     get:
       tags:
-      - /application-configs
+        - /application-configs
       summary: "List all ApplicationConfigs of the authenticated ServiceProvider."
       description: "List all ApplicationConfigs of the authenticated ServiceProvider."
       operationId: listAppConfigs
@@ -1682,7 +1691,7 @@ paths:
   #/application-configs:
     post:
       tags:
-      - /application-configs
+        - /application-configs
       summary: "Create a new ApplicationConfig."
       description: "Create a new ApplicationConfig."
       operationId: createAppConfig
@@ -1698,7 +1707,6 @@ paths:
             schema:
               $ref: "#/components/schemas/ApplicationConfig"
             example:
-              certificateId: "7a06adf4-87c3-bdda-047d-bb727813329c"
               instanceAid: "A00000089316631C0000"
               name: "XX-413D-58"
               description: "Description of this ApplicationConfig."
@@ -1720,7 +1728,7 @@ paths:
   /application-configs/{applicationConfigId}:
     get:
       tags:
-      - /application-configs
+        - /application-configs
       summary: "Get details of a certain ApplicationConfig."
       description: "Get details of a certain ApplicationConfig."
       operationId: getAppConfig
@@ -1730,7 +1738,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/applicationConfigId"
+        - $ref: "#/components/parameters/applicationConfigId"
       responses:
         200:
           description: Ok
@@ -1749,7 +1757,7 @@ paths:
   #/application-configs/{applicationConfigId}:
     put:
       tags:
-      - /application-configs
+        - /application-configs
       summary: "Update details of an existing ApplicationConfig."
       description: "Update details of an existing ApplicationConfig."
       operationId: modifyAppConfig
@@ -1765,12 +1773,11 @@ paths:
             schema:
               $ref: "#/components/schemas/ApplicationConfig"
             example:
-              certificateId: "7a06adf4-87c3-bdda-047d-bb727813329c"
               instanceAid: "A00000089316631C0000"
               name: "XX-413D-58"
               description: "Description of this ApplicationConfig."
       parameters:
-      - $ref: "#/components/parameters/applicationConfigId"
+        - $ref: "#/components/parameters/applicationConfigId"
       responses:
         200:
           description: Ok
@@ -1789,7 +1796,7 @@ paths:
   #/application-configs/{applicationConfigId}:
     delete:
       tags:
-      - /application-configs
+        - /application-configs
       summary: "Delete a certain ApplicationConfig. All data is deleted. Referenc..."
       description: "Delete a certain ApplicationConfig. All data is deleted. Referenced Certificates and PersonalizationScripts are not deleted. Deletion SHALL only be possible if the ApplicationConfig is not referenced in any Flavor and thus is not in use anywhere."
       operationId: deleteAppConfig
@@ -1798,7 +1805,7 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/applicationConfigId"
+        - $ref: "#/components/parameters/applicationConfigId"
       responses:
         204:
           description: "item deleted successfully"
@@ -1813,7 +1820,7 @@ paths:
   /application-configs/{applicationConfigId}/executable-modules:
     get:
       tags:
-      - /application-configs
+        - /application-configs
       summary: "List all ExecutableModules that use a certain ApplicationConfig."
       description: "List all ExecutableModules that use a certain ApplicationConfig."
       operationId: listAppConfigRelatedEms
@@ -1823,7 +1830,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/applicationConfigId"
+        - $ref: "#/components/parameters/applicationConfigId"
       responses:
         200:
           description: Ok
@@ -1844,7 +1851,7 @@ paths:
   /application-configs/{applicationConfigId}/flavors:
     get:
       tags:
-      - /application-configs
+        - /application-configs
       summary: "List all Flavors that use a certain ApplicationConfig."
       description: "List all Flavors that use a certain ApplicationConfig."
       operationId: listAppConfigRelatedFlavors
@@ -1854,7 +1861,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/applicationConfigId"
+        - $ref: "#/components/parameters/applicationConfigId"
       responses:
         200:
           description: Ok
@@ -1875,7 +1882,7 @@ paths:
   /application-configs/{applicationConfigId}/services:
     get:
       tags:
-      - /application-configs
+        - /application-configs
       summary: "List all Services that use a certain ApplicationConfig."
       description: "List all Services that use a certain ApplicationConfig."
       operationId: listAppConfigRelatedServices
@@ -1885,7 +1892,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/applicationConfigId"
+        - $ref: "#/components/parameters/applicationConfigId"
       responses:
         200:
           description: Ok
@@ -1911,7 +1918,7 @@ paths:
   /personalization-scripts:
     get:
       tags:
-      - /personalization-scripts
+        - /personalization-scripts
       summary: "List all PersonalizationScripts of the authenticated ServiceProvider."
       description: "List all PersonalizationScripts of the authenticated ServiceProvider."
       operationId: listPersoScripts
@@ -1940,7 +1947,7 @@ paths:
   #/personalization-scripts:
     post:
       tags:
-      - /personalization-scripts
+        - /personalization-scripts
       summary: "Create a new PersonalizationScript and upload corresponding binar..."
       description: "Create a new PersonalizationScript and upload corresponding binary data."
       operationId: createPersoScriptAndUploadBinary
@@ -1969,7 +1976,7 @@ paths:
   /personalization-scripts/{personalizationScriptId}:
     get:
       tags:
-      - /personalization-scripts
+        - /personalization-scripts
       summary: "Get details of a certain PersonalizationScript."
       description: "Get details of a certain PersonalizationScript."
       operationId: getPersoScript
@@ -1979,7 +1986,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/personalizationScriptId"
+        - $ref: "#/components/parameters/personalizationScriptId"
       responses:
         200:
           description: Ok
@@ -1998,7 +2005,7 @@ paths:
   #/personalization-scripts/{personalizationScriptId}:
     put:
       tags:
-      - /personalization-scripts
+        - /personalization-scripts
       summary: "Update details and overwrite binary data of an existing Personali..."
       description: "Update details and overwrite binary data of an existing PersonalizationScript."
       operationId: modifyPersoScriptAndOverwriteBinary
@@ -2010,7 +2017,7 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/binaryPersoScript"
       parameters:
-      - $ref: "#/components/parameters/personalizationScriptId"
+        - $ref: "#/components/parameters/personalizationScriptId"
       responses:
         200:
           description: Ok
@@ -2029,7 +2036,7 @@ paths:
   #/personalization-scripts/{personalizationScriptId}:
     delete:
       tags:
-      - /personalization-scripts
+        - /personalization-scripts
       summary: "Delete a certain PersonalizationScript. All data, including binar..."
       description: "Delete a certain PersonalizationScript. All data, including binary data, is deleted. Deletion SHALL only be possible if the PersonalizationScript is not referenced in any ApplicationConfig and thus is not in use anywhere."
       operationId: deletePersoScript
@@ -2038,7 +2045,7 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/personalizationScriptId"
+        - $ref: "#/components/parameters/personalizationScriptId"
       responses:
         204:
           description: "item deleted successfully"
@@ -2053,7 +2060,7 @@ paths:
   /personalization-scripts/{personalizationScriptId}/application-configs:
     get:
       tags:
-      - /personalization-scripts
+        - /personalization-scripts
       summary: "List all ApplicationConfigs that use a certain PersonalizationScript."
       description: "List all ApplicationConfigs that use a certain PersonalizationScript."
       operationId: listScriptRelatedAppConfigs
@@ -2063,7 +2070,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/personalizationScriptId"
+        - $ref: "#/components/parameters/personalizationScriptId"
       responses:
         200:
           description: Ok
@@ -2084,7 +2091,7 @@ paths:
   /personalization-scripts/{personalizationScriptId}/binary:
     get:
       tags:
-      - /personalization-scripts
+        - /personalization-scripts
       summary: "Get binary data of a certain PersonalizationScript."
       description: "Get binary data of a certain PersonalizationScript."
       operationId: getScriptBinary
@@ -2093,7 +2100,7 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/personalizationScriptId"
+        - $ref: "#/components/parameters/personalizationScriptId"
       responses:
         200:
           $ref: "#/components/responses/200Binary_Script"
@@ -2108,7 +2115,7 @@ paths:
   /personalization-scripts/{personalizationScriptId}/flavors:
     get:
       tags:
-      - /personalization-scripts
+        - /personalization-scripts
       summary: "List all Flavors that use a certain PersonalizationScript."
       description: "List all Flavors that use a certain PersonalizationScript."
       operationId: listScriptRelatedFlavors
@@ -2118,7 +2125,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/personalizationScriptId"
+        - $ref: "#/components/parameters/personalizationScriptId"
       responses:
         200:
           description: Ok
@@ -2139,7 +2146,7 @@ paths:
   /personalization-scripts/{personalizationScriptId}/services:
     get:
       tags:
-      - /personalization-scripts
+        - /personalization-scripts
       summary: "List all Services that use a certain PersonalizationScript."
       description: "List all Services that use a certain PersonalizationScript."
       operationId: listScriptRelatedServices
@@ -2149,7 +2156,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/personalizationScriptId"
+        - $ref: "#/components/parameters/personalizationScriptId"
       responses:
         200:
           description: Ok
@@ -2175,7 +2182,7 @@ paths:
   /certificates:
     get:
       tags:
-      - /certificates
+        - /certificates
       summary: "List all Certificates of the authenticated ServiceProvider."
       description: "List all Certificates of the authenticated ServiceProvider."
       operationId: listCerts
@@ -2204,7 +2211,7 @@ paths:
   #/certificates:
     post:
       tags:
-      - /certificates
+        - /certificates
       summary: "Create a new Certificate and upload corresponding binary data."
       description: "Create a new Certificate and upload corresponding binary data."
       operationId: createCertAndUploadBinary
@@ -2233,7 +2240,7 @@ paths:
   /certificates/{certificateId}:
     get:
       tags:
-      - /certificates
+        - /certificates
       summary: "Get details of a certain Certificate."
       description: "Get details of a certain Certificate."
       operationId: getCert
@@ -2243,7 +2250,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/certificateId"
+        - $ref: "#/components/parameters/certificateId"
       responses:
         200:
           description: Ok
@@ -2262,7 +2269,7 @@ paths:
   #/certificates/{certificateId}:
     put:
       tags:
-      - /certificates
+        - /certificates
       summary: "Update details and overwrite binary data of an existing Certificate."
       description: "Update details and overwrite binary data of an existing Certificate."
       operationId: modifyCertAndOverwriteBinary
@@ -2274,7 +2281,7 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/binaryCertificate"
       parameters:
-      - $ref: "#/components/parameters/certificateId"
+        - $ref: "#/components/parameters/certificateId"
       responses:
         200:
           description: Ok
@@ -2293,7 +2300,7 @@ paths:
   #/certificates/{certificateId}:
     delete:
       tags:
-      - /certificates
+        - /certificates
       summary: "Delete a certain Certificate. All data, including binary data, is..."
       description: "Delete a certain Certificate. All data, including binary data, is deleted. Deletion SHALL only be possible if the Certificate is not referenced in any ApplicationConfig or SposConfig and thus is not in use anywhere."
       operationId: deleteCert
@@ -2302,7 +2309,7 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/certificateId"
+        - $ref: "#/components/parameters/certificateId"
       responses:
         204:
           description: "item deleted successfully"
@@ -2317,7 +2324,7 @@ paths:
   /certificates/{certificateId}/application-configs:
     get:
       tags:
-      - /certificates
+        - /certificates
       summary: "List all ApplicationConfigs that use a certain Certificate."
       description: "List all ApplicationConfigs that use a certain Certificate."
       operationId: listCertRelatedAppConfigs
@@ -2327,7 +2334,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/certificateId"
+        - $ref: "#/components/parameters/certificateId"
       responses:
         200:
           description: Ok
@@ -2348,7 +2355,7 @@ paths:
   /certificates/{certificateId}/binary:
     get:
       tags:
-      - /certificates
+        - /certificates
       summary: "Get binary data of a certain Certificate."
       description: "Get binary data of a certain Certificate."
       operationId: getCertBinary
@@ -2357,7 +2364,7 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/certificateId"
+        - $ref: "#/components/parameters/certificateId"
       responses:
         200:
           $ref: "#/components/responses/200Binary_Cert"
@@ -2372,7 +2379,7 @@ paths:
   /certificates/{certificateId}/flavors:
     get:
       tags:
-      - /certificates
+        - /certificates
       summary: "List all Flavors that use a certain Certificate."
       description: "List all Flavors that use a certain Certificate."
       operationId: listCertRelatedFlavors
@@ -2382,7 +2389,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/certificateId"
+        - $ref: "#/components/parameters/certificateId"
       responses:
         200:
           description: Ok
@@ -2403,7 +2410,7 @@ paths:
   /certificates/{certificateId}/services:
     get:
       tags:
-      - /certificates
+        - /certificates
       summary: "List all Services that use a certain Certificate."
       description: "List all Services that use a certain Certificate."
       operationId: listCertRelatedServices
@@ -2413,7 +2420,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/certificateId"
+        - $ref: "#/components/parameters/certificateId"
       responses:
         200:
           description: Ok
@@ -2434,7 +2441,7 @@ paths:
   /certificates/{certificateId}/spos-configs:
     get:
       tags:
-      - /certificates
+        - /certificates
       summary: "List all SposConfigs that use a certain Certificate."
       description: "List all SposConfigs that use a certain Certificate."
       operationId: listCertRelatedSposConfigs
@@ -2444,7 +2451,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/certificateId"
+        - $ref: "#/components/parameters/certificateId"
       responses:
         200:
           description: Ok
@@ -2468,7 +2475,7 @@ paths:
   /spos-configs:
     get:
       tags:
-      - /spos-configs
+        - /spos-configs
       summary: "List all SposConfigs of the authenticated ServiceProvider."
       description: "List all SposConfigs of the authenticated ServiceProvider."
       operationId: listSposConfigs
@@ -2497,7 +2504,7 @@ paths:
   #/spos-configs:
     post:
       tags:
-      - /spos-configs
+        - /spos-configs
       summary: "Create a new SposConfig and set all corresponding details."
       description: "Create a new SposConfig and set all corresponding details."
       operationId: createSposConfig
@@ -2514,7 +2521,7 @@ paths:
               $ref: "#/components/schemas/SposConfig"
             example:
               url: "/relative/uri/to/resource"
-              certificateId: "bc675568-34ac-40b0-abc0-03929b2d5ccd"
+              certificateId: "652f7175-d33a-0616-cf61-0451f2587361"
       responses:
         200:
           description: Ok
@@ -2533,7 +2540,7 @@ paths:
   /spos-configs/{sposConfigId}:
     get:
       tags:
-      - /spos-configs
+        - /spos-configs
       summary: "Get details of a certain SposConfig."
       description: "Get details of a certain SposConfig."
       operationId: getSposConfig
@@ -2543,7 +2550,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/sposConfigId"
+        - $ref: "#/components/parameters/sposConfigId"
       responses:
         200:
           description: Ok
@@ -2562,7 +2569,7 @@ paths:
   #/spos-configs/{sposConfigId}:
     put:
       tags:
-      - /spos-configs
+        - /spos-configs
       summary: "Update details of an existing SposConfig."
       description: "Update details of an existing SposConfig."
       operationId: modifySposConfig
@@ -2579,9 +2586,9 @@ paths:
               $ref: "#/components/schemas/SposConfig"
             example:
               url: "/relative/uri/to/resource"
-              certificateId: "bc675568-34ac-40b0-abc0-03929b2d5ccd"
+              certificateId: "652f7175-d33a-0616-cf61-0451f2587361"
       parameters:
-      - $ref: "#/components/parameters/sposConfigId"
+        - $ref: "#/components/parameters/sposConfigId"
       responses:
         200:
           description: Ok
@@ -2600,7 +2607,7 @@ paths:
   #/spos-configs/{sposConfigId}:
     delete:
       tags:
-      - /spos-configs
+        - /spos-configs
       summary: "Delete a certain SposConfig. All data is deleted. Deletion SHALL ..."
       description: "Delete a certain SposConfig. All data is deleted. Deletion SHALL only be possible if the SposConfig is not referenced in any Service and thus is not in use anywhere."
       operationId: deleteSposConfig
@@ -2609,7 +2616,7 @@ paths:
         - authToken: []
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/sposConfigId"
+        - $ref: "#/components/parameters/sposConfigId"
       responses:
         204:
           description: "item deleted successfully"
@@ -2624,7 +2631,7 @@ paths:
   /spos-configs/{sposConfigId}/services:
     get:
       tags:
-      - /spos-configs
+        - /spos-configs
       summary: "List all Services that use a certain SposConfig."
       description: "List all Services that use a certain SposConfig."
       operationId: listSposConfigRelatedServices
@@ -2634,7 +2641,7 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-      - $ref: "#/components/parameters/sposConfigId"
+        - $ref: "#/components/parameters/sposConfigId"
       responses:
         200:
           description: Ok
@@ -2662,7 +2669,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "e59d3d32-6756-76ac-ffff-feeba10c081a"
+        example: "bc675568-34ac-40b0-abc0-03929b2d5ccd"
       description: identifier of the referred Scp
     
     serviceId:
@@ -2672,7 +2679,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "ff686d37-4674-1456-26fa-c9ed658bb41c"
+        example: "e59d3d32-6756-76ac-ffff-feeba10c081a"
       description: identifier of the referred Service
     
     flavorId:
@@ -2682,7 +2689,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "c73e8ddc-0318-7940-dc7d-ae5bab5ce549"
+        example: "ff686d37-4674-1456-26fa-c9ed658bb41c"
       description: identifier of the referred Flavor
     
     tag:
@@ -2705,7 +2712,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "4079f402-4e86-b4b0-0c4f-a21681ece9c8"
+        example: "c73e8ddc-0318-7940-dc7d-ae5bab5ce549"
       description: identifier of the referred Elf
     
     emId:
@@ -2715,7 +2722,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "615c1678-895b-ff21-7c6c-bcd9fed11b84"
+        example: "4079f402-4e86-b4b0-0c4f-a21681ece9c8"
       description: identifier of the referred Em
     
     servideId:
@@ -2725,7 +2732,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "a0f59df9-7ee2-161f-9325-46e1ecc0ecae"
+        example: "615c1678-895b-ff21-7c6c-bcd9fed11b84"
       description: identifier of the referred Servide
     
     applicationConfigId:
@@ -2735,7 +2742,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "5bd3cb36-3688-e41b-45b4-24abb956e2c5"
+        example: "a0f59df9-7ee2-161f-9325-46e1ecc0ecae"
       description: identifier of the referred ApplicationConfig
     
     personalizationScriptId:
@@ -2745,7 +2752,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "ffe6404d-0589-e66c-f837-3e89cfe3d19a"
+        example: "5bd3cb36-3688-e41b-45b4-24abb956e2c5"
       description: identifier of the referred PersonalizationScript
     
     certificateId:
@@ -2755,7 +2762,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "f071b74c-ea66-b415-9a66-4ba06c637d13"
+        example: "ffe6404d-0589-e66c-f837-3e89cfe3d19a"
       description: identifier of the referred Certificate
     
     sposConfigId:
@@ -2765,7 +2772,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "6c4a3aa8-5240-ad98-4673-a820be2df3b0"
+        example: "f071b74c-ea66-b415-9a66-4ba06c637d13"
       description: identifier of the referred SposConfig
     
   requestBodies:
@@ -3109,7 +3116,7 @@ components:
           type: string
           format: uuid
           readOnly: true
-          example: "fde02274-914f-b360-c679-74970a9d6cef"
+          example: "6c4a3aa8-5240-ad98-4673-a820be2df3b0"
         name: # M, Yes
           description: "Name of the SP."
           type: string
@@ -3120,20 +3127,20 @@ components:
     Service:
       description: "A Service (as an entity of the data model) represents all data needed for the life-cycle management of a secure application. Services are the key elements for the communication between TSM-Backend and TSM-API. A Service may have multiple Versions with multiple Flavors, which in turn may contain different ELFs. A Service is associated with zero to one SposConfigs. A Service has the following attributes:"
       type: object
-      required: [spId, name]
+      required: [name]
       properties:
         id: # A, No
           description: "Unique identification of the Service."
           type: string
           format: uuid
           readOnly: true
-          example: "de10f784-d526-618f-443f-2a98cb2c9893"
-        spId: # M, No
+          example: "fde02274-914f-b360-c679-74970a9d6cef"
+        spId: # A, No
           description: "ID of the ServiceProvider owning the Service."
           type: string
           format: uuid
           readOnly: true
-          example: "167f43e0-2ada-d0d0-ba18-b23fd6accd18"
+          example: "de10f784-d526-618f-443f-2a98cb2c9893"
         name: # M, Yes
           description: "Name of the Service."
           type: string
@@ -3161,7 +3168,7 @@ components:
           description: "ID of the SposConfig used for this Service."
           type: string
           format: uuid
-          example: "bb5c8384-f856-ca00-2b52-bcf9f45e1f39"
+          example: "167f43e0-2ada-d0d0-ba18-b23fd6accd18"
         spParameters: # O, Yes
           description: "Key value definitions used as parameters of a Service. Those parameters can be retrieved via TSM-API. The parameters can be overwritten for each Flavor."
           type: object
@@ -3174,7 +3181,7 @@ components:
     Version:
       description: "A Service can be provided in different Versions. Each Version may have multiple Flavors. Each Flavor defines a set of configurations and ELF files to support a certain hardware platform. The matching of a Flavor to specific SCs is managed via the attribute allowedDeployments. This attribute is a map where one or multiple SecureComponentProfiles are assigned to a specific Flavor. A SecureComponentProfile describes the hardware platform(s) a Flavor is supporting. Thus, inside the Version, a SP MUST define which ELF is used for which hardware platform. The SP also MAY add platform specific configurations. A TSM provider MUST ensure that the FlavorIds and SecureComponentProfileIds are unique for a Version. In the same Version it is not supported to assign a SecureComponentProfile to multiple Flavors or vice versa. A TSM provider MUST also perform a compatibility check when the allowedDeployments attribute is modified. Here, a TSM provider SHALL compare the ELF files with the assigned SecureComponentProfiles, e.g. to check for JavaCard version mismatch or missing CSP support. Such a compatibility check might also be needed when an ELF or a Flavor is modified. The Version is mutable, thus it is allowed to modify a Version when it is already deployed on a device. With this, the SP can assign new SecureComponentProfiles to an existing Version to increase the amount of devices supported by this Version. The SP can also remove SecureComponentProfiles from an existing Version, e.g., in case of a security incident. A Version has the following attributes:"
       type: object
-      required: [tag, serviceId, allowedDeployments]
+      required: [tag, allowedDeployments]
       properties:
         tag: # M, No
           description: "Tag of the Version in the format <Major>.<Minor>.<Revision> The tag must be unique for a Service, since tag is used to reference the Version."
@@ -3185,12 +3192,12 @@ components:
           pattern: '^\d{1,3}.\d{1,3}.\d{1,3}$'
           readOnly: true
           example: "3.1.4"
-        serviceId: # M, No
+        serviceId: # A, No
           description: "ID of the Service owning the Version."
           type: string
           format: uuid
           readOnly: true
-          example: "39fb1716-4a34-87ab-18be-8ee81e7f2d67"
+          example: "bb5c8384-f856-ca00-2b52-bcf9f45e1f39"
         allowedDeployments: # M, Yes
           description: "Map, which associates Flavors (see 4.1.4.4) to one or multiple SecureComponentProfiles (see 4.1.4.5). By this, Flavors linked to this Version are assigned to concrete hardware platforms as 1-n association. The key of the map contains the FlavorId. The value of the map is a list of SecureComponentProfileIds. Specific FlavorIds and SecureComponentProfileIds can only be used once inside a Version, i.e., inside a Version it is not supported to assign a SecureComponentProfile to multiple Flavors or vice versa."
           type: object
@@ -3204,20 +3211,20 @@ components:
     Flavor:
       description: "Services, respectively Versions, can be provided in different Flavors to solve interoperability problems when provisioning Services to different SC platforms. Simply speaking, a Flavor is a certain variant of a Service. A Flavor consists of zero or more ExecutableLoadFile entities, zero or more ApplicationInstantiationConfigs, and exactly one FeatureConfig entity. Flavors need to be published before they can be used for installation. After publishing a Flavor, certain data attributes of the Flavor cannot be modified anymore. The purpose is to avoid the problem that Flavor modifications done on a Flavor which is already installed might lead to inconsistencies on the handset. The allocation of a Flavor to one or multiple SecureComponentProfiles is done via the allowedDeployments attribute of the parent Version of each Flavor. A Flavor has the following attributes:"
       type: object
-      required: [serviceId]
+      #required: []
       properties:
         id: # A, No
           description: "Unique identification of the Flavor. The id shall be used to check the necessity of applet reinstallation during the Version update process, for use cases when the same Flavor is used for different Versions."
           type: string
           format: uuid
           readOnly: true
-          example: "bb451440-fdc1-1983-43f2-df17104a4715"
-        serviceId: # M, No
+          example: "39fb1716-4a34-87ab-18be-8ee81e7f2d67"
+        serviceId: # A, No
           description: "ID of the Service owning the Flavor."
           type: string
           format: uuid
           readOnly: true
-          example: "fd4aad1f-50f8-1534-aeab-652bafa65604"
+          example: "bb451440-fdc1-1983-43f2-df17104a4715"
         name: # O, Yes
           description: "Name of this Flavor."
           type: string
@@ -3244,7 +3251,7 @@ components:
           items:
             type: string
             format: uuid
-          example: [ "96f3baa5-d50c-84e4-b285-07b679aa6953", "69c1eede-6767-ddbc-6c84-3903126e51b4", "a38d4f8a-a4d5-d5c9-b134-0657c74a9853" ]
+          example: [ "fd4aad1f-50f8-1534-aeab-652bafa65604", "96f3baa5-d50c-84e4-b285-07b679aa6953", "69c1eede-6767-ddbc-6c84-3903126e51b4" ]
         applicationInstantiationConfigs: # O, C
           description: "List to link and prioritize EMs and ApplicationConfigs. Modifications are only possible, as long as the Flavor is not yet published."
           type: array
@@ -3278,7 +3285,7 @@ components:
           type: string
           format: uuid
           readOnly: true
-          example: "26dffd3f-59fd-80b3-bc31-29dca2795831"
+          example: "a38d4f8a-a4d5-d5c9-b134-0657c74a9853"
         name: # M, No
           description: "Name of the SecureComponentProfile."
           type: string
@@ -3307,9 +3314,8 @@ components:
         osVersion: # M, No
           description: "Version of operating system with vendor specific encoding. Sample values are 4.7, 3.1."
           type: string
-          maxLength: 7
-          minLength: 3
-          pattern: '^\d{1,3}.\d{1,3}$'
+          maxLength: 255
+          minLength: 1
           readOnly: true
           example: "4.7"
         javaCardVersion: # M, No
@@ -3402,35 +3408,31 @@ components:
           description: "ID of the EM the referenced ApplicationConfig shall be applied to."
           type: string
           format: uuid
-          example: "47db1f00-d894-af9a-a27b-1303d61fa3f4"
+          example: "26dffd3f-59fd-80b3-bc31-29dca2795831"
         applicationConfigId: # M, C
           description: "ID of the ApplicationConfig that shall be applied to the referenced EM."
           type: string
           format: uuid
-          example: "8fa10eff-19a2-7c4b-1102-2e8b867d3fda"
+          example: "47db1f00-d894-af9a-a27b-1303d61fa3f4"
 
 ### 4.1.4.8 ###
     ExecutableLoadFile:
-      description: "An ExecutableLoadFile (ELF) is an executable binary file that can be loaded onto a Secure Component. In SmartCard terminology, the ELF is a container of executable code on a secure component [GPC_SPE_034]. ELFs are essential components of a Flavor used by a Version of a Service. ELFs are uploaded by the SP and may be used in different Flavors. An ELF may contain zero or more ExecutableModule entities. The specific type of an ELF is determined at upload time. If the ELF is a CAP, the ELF AID is automatically extracted from the CAP. An ELF has the following attributes:"
-      discriminator:
-        propertyName: type
-        mapping:
-          cap: "#/components/schemas/CAP"
+      description: "An ExecutableLoadFile (ELF) is an executable binary file that can be loaded onto a Secure Component. In SmartCard terminology, the ELF is a container of executable code on a secure component [GPC_SPE_034]. ELFs are essential components of a Flavor used by a Version of a Service. ELFs are uploaded by the SP and may be used in different Flavors. An ELF may contain zero or more ExecutableModule entities. The specific type of an ELF is determined at upload time. If the ELF is a CAP, the ELF AID is automatically extracted from the CAP. The binary of an ELF can be replaced only as long as the ELF is not linked to a published Flavor. An ELF has the following attributes:"
       type: object
-      required: [spId]
+      #required: []
       properties:
         id: # A, No
           description: "Unique identification of the ELF."
           type: string
           format: uuid
           readOnly: true
-          example: "8339dcd0-b9e1-6b73-b5f0-33793d4e2307"
-        spId: # M, No
+          example: "8fa10eff-19a2-7c4b-1102-2e8b867d3fda"
+        spId: # A, No
           description: "ID of the ServiceProvider owning the ELF."
           type: string
           format: uuid
           readOnly: true
-          example: "060dc3ac-71dd-3bae-e00a-a8fe85ceb022"
+          example: "8339dcd0-b9e1-6b73-b5f0-33793d4e2307"
         aid: # A, No
           description: "Package-ID of this ELF."
           type: string
@@ -3453,7 +3455,7 @@ components:
           format: date-time
           readOnly: true
         uploadDate: # A, No
-          description: "A datetime string (upload of ELF binary). Binary of an ELF can be replaced only as long as the ELF is not linked to a published Flavor."
+          description: "A datetime string (upload of ELF binary)."
           type: string
           format: date-time
           readOnly: true
@@ -3527,13 +3529,13 @@ components:
           type: string
           format: uuid
           readOnly: true
-          example: "2355d041-c1c6-4ab1-e0d2-a15a41e85351"
+          example: "060dc3ac-71dd-3bae-e00a-a8fe85ceb022"
         elfId: # A, No
           description: "ID of the ExecutableLoadFile owning the EM."
           type: string
           format: uuid
           readOnly: true
-          example: "f36d5f2e-0950-6e80-6367-fe7e6250a713"
+          example: "2355d041-c1c6-4ab1-e0d2-a15a41e85351"
         aid: # A, No
           description: "Application identifier of this EM. The AID format follows [ISO/IEC7816-4]."
           type: string
@@ -3545,25 +3547,20 @@ components:
     ApplicationConfig:
       description: "An ApplicationConfig consists of parameters, certificates and other properties needed for provisioning applications. All configuration options defined here are applied to the secure component during deploy or update service commands triggered with the TSM-API. The ApplicationConfig itself is not dependent on a specific EM. In order to link it to an EM, the ApplicationConfig is referenced in an ApplicationInstantiationConfig within a Flavor by a mapping of available EMs and corresponding ApplicationConfigs. The same ApplicationConfigs can be used for EMs in different Flavors. Modifications are only possible, as long as the ApplicationConfig is not yet linked to a published Flavor. An ApplicationConfig has the following attributes:"
       type: object
-      required: [spId, instanceAid, installConfig]
+      required: [instanceAid]
       properties:
         id: # A, No
           description: "Unique identification of the ApplicationConfig."
           type: string
           format: uuid
           readOnly: true
-          example: "6cda80a1-efb3-acf3-8b18-14a10ff2ad24"
-        spId: # M, No
+          example: "f36d5f2e-0950-6e80-6367-fe7e6250a713"
+        spId: # A, No
           description: "ID of the ServiceProvider owning the ApplicationConfig."
           type: string
           format: uuid
           readOnly: true
-          example: "06475326-cda5-a009-d342-c01dbff19904"
-        certificateId: # O, Yes
-          description: "ID of the Certificate used in this ApplicationConfig. Empty, if no Certificate is used."
-          type: string
-          format: uuid
-          example: "bd9a86f0-16ee-8a46-2524-121035f7e006"
+          example: "6cda80a1-efb3-acf3-8b18-14a10ff2ad24"
         instanceAid: # M, C
           description: "AID of the running application instance that shall be created from this ApplicationConfig. This AID is also the AID that is used for selecting a selectable application on the SC. The AID format follows [ISO/IEC7816-4]."
           type: string
@@ -3579,7 +3576,7 @@ components:
           type: string
           maxLength: 255
           example: "Description of this ApplicationConfig."
-        installConfig: # M, C
+        installConfig: # O, C
           $ref: "#/components/schemas/InstallConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Installed."
         activationConfig: # O, C
           $ref: "#/components/schemas/ActivationConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Activated."
@@ -3630,16 +3627,11 @@ components:
       type: object
       #required: []
       properties:
-        certificateId: # O, C
-          description: "ID of the Certificate, if needed for a PersonalizationScript."
-          type: string
-          format: uuid
-          example: "6b95cefe-7ccc-d1e1-b267-9d12481a6f8b"
         personalizationScriptId: # O, C
           description: "ID of the PersonalizationScript used for personalization."
           type: string
           format: uuid
-          example: "31f648fc-8b6c-3767-7907-6f9464e77461"
+          example: "06475326-cda5-a009-d342-c01dbff19904"
         provideAttestationToken: # O, C
           description: "Flag, whether an AttestationToken shall be included in the application specific install parameters. If omitted, default value false will be used. When set to true, all corresponding FeatureConfigs must configure keyProvisioningMode and keyIndex."
           type: boolean
@@ -3653,20 +3645,20 @@ components:
     PersonalizationScript:
       description: "A PersonalizationScript is a script a SP may use to specify installation instructions or request TSM-support for, e.g., the personalization of a secure application during the provisioning process. This interface only provides methods to manage the PersonalizationScripts and link them with Certificates for communication to a SP backend (if required). The content of the PersonalizationScript is currently not in the scope of this TR. A PersonalizationScript has the following attributes:"
       type: object
-      required: [spId]
+      #required: []
       properties:
         id: # A, No
           description: "Unique identification of the Personalization-Script."
           type: string
           format: uuid
           readOnly: true
-          example: "abbacd23-a58f-d34d-8c55-729ff40dee26"
-        spId: # M, No
+          example: "bd9a86f0-16ee-8a46-2524-121035f7e006"
+        spId: # A, No
           description: "ID of the ServiceProvider owning the Personalization-Script."
           type: string
           format: uuid
           readOnly: true
-          example: "aef323a1-4665-4679-60e3-a555141dd321"
+          example: "6b95cefe-7ccc-d1e1-b267-9d12481a6f8b"
         fileName: # A, Yes
           description: "Name of this PersonalizationScript."
           type: string
@@ -3682,25 +3674,30 @@ components:
           type: string
           format: date-time
           readOnly: true
+        certificateId: # O, Yes
+          description: "ID of the Certificate used in this PersonalizationScript. Empty, if no Certificate is used."
+          type: string
+          format: uuid
+          example: "31f648fc-8b6c-3767-7907-6f9464e77461"
 
 ### 4.1.4.17 ###
     Certificate:
       description: "A Certificate is used for the communication between TSM and SP Online System and also in PersonalizationScripts for applet provisioning and personalization. A Certificate has the following attributes:"
       type: object
-      required: [spId]
+      #required: []
       properties:
         id: # A, No
           description: "Unique identification of the Certificate."
           type: string
           format: uuid
           readOnly: true
-          example: "74aeba88-3554-586a-7545-d7956e9b10cf"
-        spId: # M, No
+          example: "abbacd23-a58f-d34d-8c55-729ff40dee26"
+        spId: # A, No
           description: "ID of the ServiceProvider owning the Certificate."
           type: string
           format: uuid
           readOnly: true
-          example: "05a7b798-00f7-11a4-1cad-0b6cbf17e82e"
+          example: "aef323a1-4665-4679-60e3-a555141dd321"
         fileName: # A, Yes
           description: "Name of the file the Certificate was created from."
           type: string
@@ -3721,20 +3718,20 @@ components:
     SposConfig:
       description: "SposConfig is used to configure communication with the Service Provider Online System. The aim is to enable a service provider to receive process success and process error messages sent by the TSM. A SposConfig has the following attributes:"
       type: object
-      required: [spId, url, certificateId]
+      required: [url, certificateId]
       properties:
         id: # A, No
           description: "Unique identification of the SposConfig."
           type: string
           format: uuid
           readOnly: true
-          example: "3302d2b0-e4d4-cb2f-af41-7f8003aee48e"
-        spId: # M, No
+          example: "74aeba88-3554-586a-7545-d7956e9b10cf"
+        spId: # A, No
           description: "ID of the ServiceProvider owning the SposConfig."
           type: string
           format: uuid
           readOnly: true
-          example: "105030db-8fd7-095f-953e-a4143a3576c3"
+          example: "05a7b798-00f7-11a4-1cad-0b6cbf17e82e"
         url: # M, Yes
           description: "URL of the SP's Online Service."
           type: string
@@ -3745,7 +3742,7 @@ components:
           description: "ID of the Certificate that is used for the backend communication."
           type: string
           format: uuid
-          example: "b3f08e86-ebed-1a72-984d-8030cbe89b79"
+          example: "3302d2b0-e4d4-cb2f-af41-7f8003aee48e"
 
 ### 4.1.4.19 ###
     GeneralError:

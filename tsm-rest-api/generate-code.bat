@@ -8,7 +8,7 @@ echo.
 
 REM call mvn clean install --projects -:pdf2yaml
 REM call mvn clean install -e
-call mvn clean install -e
+call mvn clean install --projects -:pdf2yaml
 
 echo.
 
