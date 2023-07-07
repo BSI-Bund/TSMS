@@ -6,7 +6,7 @@
             type: string
             example: attachment; filename="filename.cap"
       content:
-        application/octet-data:
+        application/octet-stream:
           schema:
             description: containing actual elf-binary
             type: string
@@ -21,7 +21,7 @@
             type: string
             example: attachment; filename="filename.pers"
       content:
-        application/octet-data:
+        application/octet-stream:
           schema:
             description: containing actual pers-binary
             type: string
@@ -36,7 +36,7 @@
             type: string
             example: attachment; filename="filename.cert"
       content:
-        application/octet-data:
+        application/octet-stream:
           schema:
             description: containing actual cert-binary
             type: string

@@ -1,0 +1,3755 @@
+openapi: 3.0.0
+
+info:
+  description: |
+    This visual representation describes the TSM-Backend API for a Trusted Service Management System (TSMS) using Swagger UI. It serves as a complement to the [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html) guideline. In case of any discrepancies, please refer to the written guideline.
+    
+    A TSM-Backend is an IT system within a TSMS that offers management functions in the form of a REST-API. The TSM-Backend is a secure repository for various configurations, flavors, and resources required for installing an JavaCard Applet on secure elements such as eSE and eSIM. With this API, service providers can create, read, update, and delete files and configuration settings required for managing their Applets.
+    
+    __Functionality:__
+    * upload JavaCard *.cap files to TSM-Backend
+    * define a service which consists of one or multiple *.cap files
+    * versionize the service
+    * define hardware variants for each service - called flavors 
+    * specify technical requirements for each flavor, e.g. minimal JavaCard version
+    
+  version: "1.0.4"
+  title: "BSI-TR-03165: TSM-Backend"
+  termsOfService: https://www.bsi.bund.de/DE/Service/Nutzungsbedingungen/Nutzungsbedingungen_node.html
+  contact:
+    email: mobile-eid@bsi.bund.de
+  license:
+    name: Apache License, Version 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+tags:
+- name: /auth
+  description: "authentication methods"
+- name: /serviceproviders
+  description: "methods for management of SP"
+- name: /secure-component-profiles
+  description: "Retrieve SecureComponentProfiles"
+- name: /services
+  description: "methods for management of Services and Flavors"
+- name: /executable-load-files
+  description: "methods for management of ELFs and EMs"
+- name: /application-configs
+  description: "methods for management of ApplicationConfigurations"
+- name: /personalization-scripts
+  description: "methods for management of PersonalizationScripts"
+- name: /certificates
+  description: "methods for management of Certificates"
+- name: /spos-configs
+  description: "methods for management of SposConfigs"
+
+paths:
+
+### 4.1.6.1 Authentication ###
+
+### 4.1.6.1.1 Create Access Token ###
+  /auth:
+    post:
+      tags:
+        - /auth
+      summary: "Authenticate to the TSM-Backend by sending a long-term token, and..."
+      description: "Authenticate to the TSM-Backend by sending a long-term token, and receive a short-term bearer token. The short-term bearer token is used to access the other API functions. The long-term token is provided out of band."
+      operationId: createAccessToken
+      ##### Request Headers:
+      security:
+        - LongtermToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      ##### Request Body: -
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/auth-Token"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1001"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.2 Manage SP Account ###
+# This section lists methods for the management of SP account information.
+
+### 4.1.6.2.1 Get Account Information ###
+  /serviceproviders/current:
+    get:
+      tags:
+        - /serviceproviders
+      summary: "Get details of the SP account."
+      description: "Get details of the SP account."
+      operationId: getAccountInformation
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceProvider"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.3 Retrieve SecureComponentProfiles ###
+# This section provides methods to retrieve information about the by the TSMS supported hardware platforms.
+
+### 4.1.6.3.1 List SecureComponentProfiles ###
+  /secure-component-profiles:
+    get:
+      tags:
+        - /secure-component-profiles
+      summary: "List all available SecureComponentProfiles."
+      description: "List all available SecureComponentProfiles."
+      operationId: listSecureComponentProfiles
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SecureComponentProfile"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.3.2 Get SecureComponentProfile ###
+  /secure-component-profiles/{scpId}:
+    get:
+      tags:
+        - /secure-component-profiles
+      summary: "Get details of a certain SecureComponentProfile."
+      description: "Get details of a certain SecureComponentProfile."
+      operationId: getSecureComponentProfile
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/scpId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SecureComponentProfile"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.3.3 List Related ELFs ###
+  /secure-component-profiles/{scpId}/elfs:
+    get:
+      tags:
+        - /secure-component-profiles
+      summary: "List all ELFs that use a certain SecureComponentProfile."
+      description: "List all ELFs that use a certain SecureComponentProfile."
+      operationId: listScpRelatedElfs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/scpId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/ExecutableLoadFile"
+                    - $ref: "#/components/schemas/CAP"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.3.4 List Related Services ###
+  /secure-component-profiles/{scpId}/services:
+    get:
+      tags:
+        - /secure-component-profiles
+      summary: "List all Services that use a certain SecureComponentProfile."
+      description: "List all Services that use a certain SecureComponentProfile."
+      operationId: listScpRelatedServices
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/scpId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.3.5 List Related Flavors ###
+  /secure-component-profiles/{scpId}/services/{serviceId}/flavors:
+    get:
+      tags:
+        - /secure-component-profiles
+      summary: "List all Flavors of a certain Service that use a certain SecureCo..."
+      description: "List all Flavors of a certain Service that use a certain SecureComponentProfile."
+      operationId: listScpRelatedFlavors
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/scpId"
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.3.6 List Related Versions ###
+  /secure-component-profiles/{scpId}/services/{serviceId}/versions:
+    get:
+      tags:
+        - /secure-component-profiles
+      summary: "List all Versions of a certain Service that use a certain SecureC..."
+      description: "List all Versions of a certain Service that use a certain SecureComponentProfile."
+      operationId: listScpRelatedVersions
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/scpId"
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4 Manage Services and Flavors ###
+# This section lists methods for the management of Services, Versions, and Flavors. Using these methods, an SP may, e.g., link existing ELFs and ApplicationConfigs to create and modify different Versions and Flavors of a Service.
+# There are methods to list, create, modify, and delete Service entities and their corresponding Version and Flavor entities, and to link ExecutableModule entities and ApplicationConfig entities to a certain Flavor.
+# The methods listed in this section do not provide functionality to upload binary data for ELFs or to create ApplicationConfigs. Uploading ELFs can be done via methods listed in Section 4.1.6.4.27. Managing ApplicationConfigs can be done via methods listed in Section 4.1.6.6.
+
+### 4.1.6.4.1 List Services ###
+  /services:
+    get:
+      tags:
+        - /services
+      summary: "List all Services of the authenticated ServiceProvider."
+      description: "List all Services of the authenticated ServiceProvider."
+      operationId: listServices
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.2 Create Service ###
+  #/services:
+    post:
+      tags:
+        - /services
+      summary: "Create a new Service."
+      description: "Create a new Service."
+      operationId: createService
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Service"
+            example:
+              name: "authDeviceByBNE"
+              accessAuthorizedDeviceApps: [ "A00000021784013C0110", "A00000007220548C0001", "A00000033467106C1111" ]
+              sposConfigId: "62d2a5d8-f591-f9ec-32b3-558047c576a7"
+              spParameters: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1003_1004_1007_1008_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.3 Get Service ###
+  /services/{serviceId}:
+    get:
+      tags:
+        - /services
+      summary: "Get details of a certain Service."
+      description: "Get details of a certain Service."
+      operationId: getService
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.4 Modify Service ###
+  #/services/{serviceId}:
+    put:
+      tags:
+        - /services
+      summary: "Update details of an existing Service."
+      description: "Update details of an existing Service."
+      operationId: modifyService
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Service"
+            example:
+              name: "authDeviceByBNE"
+              accessAuthorizedDeviceApps: [ "A00000021784013C0110", "A00000007220548C0001", "A00000033467106C1111" ]
+              sposConfigId: "62d2a5d8-f591-f9ec-32b3-558047c576a7"
+              spParameters: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1005_1006_1007_1008_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.5 Delete Service ###
+  #/services/{serviceId}:
+    delete:
+      tags:
+        - /services
+      summary: "Delete a certain Service. All data, including associated Versions..."
+      description: "Delete a certain Service. All data, including associated Versions, Flavors, and ApplicationInstantiationConfigs is deleted. Referenced ELFs, ApplicationConfigs, and SposConfigs are not deleted."
+      operationId: deleteService
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        204:
+          description: "item deleted successfully"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.6 List Flavors ###
+  /services/{serviceId}/flavors:
+    get:
+      tags:
+        - /services
+      summary: "List all Flavors of a certain Service."
+      description: "List all Flavors of a certain Service."
+      operationId: listFlavors
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.7 Create Flavor ###
+  #/services/{serviceId}/flavors:
+    post:
+      tags:
+        - /services
+      summary: "Create a new Flavor for a certain Service."
+      description: "Create a new Flavor for a certain Service."
+      operationId: createFlavor
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Flavor"
+            example:
+              name: "YY-624B-11"
+              description: "Additional description for this Flavor."
+              executableLoadFileIds: [ "54050ff0-7d9e-ef28-b120-3c3e81ae77af", "7860e9a9-70b3-43b1-b2d7-fc6199c92cb4", "2b3447ca-eecc-eba9-3f48-2f61ae43c742" ]
+              applicationInstantiationConfigs: [ { priority: 137, executableModuleId: "40b455b5-1e45-fd2f-319b-83794b2a8d82", applicationConfigId: "1e555fae-c0bb-9915-b086-b7f77a52ca69" }, { priority: 81, executableModuleId: "efe37b02-819a-9dc1-f656-b00b80072581", applicationConfigId: "9b2990c9-59b0-a979-d4b2-11ff5fe00cb2" }, { priority: 132, executableModuleId: "105030db-8fd7-095f-953e-a4143a3576c3", applicationConfigId: "b3f08e86-ebed-1a72-984d-8030cbe89b79" } ]
+              spParameters: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
+              contextSpecificAttributes: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1003_1004_1007_1008_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.8 Get Flavor ###
+  /services/{serviceId}/flavors/{flavorId}:
+    get:
+      tags:
+        - /services
+      summary: "Get details of a certain Flavor."
+      description: "Get details of a certain Flavor."
+      operationId: getFlavor
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.9 Modify Flavor ###
+  #/services/{serviceId}/flavors/{flavorId}:
+    put:
+      tags:
+        - /services
+      summary: "Update details of an existing Flavor."
+      description: "Update details of an existing Flavor."
+      operationId: modifyFlavor
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Flavor"
+            example:
+              name: "YY-624B-11"
+              description: "Additional description for this Flavor."
+              executableLoadFileIds: [ "54050ff0-7d9e-ef28-b120-3c3e81ae77af", "7860e9a9-70b3-43b1-b2d7-fc6199c92cb4", "2b3447ca-eecc-eba9-3f48-2f61ae43c742" ]
+              applicationInstantiationConfigs: [ { priority: 137, executableModuleId: "40b455b5-1e45-fd2f-319b-83794b2a8d82", applicationConfigId: "1e555fae-c0bb-9915-b086-b7f77a52ca69" }, { priority: 81, executableModuleId: "efe37b02-819a-9dc1-f656-b00b80072581", applicationConfigId: "9b2990c9-59b0-a979-d4b2-11ff5fe00cb2" }, { priority: 132, executableModuleId: "105030db-8fd7-095f-953e-a4143a3576c3", applicationConfigId: "b3f08e86-ebed-1a72-984d-8030cbe89b79" } ]
+              spParameters: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
+              contextSpecificAttributes: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1005_1006_1007_1008_1009_1015_1016"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.10 Delete Flavor ###
+  #/services/{serviceId}/flavors/{flavorId}:
+    delete:
+      tags:
+        - /services
+      summary: "Delete a certain Flavor. All data, including associated Applicati..."
+      description: "Delete a certain Flavor. All data, including associated ApplicationInstantiationConfigs, is deleted. Referenced ELFs and ApplicationConfigs are not deleted. Deletion SHALL only be possible if the Flavor is not referenced in any Version and thus is not in use anywhere."
+      operationId: deleteFlavor
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        204:
+          description: "item deleted successfully"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009_1010"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.11 List Related ApplicationConfigs ###
+  /services/{serviceId}/flavors/{flavorId}/application-configs:
+    get:
+      tags:
+        - /services
+      summary: "List all ApplicationConfigs that use a certain Flavor."
+      description: "List all ApplicationConfigs that use a certain Flavor."
+      operationId: listServiceRelatedAppConfigs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationConfig"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.12 List Linked ELFs ###
+  /services/{serviceId}/flavors/{flavorId}/executable-load-files:
+    get:
+      tags:
+        - /services
+      summary: "List all ExecutableLoadFiles used by a certain Flavor."
+      description: "List all ExecutableLoadFiles used by a certain Flavor."
+      operationId: listLinkedElfs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/ExecutableLoadFile"
+                    - $ref: "#/components/schemas/CAP"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.13 Link ELFs ###
+  #/services/{serviceId}/flavors/{flavorId}/executable-load-files:
+    post:
+      tags:
+        - /services
+      summary: "Add additional ExecutableLoadFiles to a certain Flavor. In case E..."
+      description: "Add additional ExecutableLoadFiles to a certain Flavor. In case ELF Ids provided are already linked to this Flavor, method will still be successful."
+      operationId: linkElfs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        description: "Ids of the ELFs to be added to the flavor (elfIds)"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1008_1009_1015_1016"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.14 Unlink ELFs ###
+  #/services/{serviceId}/flavors/{flavorId}/executable-load-files:
+    put:
+      tags:
+        - /services
+      summary: "Remove ExecutableLoadFiles from a certain Flavor. In case ELF Ids..."
+      description: "Remove ExecutableLoadFiles from a certain Flavor. In case ELF Ids provided are not linked to this Flavor, method will still be successful."
+      operationId: unlinkElfs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        description: "Ids of the ELFs to be removed from the flavor (elfIds)"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1008_1009_1015"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.15 Publish Flavor ###
+  /services/{serviceId}/flavors/{flavorId}/publish:
+    post:
+      tags:
+        - /services
+      summary: "Publish a Flavor. After publishing, the Flavor can be used for in..."
+      description: "Publish a Flavor. After publishing, the Flavor can be used for installation on a handset and certain attributes cannot be modified anymore (see Section 4.1.6.4.6). The publishing status of a Flavor can be checked with the attribute publish of the Flavor. When a Flavor is once published, it is not possible to undo this process. It is valid to call this method multiple times, even if a Flavor is already published."
+      operationId: publishFlavor
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.16 List Related Versions ###
+  /services/{serviceId}/flavors/{flavorId}/versions:
+    get:
+      tags:
+        - /services
+      summary: "List all Versions that use a certain Flavor."
+      description: "List all Versions that use a certain Flavor."
+      operationId: listServiceRelatedVersions
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.17 List Versions ###
+  /services/{serviceId}/versions:
+    get:
+      tags:
+        - /services
+      summary: "List all Versions of a certain Service."
+      description: "List all Versions of a certain Service."
+      operationId: listVersions
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.18 Create Version ###
+  #/services/{serviceId}/versions:
+    post:
+      tags:
+        - /services
+      summary: "Create a new Version of a certain Service."
+      description: "Create a new Version of a certain Service."
+      operationId: createVersion
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Version"
+            example:
+              allowedDeployments: [ "c207b03f-75c5-c5ff-2460-fe6cec8ab803", "ca85a700-9b54-e89a-8b3f-60296b75c26f", "553e809b-5610-53f0-ed91-5a12fa0e65ac" ]
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1003_1004_1007_1008_1009_1016"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.19 Get Version ###
+  /services/{serviceId}/versions/{tag}:
+    get:
+      tags:
+        - /services
+      summary: "Get details of a certain Version."
+      description: "Get details of a certain Version."
+      operationId: getVersion
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.20 Modify Version ###
+  #/services/{serviceId}/versions/{tag}:
+    put:
+      tags:
+        - /services
+      summary: "Update details of an existing Version."
+      description: "Update details of an existing Version."
+      operationId: modifyVersion
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Version"
+            example:
+              allowedDeployments: [ "c207b03f-75c5-c5ff-2460-fe6cec8ab803", "ca85a700-9b54-e89a-8b3f-60296b75c26f", "553e809b-5610-53f0-ed91-5a12fa0e65ac" ]
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1005_1006_1007_1008_1009_1016"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.21 Delete Version ###
+  #/services/{serviceId}/versions/{tag}:
+    delete:
+      tags:
+        - /services
+      summary: "Delete a certain Version. All data is deleted. Referenced Flavors..."
+      description: "Delete a certain Version. All data is deleted. Referenced Flavors are not deleted."
+      operationId: deleteVersion
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+      responses:
+        204:
+          description: "item deleted successfully"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009_1010"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.22 List Linked Flavors ###
+  /services/{serviceId}/versions/{tag}/flavors:
+    get:
+      tags:
+        - /services
+      summary: "List all Flavors used by a certain Version."
+      description: "List all Flavors used by a certain Version."
+      operationId: listLinkedFlavors
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.23 Link Flavors ###
+  #/services/{serviceId}/versions/{tag}/flavors:
+    post:
+      tags:
+        - /services
+      summary: "Add additional Flavors to a certain Version and configure the Sec..."
+      description: "Add additional Flavors to a certain Version and configure the SecureComponentProfiles supported by the Flavor. In case Flavor Ids provided are already linked to this Version, the method will still be successful and it will just modify the list of supported SecureComponentProfiles."
+      operationId: linkFlavors
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        description: "Map key: flavorId, Map values: list of secureComponentProfileIds"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: string
+                  maxLength: 255
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1008_1009_1016"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.24 Unlink Flavors ###
+  #/services/{serviceId}/versions/{tag}/flavors:
+    put:
+      tags:
+        - /services
+      summary: "Remove Flavors from a certain Version. In case Flavor Ids provide..."
+      description: "Remove Flavors from a certain Version. In case Flavor Ids provided are not linked to this Version, method will still be successful."
+      operationId: unlinkFlavors
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        description: "Ids of the flavors to be removed from the version (flavorIds)"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1008_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.25 List Associated SecureComponentProfiles ###
+  /services/{serviceId}/versions/{tag}/flavors/{flavorId}/secure-component-profiles:
+    get:
+      tags:
+        - /services
+      summary: "List SecureComponentProfiles associated to a certain Flavor of a ..."
+      description: "List SecureComponentProfiles associated to a certain Flavor of a certain Version."
+      operationId: listAssociatedSecureComponentProfiles
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+        - $ref: "#/components/parameters/flavorId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SecureComponentProfile"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.26 List Linked SecureComponentProfiles ###
+  /services/{serviceId}/versions/{tag}/secure-component-profiles:
+    get:
+      tags:
+        - /services
+      summary: "List all SecureComponentProfiles used by a certain Version."
+      description: "List all SecureComponentProfiles used by a certain Version."
+      operationId: listLinkedSecureComponentProfiles
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SecureComponentProfile"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.27 Link SecureComponentProfiles ###
+  #/services/{serviceId}/versions/{tag}/secure-component-profiles:
+    post:
+      tags:
+        - /services
+      summary: "Add additional SecureComponentProfiles to a certain Version and c..."
+      description: "Add additional SecureComponentProfiles to a certain Version and configure the corresponding Flavors. In case SecureComponentProfile Ids provided are already linked to this Version, the method will still be successful and it will just modify the list of supported Flavors."
+      operationId: linkSecureComponentProfiles
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        description: "Map key: secureComponentProfileId, Map value: flavorId of the corresponding Flavor"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+                maxLength: 255
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1008_1009_1016"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.4.28 Unlink SecureComponentProfiles ###
+  #/services/{serviceId}/versions/{tag}/secure-component-profiles:
+    put:
+      tags:
+        - /services
+      summary: "Remove SecureComponentProfiles from a certain Version. In case Se..."
+      description: "Remove SecureComponentProfiles from a certain Version. In case SecureComponentProfile Ids provided are not linked to this Version, method will still be successful."
+      operationId: unlinkSecureComponentProfiles
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        description: "Ids of the secureComponentProfiles to be removed from the version (secureComponentProfileIds)"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      parameters:
+        - $ref: "#/components/parameters/serviceId"
+        - $ref: "#/components/parameters/tag"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1008_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5 Manage ELFs and EMs ###
+# This section lists methods for the upload of executable binary files, usually CAP files, and to provide technical requirements and installation orders for the EMs inside those files.
+# There are methods to list, create, modify, upload, overwrite, and delete ExecutableLoadFile entities and their corresponding InstallationOrder and TechnicalRequirements entities.
+# These methods do not provide functionality to link EMs to certain ApplicationConfigs. Linking EMs and ApplicationConfigs is done using methods listed in Section 4.1.6.4.
+
+### 4.1.6.5.1 List ELFs ###
+  /executable-load-files:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "List all ExecutableLoadFiles of the authenticated ServiceProvider."
+      description: "List all ExecutableLoadFiles of the authenticated ServiceProvider."
+      operationId: listElfs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/ExecutableLoadFile"
+                    - $ref: "#/components/schemas/CAP"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.2 Create ELF and Upload Binary ###
+  #/executable-load-files:
+    post:
+      tags:
+        - /executable-load-files
+      summary: "Create a new ExecutableLoadFile and upload corresponding binary d..."
+      description: "Create a new ExecutableLoadFile and upload corresponding binary data. ELF details and binary must both be provided to create a new ExecutableLoadFile."
+      operationId: createElfAndUploadBinary
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: multipart/form-data; boundary=<<boundary>>
+      ##### Accept: application/json
+      requestBody:
+        $ref: "#/components/requestBodies/binaryELF"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ExecutableLoadFile"
+                  - $ref: "#/components/schemas/CAP"
+        400:
+          $ref: "#/components/responses/400Error_1003_1004_1007_1008_1009_1011_1012_1013_1014"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.3 Get ELF ###
+  /executable-load-files/{elfId}:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "Get details of a certain ExecutableLoadFile."
+      description: "Get details of a certain ExecutableLoadFile."
+      operationId: getElf
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ExecutableLoadFile"
+                  - $ref: "#/components/schemas/CAP"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.4 Modify ELF and Overwrite Binary ###
+  #/executable-load-files/{elfId}:
+    put:
+      tags:
+        - /executable-load-files
+      summary: "Update details and overwrite binary data of an existing Executabl..."
+      description: "Update details and overwrite binary data of an existing ExecutableLoadFile. The binary of an ExecutableLoadFile can only be replaced, as long it is not yet linked to a published Flavor."
+      operationId: modifyElfAndOverwriteBinary
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: text/plain
+      ##### Accept: application/json
+      requestBody:
+        $ref: "#/components/requestBodies/binaryELF"
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/ExecutableLoadFile"
+                  - $ref: "#/components/schemas/CAP"
+        400:
+          $ref: "#/components/responses/400Error_1005_1006_1007_1008_1009_1011_1012_1013_1014_1015_1016"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.5 Delete ELF ###
+  #/executable-load-files/{elfId}:
+    delete:
+      tags:
+        - /executable-load-files
+      summary: "Delete a certain ExecutableLoadFile. All data, including binary d..."
+      description: "Delete a certain ExecutableLoadFile. All data, including binary data, meta-data, and associated TechnicalRequirements, is deleted. Deletion SHALL only be possible if the ExecutableLoadFile is not referenced in any Flavor and thus is not in use anywhere."
+      operationId: deleteElf
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+      responses:
+        204:
+          description: "item deleted successfully"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009_1010"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.6 Get Binary ###
+  /executable-load-files/{elfId}/binary:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "Get binary data of a certain ExecutableLoadFile."
+      description: "Get binary data of a certain ExecutableLoadFile."
+      operationId: getElfBinary
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+      responses:
+        200:
+          $ref: "#/components/responses/200Binary_ELF"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.7 List EMs ###
+  /executable-load-files/{elfId}/executable-modules:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "List all ExecutableModules of a certain ExecutableLoadFile."
+      description: "List all ExecutableModules of a certain ExecutableLoadFile."
+      operationId: listEms
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExecutableModule"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.8 Get EM ###
+  /executable-load-files/{elfId}/executable-modules/{emId}:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "Get details of a certain ExecutableModule of a certain Executable..."
+      description: "Get details of a certain ExecutableModule of a certain ExecutableLoadFile."
+      operationId: getEm
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/emId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExecutableModule"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.9 List Related ApplicationConfigs ###
+  /executable-load-files/{elfId}/executable-modules/{emId}/application-configs:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "Return the ApplicationConfigs that apply to a certain ExecutableM..."
+      description: "Return the ApplicationConfigs that apply to a certain ExecutableModule."
+      operationId: listElfRelatedAppConfigs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/emId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationConfig"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.10 List Related Flavors ###
+  /executable-load-files/{elfId}/services/{serviceId}/flavors:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "List all Flavors that use a certain ExecutableLoadFile."
+      description: "List all Flavors that use a certain ExecutableLoadFile."
+      operationId: listElfRelatedFlavors
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.11 List Related Services ###
+  /executable-load-files/{elfId}/services:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "List all Services that use a certain ExecutableLoadFile."
+      description: "List all Services that use a certain ExecutableLoadFile."
+      operationId: listElfRelatedServices
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.12 List Related Versions ###
+  /executable-load-files/{elfId}/services/{serviceId}/versions:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "List all Versions of a certain Service that use a certain Executa..."
+      description: "List all Versions of a certain Service that use a certain ExecutableLoadFile."
+      operationId: listElfRelatedVersions
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Version"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.5.13 List Related SecureComponentProfiles ###
+  /executable-load-files/{elfId}/services/{serviceId}/secure-component-profiles:
+    get:
+      tags:
+        - /executable-load-files
+      summary: "List all SecureComponentProfiles associated to certain Service th..."
+      description: "List all SecureComponentProfiles associated to certain Service that use a certain ExecutableLoadFile. The returned list of SecureComponentProfiles SHALL not contain any duplicate entries."
+      operationId: listElfRelatedSecureComponentProfiles
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/serviceId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SecureComponentProfile"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.6 Manage ApplicationConfigs ###
+# This section lists methods to create application configurations for EMs. An ApplicationConfig consists of parameters and certificates necessary for the provisioning of a specific kind of SC. An ApplicationConfig does not depend on a specific EM.
+# There are methods to list, upload, overwrite, and delete ApplicationConfigs, and to link PersonalizationScripts and Certificates to a certain ApplicationConfig.
+# The methods listed here do not provide functionality to link ApplicationConfigs to certain EMs. Linking ApplicationConfigs and EMs is done via methods listed in Section 4.1.6.4.
+# The methods listed here do not provide functionality to upload binary data for PersonalizationScripts or Certificates. Uploading those files is done via methods listed in Section 4.1.6.7 and Section 4.1.6.8.
+
+### 4.1.6.6.1 List ApplicationConfigs ###
+  /application-configs:
+    get:
+      tags:
+        - /application-configs
+      summary: "List all ApplicationConfigs of the authenticated ServiceProvider."
+      description: "List all ApplicationConfigs of the authenticated ServiceProvider."
+      operationId: listAppConfigs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationConfig"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.6.2 Create ApplicationConfig ###
+  #/application-configs:
+    post:
+      tags:
+        - /application-configs
+      summary: "Create a new ApplicationConfig."
+      description: "Create a new ApplicationConfig."
+      operationId: createAppConfig
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationConfig"
+            example:
+              instanceAid: "A00000089316631C0000"
+              name: "XX-413D-58"
+              description: "Description of this ApplicationConfig."
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationConfig"
+        400:
+          $ref: "#/components/responses/400Error_1003_1004_1007_1008_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.6.3 Get ApplicationConfig ###
+  /application-configs/{applicationConfigId}:
+    get:
+      tags:
+        - /application-configs
+      summary: "Get details of a certain ApplicationConfig."
+      description: "Get details of a certain ApplicationConfig."
+      operationId: getAppConfig
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/applicationConfigId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationConfig"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.6.4 Modify ApplicationConfig ###
+  #/application-configs/{applicationConfigId}:
+    put:
+      tags:
+        - /application-configs
+      summary: "Update details of an existing ApplicationConfig."
+      description: "Update details of an existing ApplicationConfig."
+      operationId: modifyAppConfig
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApplicationConfig"
+            example:
+              instanceAid: "A00000089316631C0000"
+              name: "XX-413D-58"
+              description: "Description of this ApplicationConfig."
+      parameters:
+        - $ref: "#/components/parameters/applicationConfigId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApplicationConfig"
+        400:
+          $ref: "#/components/responses/400Error_1005_1006_1007_1008_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.6.5 Delete ApplicationConfig ###
+  #/application-configs/{applicationConfigId}:
+    delete:
+      tags:
+        - /application-configs
+      summary: "Delete a certain ApplicationConfig. All data is deleted. Referenc..."
+      description: "Delete a certain ApplicationConfig. All data is deleted. Referenced Certificates and PersonalizationScripts are not deleted. Deletion SHALL only be possible if the ApplicationConfig is not referenced in any Flavor and thus is not in use anywhere."
+      operationId: deleteAppConfig
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/applicationConfigId"
+      responses:
+        204:
+          description: "item deleted successfully"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009_1010"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.6.6 List Related EMs ###
+  /application-configs/{applicationConfigId}/executable-modules:
+    get:
+      tags:
+        - /application-configs
+      summary: "List all ExecutableModules that use a certain ApplicationConfig."
+      description: "List all ExecutableModules that use a certain ApplicationConfig."
+      operationId: listAppConfigRelatedEms
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/applicationConfigId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExecutableModule"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.6.7 List Related Flavors ###
+  /application-configs/{applicationConfigId}/flavors:
+    get:
+      tags:
+        - /application-configs
+      summary: "List all Flavors that use a certain ApplicationConfig."
+      description: "List all Flavors that use a certain ApplicationConfig."
+      operationId: listAppConfigRelatedFlavors
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/applicationConfigId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.6.8 List Related Services ###
+  /application-configs/{applicationConfigId}/services:
+    get:
+      tags:
+        - /application-configs
+      summary: "List all Services that use a certain ApplicationConfig."
+      description: "List all Services that use a certain ApplicationConfig."
+      operationId: listAppConfigRelatedServices
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/applicationConfigId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.7 Manage PersonalizationScripts ###
+# This section lists methods to upload and manage PersonalizationScripts. A PersonalizationScript is a binary script a SP may use to specify installation instructions or request TSM-support for, e.g., the personalization of a secure application during the provisioning process. A PersonalizationScript is independent of specific EMs and can be linked to an ApplicationConfig.
+# There are methods to list, get, upload, and delete PersonalizationScripts.
+# The methods listed here do not provide functionality to link a PersonalizationScript to an ApplicationConfig or EM. Linking a PersonalizationScript to an ApplicationConfig is done via methods listed in Section 4.1.6.6 , indirect linking to EMs is done via methods listed in Section 4.1.6.4.
+
+### 4.1.6.7.1 List PersonalizationScripts ###
+  /personalization-scripts:
+    get:
+      tags:
+        - /personalization-scripts
+      summary: "List all PersonalizationScripts of the authenticated ServiceProvider."
+      description: "List all PersonalizationScripts of the authenticated ServiceProvider."
+      operationId: listPersoScripts
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PersonalizationScript"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.7.2 Create PersonalizationScript and Upload Binary ###
+  #/personalization-scripts:
+    post:
+      tags:
+        - /personalization-scripts
+      summary: "Create a new PersonalizationScript and upload corresponding binar..."
+      description: "Create a new PersonalizationScript and upload corresponding binary data."
+      operationId: createPersoScriptAndUploadBinary
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: multipart/form-data; boundary=<<boundary>>
+      ##### Accept: application/json
+      requestBody:
+        $ref: "#/components/requestBodies/binaryPersoScript"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalizationScript"
+        400:
+          $ref: "#/components/responses/400Error_1002_1011_1012_1013_1014"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.7.3 Get PersonalizationScript ###
+  /personalization-scripts/{personalizationScriptId}:
+    get:
+      tags:
+        - /personalization-scripts
+      summary: "Get details of a certain PersonalizationScript."
+      description: "Get details of a certain PersonalizationScript."
+      operationId: getPersoScript
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/personalizationScriptId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalizationScript"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.7.4 Modify PersonalizationScript and Overwrite Binary ###
+  #/personalization-scripts/{personalizationScriptId}:
+    put:
+      tags:
+        - /personalization-scripts
+      summary: "Update details and overwrite binary data of an existing Personali..."
+      description: "Update details and overwrite binary data of an existing PersonalizationScript."
+      operationId: modifyPersoScriptAndOverwriteBinary
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: multipart/form-data; boundary=<<boundary>>
+      ##### Accept: application/json
+      requestBody:
+        $ref: "#/components/requestBodies/binaryPersoScript"
+      parameters:
+        - $ref: "#/components/parameters/personalizationScriptId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PersonalizationScript"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.7.5 Delete PersonalizationScript ###
+  #/personalization-scripts/{personalizationScriptId}:
+    delete:
+      tags:
+        - /personalization-scripts
+      summary: "Delete a certain PersonalizationScript. All data, including binar..."
+      description: "Delete a certain PersonalizationScript. All data, including binary data, is deleted. Deletion SHALL only be possible if the PersonalizationScript is not referenced in any ApplicationConfig and thus is not in use anywhere."
+      operationId: deletePersoScript
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/personalizationScriptId"
+      responses:
+        204:
+          description: "item deleted successfully"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009_1010"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.7.6 List Related ApplicationConfigs ###
+  /personalization-scripts/{personalizationScriptId}/application-configs:
+    get:
+      tags:
+        - /personalization-scripts
+      summary: "List all ApplicationConfigs that use a certain PersonalizationScript."
+      description: "List all ApplicationConfigs that use a certain PersonalizationScript."
+      operationId: listScriptRelatedAppConfigs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/personalizationScriptId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationConfig"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.7.7 Get Binary ###
+  /personalization-scripts/{personalizationScriptId}/binary:
+    get:
+      tags:
+        - /personalization-scripts
+      summary: "Get binary data of a certain PersonalizationScript."
+      description: "Get binary data of a certain PersonalizationScript."
+      operationId: getScriptBinary
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/personalizationScriptId"
+      responses:
+        200:
+          $ref: "#/components/responses/200Binary_Script"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.7.8 List Related Flavors ###
+  /personalization-scripts/{personalizationScriptId}/flavors:
+    get:
+      tags:
+        - /personalization-scripts
+      summary: "List all Flavors that use a certain PersonalizationScript."
+      description: "List all Flavors that use a certain PersonalizationScript."
+      operationId: listScriptRelatedFlavors
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/personalizationScriptId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.7.9 List Related Services ###
+  /personalization-scripts/{personalizationScriptId}/services:
+    get:
+      tags:
+        - /personalization-scripts
+      summary: "List all Services that use a certain PersonalizationScript."
+      description: "List all Services that use a certain PersonalizationScript."
+      operationId: listScriptRelatedServices
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/personalizationScriptId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8 Manage Certificates ###
+# This section lists methods to manage the TLS certificates which are used for communication with a SP backend requested by PersonalizationScripts (if applicable) and for communication between TSM and SPOS.
+# There are methods to list, get, upload, and delete Certificates.
+# The methods listed here do not provide functionality to link a Certificate to certain ApplicationConfigs or SposConfigs. Linking Certificates to ApplicationConfigs is done via methods listed in Section 4.1.6.6, and linking to SposConfigs is done using methods listed in Section 4.1.6.9.
+
+### 4.1.6.8.1 List Certificates ###
+  /certificates:
+    get:
+      tags:
+        - /certificates
+      summary: "List all Certificates of the authenticated ServiceProvider."
+      description: "List all Certificates of the authenticated ServiceProvider."
+      operationId: listCerts
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Certificate"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8.2 Create Certificate and Upload Binary ###
+  #/certificates:
+    post:
+      tags:
+        - /certificates
+      summary: "Create a new Certificate and upload corresponding binary data."
+      description: "Create a new Certificate and upload corresponding binary data."
+      operationId: createCertAndUploadBinary
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: multipart/form-data; boundary=<<boundary>>
+      ##### Accept: application/json
+      requestBody:
+        $ref: "#/components/requestBodies/binaryCertificate"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certificate"
+        400:
+          $ref: "#/components/responses/400Error_1002_1011_1012_1013_1014"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8.3 Get Certificate ###
+  /certificates/{certificateId}:
+    get:
+      tags:
+        - /certificates
+      summary: "Get details of a certain Certificate."
+      description: "Get details of a certain Certificate."
+      operationId: getCert
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/certificateId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certificate"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8.4 Modify Certificate and Overwrite Binary ###
+  #/certificates/{certificateId}:
+    put:
+      tags:
+        - /certificates
+      summary: "Update details and overwrite binary data of an existing Certificate."
+      description: "Update details and overwrite binary data of an existing Certificate."
+      operationId: modifyCertAndOverwriteBinary
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: multipart/form-data; boundary=<<boundary>>
+      ##### Accept: application/json
+      requestBody:
+        $ref: "#/components/requestBodies/binaryCertificate"
+      parameters:
+        - $ref: "#/components/parameters/certificateId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certificate"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8.5 Delete Certificate ###
+  #/certificates/{certificateId}:
+    delete:
+      tags:
+        - /certificates
+      summary: "Delete a certain Certificate. All data, including binary data, is..."
+      description: "Delete a certain Certificate. All data, including binary data, is deleted. Deletion SHALL only be possible if the Certificate is not referenced in any ApplicationConfig or SposConfig and thus is not in use anywhere."
+      operationId: deleteCert
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/certificateId"
+      responses:
+        204:
+          description: "item deleted successfully"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009_1010"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8.6 List Related ApplicationConfigs ###
+  /certificates/{certificateId}/application-configs:
+    get:
+      tags:
+        - /certificates
+      summary: "List all ApplicationConfigs that use a certain Certificate."
+      description: "List all ApplicationConfigs that use a certain Certificate."
+      operationId: listCertRelatedAppConfigs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/certificateId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ApplicationConfig"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8.7 Get Binary ###
+  /certificates/{certificateId}/binary:
+    get:
+      tags:
+        - /certificates
+      summary: "Get binary data of a certain Certificate."
+      description: "Get binary data of a certain Certificate."
+      operationId: getCertBinary
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/certificateId"
+      responses:
+        200:
+          $ref: "#/components/responses/200Binary_Cert"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8.8 List Related Flavors ###
+  /certificates/{certificateId}/flavors:
+    get:
+      tags:
+        - /certificates
+      summary: "List all Flavors that use a certain Certificate."
+      description: "List all Flavors that use a certain Certificate."
+      operationId: listCertRelatedFlavors
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/certificateId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Flavor"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8.9 List Related Services ###
+  /certificates/{certificateId}/services:
+    get:
+      tags:
+        - /certificates
+      summary: "List all Services that use a certain Certificate."
+      description: "List all Services that use a certain Certificate."
+      operationId: listCertRelatedServices
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/certificateId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.8.10 List Related SposConfigs ###
+  /certificates/{certificateId}/spos-configs:
+    get:
+      tags:
+        - /certificates
+      summary: "List all SposConfigs that use a certain Certificate."
+      description: "List all SposConfigs that use a certain Certificate."
+      operationId: listCertRelatedSposConfigs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/certificateId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SposConfig"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.9 Manage SposConfigs ###
+# This section lists methods to manage SposConfigs.
+
+### 4.1.6.9.1 List SposConfigs ###
+  /spos-configs:
+    get:
+      tags:
+        - /spos-configs
+      summary: "List all SposConfigs of the authenticated ServiceProvider."
+      description: "List all SposConfigs of the authenticated ServiceProvider."
+      operationId: listSposConfigs
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SposConfig"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.9.2 Create SposConfig ###
+  #/spos-configs:
+    post:
+      tags:
+        - /spos-configs
+      summary: "Create a new SposConfig and set all corresponding details."
+      description: "Create a new SposConfig and set all corresponding details."
+      operationId: createSposConfig
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SposConfig"
+            example:
+              url: "/relative/uri/to/resource"
+              certificateId: "652f7175-d33a-0616-cf61-0451f2587361"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SposConfig"
+        400:
+          $ref: "#/components/responses/400Error_1003_1004_1007_1008_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.9.3 Get SposConfig ###
+  /spos-configs/{sposConfigId}:
+    get:
+      tags:
+        - /spos-configs
+      summary: "Get details of a certain SposConfig."
+      description: "Get details of a certain SposConfig."
+      operationId: getSposConfig
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/sposConfigId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SposConfig"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.9.4 Modify SposConfig ###
+  #/spos-configs/{sposConfigId}:
+    put:
+      tags:
+        - /spos-configs
+      summary: "Update details of an existing SposConfig."
+      description: "Update details of an existing SposConfig."
+      operationId: modifySposConfig
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Content-Type: application/json
+      ##### Accept: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SposConfig"
+            example:
+              url: "/relative/uri/to/resource"
+              certificateId: "652f7175-d33a-0616-cf61-0451f2587361"
+      parameters:
+        - $ref: "#/components/parameters/sposConfigId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SposConfig"
+        400:
+          $ref: "#/components/responses/400Error_1005_1006_1007_1008_1009"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.9.5 Delete SposConfig ###
+  #/spos-configs/{sposConfigId}:
+    delete:
+      tags:
+        - /spos-configs
+      summary: "Delete a certain SposConfig. All data is deleted. Deletion SHALL ..."
+      description: "Delete a certain SposConfig. All data is deleted. Deletion SHALL only be possible if the SposConfig is not referenced in any Service and thus is not in use anywhere."
+      operationId: deleteSposConfig
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/sposConfigId"
+      responses:
+        204:
+          description: "item deleted successfully"
+        400:
+          $ref: "#/components/responses/400Error_1002_1009_1010"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+### 4.1.6.9.6 List Related Services ###
+  /spos-configs/{sposConfigId}/services:
+    get:
+      tags:
+        - /spos-configs
+      summary: "List all Services that use a certain SposConfig."
+      description: "List all Services that use a certain SposConfig."
+      operationId: listSposConfigRelatedServices
+      ##### Request Headers:
+      security:
+        - authToken: []
+      ##### Accept: application/json
+      ##### Request Body: -
+      parameters:
+        - $ref: "#/components/parameters/sposConfigId"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+        400:
+          $ref: "#/components/responses/400Error_1002"
+        401:
+          $ref: "#/components/responses/401Error_1000"
+        500:
+          $ref: "#/components/responses/500Error_2000"
+
+components:
+
+  parameters:
+  
+    scpId:
+      in: path
+      name: scpId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "bc675568-34ac-40b0-abc0-03929b2d5ccd"
+      description: identifier of the referred Scp
+    
+    serviceId:
+      in: path
+      name: serviceId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "e59d3d32-6756-76ac-ffff-feeba10c081a"
+      description: identifier of the referred Service
+    
+    flavorId:
+      in: path
+      name: flavorId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "ff686d37-4674-1456-26fa-c9ed658bb41c"
+      description: identifier of the referred Flavor
+    
+    tag:
+      in: path
+      name: tag
+      required: true
+      schema:
+        type: string
+        format: version
+        maxLength: 11
+        minLength: 5
+        pattern: '^\d{1,3}.\d{1,3}.\d{1,3}$'
+        example: "4.31.005"
+      description: identifier of the referred Tag
+    
+    elfId:
+      in: path
+      name: elfId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "c73e8ddc-0318-7940-dc7d-ae5bab5ce549"
+      description: identifier of the referred Elf
+    
+    emId:
+      in: path
+      name: emId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "4079f402-4e86-b4b0-0c4f-a21681ece9c8"
+      description: identifier of the referred Em
+    
+    applicationConfigId:
+      in: path
+      name: applicationConfigId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "615c1678-895b-ff21-7c6c-bcd9fed11b84"
+      description: identifier of the referred ApplicationConfig
+    
+    personalizationScriptId:
+      in: path
+      name: personalizationScriptId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "5bd3cb36-3688-e41b-45b4-24abb956e2c5"
+      description: identifier of the referred PersonalizationScript
+    
+    certificateId:
+      in: path
+      name: certificateId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "ffe6404d-0589-e66c-f837-3e89cfe3d19a"
+      description: identifier of the referred Certificate
+    
+    sposConfigId:
+      in: path
+      name: sposConfigId
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "f071b74c-ea66-b415-9a66-4ba06c637d13"
+      description: identifier of the referred SposConfig
+    
+  requestBodies:
+  
+    binaryELF:
+      description: "Binary data of ELF to be uploaded as part of a request body."
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              elfFilename:
+                description: filename of the ELF
+                type: string
+                example: elf-file.cap
+              elfFile:
+                description: containing actual elf-file
+                type: string
+                format: binary
+                example: "01000101010011000100011000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+          encoding:
+            elfFilename:
+              contentType: text/plain
+            elfFile:
+              contentType: application/octet-stream
+    
+    binaryPersoScript:
+      description: "Binary data of a personalization script to be uploaded as part of a request body."
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              scriptFilename:
+                description: filename of the personalization script
+                type: string
+                example: file.pers
+              scriptFile:
+                description: containing actual script-file
+                type: string
+                format: binary
+                example: "01010011011000110111001001101001011100000111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+          encoding:
+            scriptFilename:
+              contentType: text/plain
+            scriptFile:
+              contentType: application/octet-stream
+    
+    binaryCertificate:
+      description: "Binary data of a certificate to be uploaded as part of a request body."
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              certFilename:
+                description: filename of the certificate
+                type: string
+                example: file.cert
+              certFile:
+                description: containing actual cert-file
+                type: string
+                format: binary
+                example: "0100001101100101011100100111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+          encoding:
+            certFilename:
+              contentType: text/plain
+            certFile:
+              contentType: application/octet-stream
+    
+  responses:
+  
+    200Binary_ELF:
+      description: Ok
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+            example: attachment; filename="filename.cap"
+      content:
+        application/octet-stream:
+          schema:
+            description: containing actual elf-binary
+            type: string
+            format: binary
+            example: "01000101010011000100011000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+    
+    200Binary_Script:
+      description: Ok
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+            example: attachment; filename="filename.pers"
+      content:
+        application/octet-stream:
+          schema:
+            description: containing actual pers-binary
+            type: string
+            format: binary
+            example: "01010011011000110111001001101001011100000111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+    
+    200Binary_Cert:
+      description: Ok
+      headers:
+        Content-Disposition:
+          schema:
+            type: string
+            example: attachment; filename="filename.cert"
+      content:
+        application/octet-stream:
+          schema:
+            description: containing actual cert-binary
+            type: string
+            format: binary
+            example: "0100001101100101011100100111010000101101010001100110100101101100011001010010000001000011011011110110111001110100011001010110111001110100"
+    
+    400Error_1002:
+      description: "Bad Request - returned error category: 1002"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1002
+            errorMessage: "Invalid: request body not allowed."
+    
+    400Error_1002_1009:
+      description: "Bad Request - possible error categories: 1002, 1009"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1009
+            errorMessage: "Not existing: <<entityName>> with identifier '<<attributeValue>>' is not existing."
+    
+    400Error_1002_1009_1010:
+      description: "Bad Request - possible error categories: 1002, 1009, 1010"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1010
+            errorMessage: "Delete failed: <<entityName>> is referenced in <<entityNameWhereUsed>>."
+    
+    400Error_1002_1011_1012_1013_1014:
+      description: "Bad Request - possible error categories: 1002, 1011, 1012, 1013, 1014"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1011
+            errorMessage: "Upload failed: missing file."
+    
+    400Error_1003_1004_1007_1008_1009_1011_1012_1013_1014:
+      description: "Bad Request - possible error categories: 1003, 1004, 1007, 1008, 1009, 1011, 1012, 1013, 1014"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1013
+            errorMessage: "Upload failed: invalid file type. Supported file types are <<fileTypeList>>."
+    
+    400Error_1003_1004_1007_1008_1009:
+      description: "Bad Request - possible error categories: 1003, 1004, 1007, 1008, 1009"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1003
+            errorMessage: "Create failed: attribute <<attributeName>> not allowed for POST. It is automatically assigned when created."
+    
+    400Error_1003_1004_1007_1008_1009_1016:
+      description: "Bad Request - possible error categories: 1003, 1004, 1007, 1008, 1009, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1004
+            errorMessage: "Create failed: attribute <<attributeName>> is missing, but it is mandatory for <<entityName>>."
+    
+    
+    400Error_1005_1006_1007_1008_1009:
+      description: "Bad Request - possible error categories: 1005, 1006, 1007, 1008, 1009"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1005
+            errorMessage: "Modify failed: attribute <<attributeName>> not allowed for PUT. Attribute cannot be modified after creation."
+    
+    400Error_1005_1006_1007_1008_1009_1011_1012_1013_1014_1015_1016:
+      description: "Bad Request - possible error categories: 1005, 1006, 1007, 1008, 1009, 1011, 1012, 1013, 1014, 1015, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1007
+            errorMessage: "Unknown: ‘<<attributeName>>’ is not a valid attribute."
+    
+    400Error_1005_1006_1007_1008_1009_1015_1016:
+      description: "Bad Request - possible error categories: 1005, 1006, 1007, 1008, 1009, 1015, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1015
+            errorMessage: "Already Published: <<entityName>> cannot be modified. It is already published via Flavor identifier ‘<<attributeValue>>’."
+    
+    400Error_1005_1006_1007_1008_1009_1016:
+      description: "Bad Request - possible error categories: 1005, 1006, 1007, 1008, 1009, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1016
+            errorMessage: "Technical constraints failed: minimal <<attributeName>> version not supported by SecureComponentProfile."
+    
+    400Error_1008_1009:
+      description: "Bad Request - possible error categories: 1008, 1009"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1008
+            errorMessage: "Invalid format '<<attributeValue>>' for << attributeName>>. Supported format is <<formatDefinition>>."
+    
+    400Error_1008_1009_1015:
+      description: "Bad Request - possible error categories: 1008, 1009, 1015"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1008
+            errorMessage: "Invalid format '<<attributeValue>>' for << attributeName>>. Supported format is <<formatDefinition>>."
+    
+    400Error_1008_1009_1015_1016:
+      description: "Bad Request - possible error categories: 1008, 1009, 1015, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1015
+            errorMessage: "Already Published: <<entityName>> cannot be modified. It is already published via Flavor identifier ‘<<attributeValue>>’."
+    
+    400Error_1008_1009_1016:
+      description: "Bad Request - possible error categories: 1008, 1009, 1016"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1016
+            errorMessage: "Technical constraints failed: minimal <<attributeName>> version not supported by SecureComponentProfile."
+    
+    401Error_1000:
+      description: "Unauthorized - returned error category: 1000"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1000
+            errorMessage: "Not authenticated"
+    
+    401Error_1001:
+      description: "Unauthorized - returned error category: 1001"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1001
+            errorMessage: "Authentication failed."  
+    
+    403Error_1000:
+      description: "Forbidden - returned error category: 1000"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 1000
+            errorMessage: "Not authenticated"
+    
+    500Error_2000:
+      description: "Internal Server Error - possible error categories: >= 2000"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GeneralError"
+          example:
+            errorCategory: 2000
+            errorMessage: "Internal server error: Sample error reason"
+    
+  securitySchemes:
+  
+    LongtermToken:
+      type: "http"
+      scheme: bearer
+    
+    authToken:
+      type: "http"
+      scheme: bearer
+    
+### 4.1.4 ###
+  schemas:
+  
+### 4.1.4.0 ###
+  
+    auth-Token:
+      description: Short-term bearer token, that is used to access Backend-API functions.
+      type: string
+      #format: uuid
+      example: "a cryptographic token, transmitted as part of the request header"
+
+### 4.1.4.1 ###
+    ServiceProvider:
+      description: "The top-level entity of the data model is a ServiceProvider. The ServiceProvider entity of the data model represents the ('real-life') SP, and both terms will be used interchangeable. The access to resources that are associated with a ServiceProvider is always restricted to the users that are associated with that ServiceProvider. A ServiceProvider has one or more Service entities and zero or more SposConfig entities. The SP can check and modify account information via a REST-API with the following attributes:"
+      type: object
+      required: [name]
+      properties:
+        id: # A, No
+          description: "Unique identification of the SP."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "6c4a3aa8-5240-ad98-4673-a820be2df3b0"
+        name: # M, Yes
+          description: "Name of the SP."
+          type: string
+          maxLength: 255
+          example: "nameOfTheSp"
+
+### 4.1.4.2 ###
+    Service:
+      description: "A Service (as an entity of the data model) represents all data needed for the life-cycle management of a secure application. Services are the key elements for the communication between TSM-Backend and TSM-API. A Service may have multiple Versions with multiple Flavors, which in turn may contain different ELFs. A Service is associated with zero to one SposConfigs. A Service has the following attributes:"
+      type: object
+      required: [name]
+      properties:
+        id: # A, No
+          description: "Unique identification of the Service."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "fde02274-914f-b360-c679-74970a9d6cef"
+        spId: # A, No
+          description: "ID of the ServiceProvider owning the Service."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "de10f784-d526-618f-443f-2a98cb2c9893"
+        name: # M, Yes
+          description: "Name of the Service."
+          type: string
+          maxLength: 255
+          example: "nameOfTheService"
+        creationDate: # A, No
+          description: "A datetime string (creation of Service)."
+          type: string
+          format: date-time
+          readOnly: true
+        sdAid: # A, No
+          description: "AID of the specific security domain that is created for every Service Instance. The AID format follows [ISO/IEC7816-4]."
+          type: string
+          format: aid
+          readOnly: true
+          example: "A00000025128620C1110"
+        accessAuthorizedDeviceApps: # O, Yes
+          description: "List of apps for which an access rule is created when an instance of this Service is activated."
+          type: array
+          items:
+            type: string
+            format: aid
+          example: [ "A00000039998960C1111", "A00000086243583C0111", "A00000052220986C0110" ]
+        sposConfigId: # O, Yes
+          description: "ID of the SposConfig used for this Service."
+          type: string
+          format: uuid
+          example: "167f43e0-2ada-d0d0-ba18-b23fd6accd18"
+        spParameters: # O, Yes
+          description: "Key value definitions used as parameters of a Service. Those parameters can be retrieved via TSM-API. The parameters can be overwritten for each Flavor."
+          type: object
+          additionalProperties:
+            type: string
+            maxLength: 255
+          example: { param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App.", param3: "Value3 which can be evaluated by the App." }
+
+### 4.1.4.3 ###
+    Version:
+      description: "A Service can be provided in different Versions. Each Version may have multiple Flavors. Each Flavor defines a set of configurations and ELF files to support a certain hardware platform. The matching of a Flavor to specific SCs is managed via the attribute allowedDeployments. This attribute is a map where one or multiple SecureComponentProfiles are assigned to a specific Flavor. A SecureComponentProfile describes the hardware platform(s) a Flavor is supporting. Thus, inside the Version, a SP MUST define which ELF is used for which hardware platform. The SP also MAY add platform specific configurations. A TSM provider MUST ensure that the FlavorIds and SecureComponentProfileIds are unique for a Version. In the same Version it is not supported to assign a SecureComponentProfile to multiple Flavors or vice versa. A TSM provider MUST also perform a compatibility check when the allowedDeployments attribute is modified. Here, a TSM provider SHALL compare the ELF files with the assigned SecureComponentProfiles, e.g. to check for JavaCard version mismatch or missing CSP support. Such a compatibility check might also be needed when an ELF or a Flavor is modified. The Version is mutable, thus it is allowed to modify a Version when it is already deployed on a device. With this, the SP can assign new SecureComponentProfiles to an existing Version to increase the amount of devices supported by this Version. The SP can also remove SecureComponentProfiles from an existing Version, e.g., in case of a security incident. A Version has the following attributes:"
+      type: object
+      required: [tag, allowedDeployments]
+      properties:
+        tag: # M, No
+          description: "Tag of the Version in the format <Major>.<Minor>.<Revision> The tag must be unique for a Service, since tag is used to reference the Version."
+          type: string
+          format: version
+          maxLength: 11
+          minLength: 5
+          pattern: '^\d{1,3}.\d{1,3}.\d{1,3}$'
+          readOnly: true
+          example: "3.1.4"
+        serviceId: # A, No
+          description: "ID of the Service owning the Version."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "bb5c8384-f856-ca00-2b52-bcf9f45e1f39"
+        allowedDeployments: # M, Yes
+          description: "Map, which associates Flavors (see 4.1.4.4) to one or multiple SecureComponentProfiles (see 4.1.4.5). By this, Flavors linked to this Version are assigned to concrete hardware platforms as 1-n association. The key of the map contains the FlavorId. The value of the map is a list of SecureComponentProfileIds. Specific FlavorIds and SecureComponentProfileIds can only be used once inside a Version, i.e., inside a Version it is not supported to assign a SecureComponentProfile to multiple Flavors or vice versa."
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+
+### 4.1.4.4 ###
+    Flavor:
+      description: "Services, respectively Versions, can be provided in different Flavors to solve interoperability problems when provisioning Services to different SC platforms. Simply speaking, a Flavor is a certain variant of a Service. A Flavor consists of zero or more ExecutableLoadFile entities, zero or more ApplicationInstantiationConfigs, and exactly one FeatureConfig entity. Flavors need to be published before they can be used for installation. After publishing a Flavor, certain data attributes of the Flavor cannot be modified anymore. The purpose is to avoid the problem that Flavor modifications done on a Flavor which is already installed might lead to inconsistencies on the handset. The allocation of a Flavor to one or multiple SecureComponentProfiles is done via the allowedDeployments attribute of the parent Version of each Flavor. A Flavor has the following attributes:"
+      type: object
+      #required: []
+      properties:
+        id: # A, No
+          description: "Unique identification of the Flavor. The id shall be used to check the necessity of applet reinstallation during the Version update process, for use cases when the same Flavor is used for different Versions."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "39fb1716-4a34-87ab-18be-8ee81e7f2d67"
+        serviceId: # A, No
+          description: "ID of the Service owning the Flavor."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "bb451440-fdc1-1983-43f2-df17104a4715"
+        name: # O, Yes
+          description: "Name of this Flavor."
+          type: string
+          maxLength: 255
+          example: "nameOfThisFlavor"
+        description: # O, Yes
+          description: "Additional description for this Flavor."
+          type: string
+          maxLength: 255
+          example: "Additional description for this Flavor."
+        creationDate: # A, No
+          description: "A datetime string (creation of Flavor)."
+          type: string
+          format: date-time
+          readOnly: true
+        published: # A, No
+          description: "A Flavor can only be used for deployment if it is published. Once published, modification of the following attributes is no longer possible -> executableLoadFileIds -> applicationInstantationConfigs Default value is false. The value can be changed to true via the interface method Publish Flavor (see Section 4.1.6.4.15). Once published (value set to true), a Flavor cannot be reversed to an unpublished state again."
+          type: boolean
+          default: false
+          readOnly: true
+        executableLoadFileIds: # O, C
+          description: "List of IDs of ELFs used by this Flavor. Modifications are only possible, as long as the Flavor is not yet published."
+          type: array
+          items:
+            type: string
+            format: uuid
+          example: [ "fd4aad1f-50f8-1534-aeab-652bafa65604", "96f3baa5-d50c-84e4-b285-07b679aa6953", "69c1eede-6767-ddbc-6c84-3903126e51b4" ]
+        applicationInstantiationConfigs: # O, C
+          description: "List to link and prioritize EMs and ApplicationConfigs. Modifications are only possible, as long as the Flavor is not yet published."
+          type: array
+          items:
+            $ref: "#/components/schemas/ApplicationInstantiationConfig"
+        spParameters: # O, Yes
+          description: "Key value definitions used as parameters of a service. Those parameters can be retrieved via TSM-API. For the parameters returned by TSM-API the key value pairs are combined with key values pairs of spParameters contained in the Service definition. For pairs with identical keys, the key value pairs of the given flavor take presence over the corresponding pairs contained in spParameters of the Service definition.."
+          type: object
+          additionalProperties:
+            type: string
+            maxLength: 255
+          example: { param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App.", param3: "Value3 which can be evaluated by the App." }
+        featureConfig: # O, Yes
+          $ref: "#/components/schemas/FeatureConfig" # "Used to indicate the use of features supported by the SC or provided by the TSM."
+        contextSpecificAttributes: # O, Yes
+          description: "Additional context specific configuration settings (e.g. platform specific CSP patch level). Possible options are defined bilateral between SP and TSMS provider."
+          type: object
+          additionalProperties:
+            type: string
+            maxLength: 255
+          example: { param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App.", param3: "Value3 which can be evaluated by the App." }
+
+### 4.1.4.5 ###
+    SecureComponentProfile:
+      description: "A SecureComponentProfile describes a secure component by its properties like JavaCard version, operating system name and version, chip identifier etc. The SP can retrieve this list via the TSM-Backend REST-API to determine supported hardware platforms. With this information, the SP can prepare the necessary ELF files and configure a corresponding Flavor. Finally, the SP assigns specific SecureComponentProfiles to this Flavor to control on which platforms it shall be deployed. This is done via the allowedDeployments attribute of the Version (see Section 4.1.4.3.) A SecureComponentProfile has the following attributes:"
+      type: object
+      required: [name, scType, hardwarePlatform, os, osVersion, javaCardVersion, javaCardFeatures, gpSpecVersions, gpApiVersions, csp, certifications]
+      properties:
+        id: # A, No
+          description: "Unique identification of the Secure Component Profile assigned automatically by TSMS."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "a38d4f8a-a4d5-d5c9-b134-0657c74a9853"
+        name: # M, No
+          description: "Name of the SecureComponentProfile."
+          type: string
+          maxLength: 255
+          readOnly: true
+          example: "nameOfTheSecurecomponentprofile"
+        scType: # M, No
+          description: "Secure component type. One of -> 1 EMBEDDED_SE -> 2 EMBEDDED_UICC -> 3 REMOVABLE_EUICC -> 4 UICC"
+          type: integer
+          minimum: 1
+          maximum: 4
+          readOnly: true
+          example: 1
+        hardwarePlatform: # M, No
+          description: "Name of hardware platform / chip. Sample values are P62G98, S9FD2EE."
+          type: string
+          maxLength: 255
+          readOnly: true
+          example: "P62G98"
+        os: # M, No
+          description: "Secure component operating system name, e.g. GTO, JCOP."
+          type: string
+          maxLength: 255
+          readOnly: true
+          example: "JCOP"
+        osVersion: # M, No
+          description: "Version of operating system with vendor specific encoding. Sample values are 4.7, 3.1."
+          type: string
+          maxLength: 255
+          minLength: 1
+          readOnly: true
+          example: "4.7"
+        javaCardVersion: # M, No
+          description: "JavaCard version. Sample values are 3.0.5, 3.0.4."
+          type: string
+          format: version
+          maxLength: 11
+          minLength: 5
+          pattern: '^\d{1,3}.\d{1,3}.\d{1,3}$'
+          readOnly: true
+          example: "3.0.5"
+        javaCardFeatures: # M, No
+          description: "Features provided by the JavaCard. The key contains the name of the feature. The value contains a list of supported algorithm for each feature. Sample keys are -> cypher -> signature -> messageDigest -> randomData -> keyBuilder -> keyAgreement -> checksum -> keyPairAlgRsaOnCardGeneration -> keyPairAlgRsaCrtOnCardGeneration -> keyPairAlgDsaOnCardGeneration -> keyPairAlgEcF2MOnCardGeneration -> keyPairAlgEcFpOnCardGeneration -> aeadCipher"
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+              maxLength: 255
+          readOnly: true
+        gpSpecVersions: # M, No
+          description: "Global Platform Specification versions. The key contains an identifier for the GP specification document. The value contains the version for each specification. Sample keys are -> card -> contactlessServices -> scp03 -> executableLoadFileUpgrade Sample values are 2.3.1, 2.3, 2.2.1."
+          type: object
+          additionalProperties:
+            type: string
+            maxLength: 255
+          readOnly: true
+          example: { "card": "2.3.1", "contactlessServices": "2.3" }
+        gpApiVersions: # M, No
+          description: "GlobalPlatform API versions. The key contains an identifier for the GP API. The value contains the version for each API. Sample keys are -> card -> contactless -> elfUpgrade Sample values are 1.7, 1.6."
+          type: object
+          additionalProperties:
+            type: string
+            maxLength: 255
+          readOnly: true
+          example: { "card": "1.7", "contactless": "1.6" }
+        csp: # M, No
+          description: "Supported CSP. Empty when no CSP is available. Key contains an identifier for additional information about the CSP. Value contains the additional CSP information. Sample keys are -> apiVersion -> vendor"
+          type: object
+          additionalProperties:
+            type: string
+            maxLength: 255
+          readOnly: true
+          example: { "apiVersion": "1.0", "vendor": "nxp" }
+        certifications: # M, No
+          description: "Platform certification level. The key contains the scope of the certification. The value contains the link to the letter of approval. Sample keys are -> BSI-CC-PP-0084-2014 -> BSI-CC-PP-0089-2015 -> BSI-CC-PP-0099-2017 -> BSI-CC-PP-0100-2018 -> BSI-CC-PP-0104-2019 -> BSI-CC-PP-0117-2022"
+          type: object
+          additionalProperties:
+            type: string
+            maxLength: 255
+          readOnly: true
+          example: { "BSI-CC-PP-0084-2014": "link/to/letter/of/approval/1", "BSI-CC-PP-0100-2018": "link/to/letter/of/approval/2" }
+
+### 4.1.4.6 ###
+    FeatureConfig:
+      description: "The FeatureConfig is part of a Flavor. It is used to indicate the use of features supported by a SC or features provided by the TSM. The FeatureConfig data type is only used as a complex type inside Flavor and is not directly referenced in any API methods. Currently, it has the following attributes:"
+      type: object
+      #required: []
+      properties:
+        useCspFull: # O, Yes
+          description: "True if a CSP available on the SC is supported and configured by the TSM, so that the CSP can be used by the applets installed with this Service, false otherwise. If omitted, default value false will be used."
+          type: boolean
+          default: false
+        genericOptions: # O, Yes
+          description: "Possibility to configure further feature options (e.g. key-agreement-algorithm, message-digest). If omitted, default value empty list will be used."
+          type: object
+          additionalProperties:
+            type: boolean
+          default: {}
+        keyProvisioningMode: # C, Yes
+          description: "The type of the key provisioning mode for the security domain of the Service. One of -> 0 None -> 1 BASIC_DIVERSIFIED_CREATE -> 2 BASIC_CREATE -> 3 BASIC_RANDOM_CREATE If provideAttestationToken of at least one corresponding PersonalizationConfig is set to true, the keyProvisioningMode must be one of 1, 2 or 3. If no Attestation Token is configured, all available options 0 - 3 can be used. If omitted, default value 0 will be used."
+          type: integer
+        keyIndex: # C, Yes
+          description: "A key index for provisioning of the security domain of the Service. Depending on the keyProvisioningMode the keyIndex represents either the master key index when used in mode 1 (Basic Diversified Created) or it represents the transport key index when used in mode 2 (Basic Create) and 3 (Basic Random Create). If keyProvisioningMode is one of 1, 2 or 3, a keyIndex must be provided. If keyProvisioningMode is set to 0, keyIndex must be empty. If omitted, default value empty string will be used."
+          type: string
+          maxLength: 255
+
+### 4.1.4.7 ###
+    ApplicationInstantiationConfig:
+      description: "The ApplicationInstantiationConfig contains the link between EM and the ApplicationConfig for a certain Flavor. A lower value of priority indicates that an ApplicationInstantiationConfig shall be applied before an ApplicationInstantiationConfig with a higher value of priority. If multiple ApplicationInstantiationConfigs within the same Flavor have the same priority value, the TSM will choose which one will be applied first. Modifications are only possible, as long as the corresponding Flavor is not published. The ApplicationInstantiationConfig is only used as complex type inside Flavor and is not directly referenced in any API methods. It has the following attributes:"
+      type: object
+      required: [executableModuleId, applicationConfigId]
+      properties:
+        priority: # A, C
+          description: "Priority, which specifies the order in which an application should be instantiated. Must be in the range from 1 to 255. A lower value means a higher priority. Default value is 255."
+          type: integer
+          minimum: 1
+          maximum: 255
+        executableModuleId: # M, C
+          description: "ID of the EM the referenced ApplicationConfig shall be applied to."
+          type: string
+          format: uuid
+          example: "26dffd3f-59fd-80b3-bc31-29dca2795831"
+        applicationConfigId: # M, C
+          description: "ID of the ApplicationConfig that shall be applied to the referenced EM."
+          type: string
+          format: uuid
+          example: "47db1f00-d894-af9a-a27b-1303d61fa3f4"
+
+### 4.1.4.8 ###
+    ExecutableLoadFile:
+      description: "An ExecutableLoadFile (ELF) is an executable binary file that can be loaded onto a Secure Component. In SmartCard terminology, the ELF is a container of executable code on a secure component [GPC_SPE_034]. ELFs are essential components of a Flavor used by a Version of a Service. ELFs are uploaded by the SP and may be used in different Flavors. An ELF may contain zero or more ExecutableModule entities. The specific type of an ELF is determined at upload time. If the ELF is a CAP, the ELF AID is automatically extracted from the CAP. The binary of an ELF can be replaced only as long as the ELF is not linked to a published Flavor. An ELF has the following attributes:"
+      type: object
+      #required: []
+      properties:
+        id: # A, No
+          description: "Unique identification of the ELF."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "8fa10eff-19a2-7c4b-1102-2e8b867d3fda"
+        spId: # A, No
+          description: "ID of the ServiceProvider owning the ELF."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "8339dcd0-b9e1-6b73-b5f0-33793d4e2307"
+        aid: # A, No
+          description: "Package-ID of this ELF."
+          type: string
+          format: aid
+          readOnly: true
+          example: "A00000030027697C0110"
+        fileName: # A, Yes
+          description: "Name of this ELF."
+          type: string
+          maxLength: 255
+          example: "nameOfThisElf"
+        type: # A, No
+          description: "Type of this ELF. Currently, only CAP is supported."
+          type: string
+          maxLength: 255
+          readOnly: true
+        creationDate: # A, No
+          description: "A datetime string (creation of ELF)"
+          type: string
+          format: date-time
+          readOnly: true
+        uploadDate: # A, No
+          description: "A datetime string (upload of ELF binary)."
+          type: string
+          format: date-time
+          readOnly: true
+
+### 4.1.4.9 ###
+    CAP:
+      description: "A CAP is a Java Card realization of an ELF. It is derived from ExecutableLoadFile and adds the following attributes:"
+      allOf:
+        - $ref: "#/components/schemas/ExecutableLoadFile"
+      type: object
+      #required: []
+      properties:
+        packageName: # A, No
+          description: "Name of the package of the CAP."
+          type: string
+          maxLength: 255
+          readOnly: true
+          example: "nameOfThePackageOfTheCap"
+        importedPackages: # A, No
+          description: "List of imported package AIDs used by the EM of this CAP."
+          type: array
+          items:
+            type: string
+            maxLength: 255
+          readOnly: true
+        packageVersion: # A, No
+          description: "Version of the package ('major.minor')."
+          type: string
+          format: version
+          maxLength: 7
+          minLength: 3
+          pattern: '^\d{1,3}.\d{1,3}$'
+          readOnly: true
+          example: "1.7"
+        technicalRequirements: # O, Yes
+          $ref: "#/components/schemas/TechnicalRequirements" # "Technical requirements needed for this CAP."
+
+### 4.1.4.10 ###
+    TechnicalRequirements:
+      description: "The TechnicalRequirements data type is used to define technical requirements needed to execute a CAP. Those requirements are detected automatically when uploading the binary file and are checked against the SecureComponentProfiles when modifying the allowedDeployments of a Flavor. The TechnicalRequirements data type is only used as a complex type inside CAP and is not directly referenced in any API methods. It has the following attributes:"
+      type: object
+      #required: []
+      properties:
+        javaCardVersion: # A, No
+          description: "Version of Java Card required by the CAP ('major.minor.patch')."
+          type: string
+          format: version
+          maxLength: 11
+          minLength: 5
+          pattern: '^\d{1,3}.\d{1,3}.\d{1,3}$'
+          readOnly: true
+          example: "2.3.1"
+        gpApiVersion: # A, No
+          description: "Version of GlobalPlatform API required by the CAP ('major.minor.patch')."
+          type: string
+          format: version
+          maxLength: 7
+          minLength: 3
+          pattern: '^\d{1,3}.\d{1,3}$'
+          readOnly: true
+          example: "5.12"
+
+### 4.1.4.11 ###
+    ExecutableModule:
+      description: "ExecutableModules (EMs) are contained in ELFs. Thus, an EM is always bound to an ELF. A specific example of an EM is a Java Card Applet. A Java Card Applet is a specific class which extends javacard.framework.Applet and is part of a CAP file, which is a technology-specific type of an ELF in this context. An EM has the following attributes:"
+      type: object
+      #required: []
+      properties:
+        id: # A, No
+          description: "Unique identification of the EM."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "060dc3ac-71dd-3bae-e00a-a8fe85ceb022"
+        elfId: # A, No
+          description: "ID of the ExecutableLoadFile owning the EM."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "2355d041-c1c6-4ab1-e0d2-a15a41e85351"
+        aid: # A, No
+          description: "Application identifier of this EM. The AID format follows [ISO/IEC7816-4]."
+          type: string
+          format: aid
+          readOnly: true
+          example: "A00000065553856C1001"
+
+### 4.1.4.12 ###
+    ApplicationConfig:
+      description: "An ApplicationConfig consists of parameters, certificates and other properties needed for provisioning applications. All configuration options defined here are applied to the secure component during deploy or update service commands triggered with the TSM-API. The ApplicationConfig itself is not dependent on a specific EM. In order to link it to an EM, the ApplicationConfig is referenced in an ApplicationInstantiationConfig within a Flavor by a mapping of available EMs and corresponding ApplicationConfigs. The same ApplicationConfigs can be used for EMs in different Flavors. Modifications are only possible, as long as the ApplicationConfig is not yet linked to a published Flavor. An ApplicationConfig has the following attributes:"
+      type: object
+      required: [instanceAid]
+      properties:
+        id: # A, No
+          description: "Unique identification of the ApplicationConfig."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "f36d5f2e-0950-6e80-6367-fe7e6250a713"
+        spId: # A, No
+          description: "ID of the ServiceProvider owning the ApplicationConfig."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "6cda80a1-efb3-acf3-8b18-14a10ff2ad24"
+        instanceAid: # M, C
+          description: "AID of the running application instance that shall be created from this ApplicationConfig. This AID is also the AID that is used for selecting a selectable application on the SC. The AID format follows [ISO/IEC7816-4]."
+          type: string
+          format: aid
+          example: "A00000037797423C1100"
+        name: # O, Yes
+          description: "Name of this ApplicationConfig."
+          type: string
+          maxLength: 255
+          example: "nameOfThisApplicationconfig"
+        description: # O, Yes
+          description: "Description of this ApplicationConfig."
+          type: string
+          maxLength: 255
+          example: "Description of this ApplicationConfig."
+        installConfig: # O, C
+          $ref: "#/components/schemas/InstallConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Installed."
+        activationConfig: # O, C
+          $ref: "#/components/schemas/ActivationConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Activated."
+        personalizationConfig: # O, C
+          $ref: "#/components/schemas/PersonalizationConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Personalized."
+
+### 4.1.4.13 ###
+    InstallConfig:
+      description: "An InstallConfig is a structure to configure configuration options needed to deploy a Service to lifecycle state Installed. It defines configuration settings which are applied to the applet during deploy or update processes triggered with the TSM-API when using the InstallServiceCommand parameter. Modifications are only possible, as long as the corresponding ApplicationConfig is not yet linked to a published Flavor. The InstallConfig data type is only used as a complex type inside ApplicationConfig and is not directly referenced in any API methods. It has the following attributes:"
+      type: object
+      #required: []
+      properties:
+        applicationSpecificInstallParameter: # O, C
+          description: "List of application specific parameters needed for installation. If omitted, empty application specific parameters will be used. Format <TLV-Structures>."
+          type: string
+          format: tlv
+          maxLength: 255
+          example: "0f 09 e6 ea e9 06 8d 89 19 a4 8a"
+        privileges: # O, C
+          description: "List of required privileges for an application instance. Subset of -> 'CVMManagement' -> 'ContactlessSelfActivation' -> 'GlobalService' -> 'PrivacyTrusted'"
+          type: array
+          items:
+            type: string
+            maxLength: 255
+
+### 4.1.4.14 ###
+    ActivationConfig:
+      description: "An ActivationConfig is a structure to configure configuration options needed to deploy a Service to lifecycle state Activated. It defines configuration settings which are applied to the applet during deploy or update processes triggered with the TSM-API when using the ActivateServiceCommand parameter. Modifications are only possible, as long as the corresponding ApplicationConfig is not yet linked to a published Flavor. The ActivationConfig data type is only used as a complex type inside ApplicationConfig and is not directly referenced in any API methods. It has following attributes:"
+      type: object
+      #required: []
+      properties:
+        makeSelectable: # O, C
+          description: "Flag, whether application instance to be created shall be made selectable. If omitted, default value true will be used."
+          type: boolean
+          default: true
+        accessibleViaApdu: # O, C
+          description: "Flag, whether the application instance to be created will be accessible via APDU. Can only be applied if makeSelectable is true. If omitted, default value false will be used."
+          type: boolean
+          default: false
+        accessibleViaNfc: # O, C
+          description: "Flag, whether the application instance to be created will be accessible via NFC. Can only be applied if makeSelectable is true. If omitted, default value false will be used."
+          type: boolean
+          default: false
+
+### 4.1.4.15 ###
+    PersonalizationConfig:
+      description: "A PersonalizationConfig is a structure to configure configuration options needed to deploy a Service to lifecycle state Personalized and link a PersonalizationScript with Certificates for communication to a SP backend (if required). It defines configuration settings which are applied to the applet during deploy or update processes triggered with the TSM-API when using the PersonalizeServiceCommand parameter. Modifications are only possible, as long as the corresponding ApplicationConfig is not yet linked to a published Flavor. The PersonalizationConfig data type is only used as a complex type inside ApplicationConfig and is not directly referenced in any API methods. It has the following attributes:"
+      type: object
+      #required: []
+      properties:
+        personalizationScriptId: # O, C
+          description: "ID of the PersonalizationScript used for personalization."
+          type: string
+          format: uuid
+          example: "06475326-cda5-a009-d342-c01dbff19904"
+        certificateId: # O, Yes
+          description: "ID of the Certificate used in this PersonalizationConfig. Empty, if no Certificate is used."
+          type: string
+          format: uuid
+          example: "6b95cefe-7ccc-d1e1-b267-9d12481a6f8b"
+        provideAttestationToken: # O, C
+          description: "Flag, whether an AttestationToken shall be included in the application specific install parameters. If omitted, default value false will be used. When set to true, all corresponding FeatureConfigs must configure keyProvisioningMode and keyIndex."
+          type: boolean
+          default: false
+        includeSecurityDomainDiversificationData: # O, C
+          description: "Flag, whether MasterKeyIndex and Key Diversification Data used for a Basic Diversified Create of the Service Security Domain shall be included in the Attestation Token. Can only be applied if -> provideAttestationToken is true and -> FeatureConfig.keyProvisioningMode is BASIC_DIVERSIFIED_CREATE and -> FeatureConfig.keyIndex is not empty If omitted, default value false will be used."
+          type: boolean
+          default: false
+
+### 4.1.4.16 ###
+    PersonalizationScript:
+      description: "A PersonalizationScript is a script a SP may use to specify installation instructions or request TSM-support for, e.g., the personalization of a secure application during the provisioning process. This interface only provides methods to manage the PersonalizationScripts. The content of the PersonalizationScript is currently not in the scope of this TR. A PersonalizationScript has the following attributes:"
+      type: object
+      #required: []
+      properties:
+        id: # A, No
+          description: "Unique identification of the Personalization-Script."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "31f648fc-8b6c-3767-7907-6f9464e77461"
+        spId: # A, No
+          description: "ID of the ServiceProvider owning the Personalization-Script."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "abbacd23-a58f-d34d-8c55-729ff40dee26"
+        fileName: # A, Yes
+          description: "Name of this PersonalizationScript."
+          type: string
+          maxLength: 255
+          example: "nameOfThisPersonalizationscript"
+        creationDate: # A, No
+          description: "A datetime string (creation of Personalization-Script)."
+          type: string
+          format: date-time
+          readOnly: true
+        uploadDate: # A, No
+          description: "A datetime string (upload of Personalization-Script binary)."
+          type: string
+          format: date-time
+          readOnly: true
+
+### 4.1.4.17 ###
+    Certificate:
+      description: "A Certificate is used for the communication between TSM and SP Online System and also in PersonalizationScripts for applet provisioning and personalization. A Certificate has the following attributes:"
+      type: object
+      #required: []
+      properties:
+        id: # A, No
+          description: "Unique identification of the Certificate."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "aef323a1-4665-4679-60e3-a555141dd321"
+        spId: # A, No
+          description: "ID of the ServiceProvider owning the Certificate."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "bd9a86f0-16ee-8a46-2524-121035f7e006"
+        fileName: # A, Yes
+          description: "Name of the file the Certificate was created from."
+          type: string
+          maxLength: 255
+          example: "nameOfTheFileTheCertificateWasCreatedFrom"
+        creationDate: # A, No
+          description: "A datetime string (creation of Certificate)."
+          type: string
+          format: date-time
+          readOnly: true
+        uploadDate: # A, No
+          description: "A datetime string (upload of Certificate binary)."
+          type: string
+          format: date-time
+          readOnly: true
+
+### 4.1.4.18 ###
+    SposConfig:
+      description: "SposConfig is used to configure communication with the Service Provider Online System. The aim is to enable a service provider to receive process success and process error messages sent by the TSM. A SposConfig has the following attributes:"
+      type: object
+      required: [url, certificateId]
+      properties:
+        id: # A, No
+          description: "Unique identification of the SposConfig."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "74aeba88-3554-586a-7545-d7956e9b10cf"
+        spId: # A, No
+          description: "ID of the ServiceProvider owning the SposConfig."
+          type: string
+          format: uuid
+          readOnly: true
+          example: "05a7b798-00f7-11a4-1cad-0b6cbf17e82e"
+        url: # M, Yes
+          description: "URL of the SP's Online Service."
+          type: string
+          format: uri
+          maxLength: 500
+          example: "/relative/uri/to/resource"
+        certificateId: # M, Yes
+          description: "ID of the Certificate that is used for the backend communication."
+          type: string
+          format: uuid
+          example: "3302d2b0-e4d4-cb2f-af41-7f8003aee48e"
+
+### 4.1.4.19 ###
+    GeneralError:
+      description: "A GeneralError is used as response object for any REST method call in case the response status code is not 2xx. GeneralError has the following attributes:"
+      type: object
+      required: [errorCategory, errorMessage]
+      properties:
+        errorCategory: # M, No
+          description: "The error type."
+          type: integer
+          minimum: 1000
+          maximum: 9999
+          readOnly: true
+        errorMessage: # M, No
+          description: "A human-readable error description in English."
+          type: string
+          maxLength: 255
+          readOnly: true
+

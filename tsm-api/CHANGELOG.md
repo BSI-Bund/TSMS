@@ -1,6 +1,10 @@
 # Changelog
 Changelog file for BSI tsm-api.
 
+## [1.0.4] - 07.07.2023
+* the version of tsm-api (v1.0.4) is identical to v1.0.3, as there were no differences in the TSM-API specifications between BSI-TR-03165 v1.0.3 and v1.0.4
+* the version number (v1.0.4) was only created to maintain consistency across BSI-TR-03165, tsm-api, and tsm-rest-api.
+
 ## [1.0.3] - 26.05.2023
 * renamed method setCustomAccessToken to setAccessToken and added callback strategy for token creation
 

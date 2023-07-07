@@ -69,6 +69,32 @@ class Source:
         self.yaml = []
         # define markdown-variable, that will contain the markdown-result later on
         self.markdown = []
+        # output for testing purposes (experimental / testing)
+        with open('test_interface','wt',encoding='utf-8') as fobj:
+            Text = []
+            Text.append('chapter\trest_url\trequest_method\ttitle\trequest_headers\trequest_elf\trequest_file\trequest_body\tresponse_headers_success\tresponse_body_success\tresponse_headers_failure\tresponse_body_failure\n')
+            for i in self.interface_methods:
+                if i.type_ == 'kapitel':
+                    if not hasattr(i, 'request_body'):
+                        i.request_body = None
+                    if not hasattr(i, 'request_elf'):
+                        i.request_elf = None
+                    if not hasattr(i, 'request_file'):
+                        i.request_file = None
+                    Text.append(f'{i.num}\t' \
+                        f'{i.rest_url}\t' \
+                        f'{i.request_method}\t' \
+                        f'{i.title}\t' \
+                        f'{i.request_headers}\t' \
+                        f'{i.request_elf}\t' \
+                        f'{i.request_file}\t' \
+                        f'{i.request_body}\t' \
+                        f'{i.response_headers_success}\t' \
+                        f'{i.response_body_success}\t' \
+                        f'{i.response_headers_failure}\t' \
+                        f'{i.response_body_failure}\n')
+            fobj.writelines(Text)
+        pass
 
     #################
     # Class Utility #

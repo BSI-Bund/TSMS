@@ -10,9 +10,10 @@ Method | HTTP request | Description
 [**getElfBinary**](ExecutableLoadFilesApi.md#getElfBinary) | **GET** /executable-load-files/{elfId}/binary | Get binary data of a certain ExecutableLoadFile.
 [**getEm**](ExecutableLoadFilesApi.md#getEm) | **GET** /executable-load-files/{elfId}/executable-modules/{emId} | Get details of a certain ExecutableModule of a certain Executable...
 [**listElfRelatedAppConfigs**](ExecutableLoadFilesApi.md#listElfRelatedAppConfigs) | **GET** /executable-load-files/{elfId}/executable-modules/{emId}/application-configs | Return the ApplicationConfigs that apply to a certain ExecutableM...
+[**listElfRelatedFlavors**](ExecutableLoadFilesApi.md#listElfRelatedFlavors) | **GET** /executable-load-files/{elfId}/services/{serviceId}/flavors | List all Flavors that use a certain ExecutableLoadFile.
 [**listElfRelatedSecureComponentProfiles**](ExecutableLoadFilesApi.md#listElfRelatedSecureComponentProfiles) | **GET** /executable-load-files/{elfId}/services/{serviceId}/secure-component-profiles | List all SecureComponentProfiles associated to certain Service th...
 [**listElfRelatedServices**](ExecutableLoadFilesApi.md#listElfRelatedServices) | **GET** /executable-load-files/{elfId}/services | List all Services that use a certain ExecutableLoadFile.
-[**listElfRelatedVersions**](ExecutableLoadFilesApi.md#listElfRelatedVersions) | **GET** /executable-load-files/{elfId}/services/{servideId}/versions | List all Versions of a certain Service that use a certain Executa...
+[**listElfRelatedVersions**](ExecutableLoadFilesApi.md#listElfRelatedVersions) | **GET** /executable-load-files/{elfId}/services/{serviceId}/versions | List all Versions of a certain Service that use a certain Executa...
 [**listElfs**](ExecutableLoadFilesApi.md#listElfs) | **GET** /executable-load-files | List all ExecutableLoadFiles of the authenticated ServiceProvider.
 [**listEms**](ExecutableLoadFilesApi.md#listEms) | **GET** /executable-load-files/{elfId}/executable-modules | List all ExecutableModules of a certain ExecutableLoadFile.
 [**modifyElfAndOverwriteBinary**](ExecutableLoadFilesApi.md#modifyElfAndOverwriteBinary) | **PUT** /executable-load-files/{elfId} | Update details and overwrite binary data of an existing Executabl...
@@ -216,7 +217,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/octet-data, application/json
+ - **Accept**: application/octet-stream, application/json
 
 <a name="getEm"></a>
 # **getEm**
@@ -312,6 +313,58 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**List&lt;ApplicationConfig&gt;**](ApplicationConfig.md)
+
+### Authorization
+
+[authToken](../README.md#authToken)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+<a name="listElfRelatedFlavors"></a>
+# **listElfRelatedFlavors**
+> List&lt;Flavor&gt; listElfRelatedFlavors(elfId, serviceId)
+
+List all Flavors that use a certain ExecutableLoadFile.
+
+List all Flavors that use a certain ExecutableLoadFile.
+
+### Example
+```java
+// Import classes:
+//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
+//import de.bund.bsi.tsms.tsmrestapi.ApiException;
+//import de.bund.bsi.tsms.tsmrestapi.Configuration;
+//import de.bund.bsi.tsms.tsmrestapi.auth.*;
+//import de.bund.bsi.tsms.tsmrestapi.api.ExecutableLoadFilesApi;
+
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+ExecutableLoadFilesApi apiInstance = new ExecutableLoadFilesApi();
+UUID elfId = new UUID(); // UUID | identifier of the referred Elf
+UUID serviceId = new UUID(); // UUID | identifier of the referred Service
+try {
+    List<Flavor> result = apiInstance.listElfRelatedFlavors(elfId, serviceId);
+    System.out.println(result);
+} catch (ApiException e) {
+    System.err.println("Exception when calling ExecutableLoadFilesApi#listElfRelatedFlavors");
+    e.printStackTrace();
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **elfId** | [**UUID**](.md)| identifier of the referred Elf |
+ **serviceId** | [**UUID**](.md)| identifier of the referred Service |
+
+### Return type
+
+[**List&lt;Flavor&gt;**](Flavor.md)
 
 ### Authorization
 
@@ -426,7 +479,7 @@ Name | Type | Description  | Notes
 
 <a name="listElfRelatedVersions"></a>
 # **listElfRelatedVersions**
-> List&lt;Version&gt; listElfRelatedVersions(elfId, servideId)
+> List&lt;Version&gt; listElfRelatedVersions(elfId, serviceId)
 
 List all Versions of a certain Service that use a certain Executa...
 
@@ -446,9 +499,9 @@ ApiClient defaultClient = Configuration.getDefaultApiClient();
 
 ExecutableLoadFilesApi apiInstance = new ExecutableLoadFilesApi();
 UUID elfId = new UUID(); // UUID | identifier of the referred Elf
-UUID servideId = new UUID(); // UUID | identifier of the referred Servide
+UUID serviceId = new UUID(); // UUID | identifier of the referred Service
 try {
-    List<Version> result = apiInstance.listElfRelatedVersions(elfId, servideId);
+    List<Version> result = apiInstance.listElfRelatedVersions(elfId, serviceId);
     System.out.println(result);
 } catch (ApiException e) {
     System.err.println("Exception when calling ExecutableLoadFilesApi#listElfRelatedVersions");
@@ -461,7 +514,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **elfId** | [**UUID**](.md)| identifier of the referred Elf |
- **servideId** | [**UUID**](.md)| identifier of the referred Servide |
+ **serviceId** | [**UUID**](.md)| identifier of the referred Service |
 
 ### Return type
 

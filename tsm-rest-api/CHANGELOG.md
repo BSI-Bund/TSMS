@@ -1,6 +1,14 @@
 # Changelog
 Changelog file for BSI tsm-rest-api.
 
+## [1.0.4] - 07.07.2023
+* modifications to be compliant to BSI TR-03165 v1.0.4:
+  * PersonalizationConfig: added attribute certificateId and removed it from PersonalizationScript
+  * corrected URL in 4.1.6.5.10 for method list related flavors from /services/{serviceId}/executable-load-files/{elfId}/flavors to /executable-load-files/{elfId}/services/{serviceId}/flavors (#264)
+  * corrected URL in 4.1.6.5.12 for method list related versions from /executable-load-files/{elfId}/services/{servideId}/versions to /executable-load-files/{elfId}/services/{serviceId}/versions (#264)
+* changed media type "application/octed-data" to "application/octed-stream" (#266)
+
+
 ## [1.0.3] - 26.05.2023
 * modifications to be compliant to BSI TR-03165 v1.0.3:
   * applicationConfig: changed installConfig from "Mandatory" to "Optional" (#235)

@@ -13,7 +13,7 @@ info:
     * define hardware variants for each service - called flavors 
     * specify technical requirements for each flavor, e.g. minimal JavaCard version
     
-  version: "1.0.3"
+  version: "1.0.4"
   title: "BSI-TR-03165: TSM-Backend"
   termsOfService: https://www.bsi.bund.de/DE/Service/Nutzungsbedingungen/Nutzungsbedingungen_node.html
   contact:
@@ -1197,6 +1197,7 @@ paths:
               type: object
               additionalProperties:
                 type: string
+                maxLength: 255
       parameters:
         - $ref: "#/components/parameters/serviceId"
         - $ref: "#/components/parameters/tag"
@@ -1526,10 +1527,10 @@ paths:
           $ref: "#/components/responses/500Error_2000"
 
 ### 4.1.6.5.10 List Related Flavors ###
-  /services/{serviceId}/executable-load-files/{elfId}/flavors:
+  /executable-load-files/{elfId}/services/{serviceId}/flavors:
     get:
       tags:
-        - /services
+        - /executable-load-files
       summary: "List all Flavors that use a certain ExecutableLoadFile."
       description: "List all Flavors that use a certain ExecutableLoadFile."
       operationId: listElfRelatedFlavors
@@ -1539,8 +1540,8 @@ paths:
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
-        - $ref: "#/components/parameters/serviceId"
         - $ref: "#/components/parameters/elfId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -1589,7 +1590,7 @@ paths:
           $ref: "#/components/responses/500Error_2000"
 
 ### 4.1.6.5.12 List Related Versions ###
-  /executable-load-files/{elfId}/services/{servideId}/versions:
+  /executable-load-files/{elfId}/services/{serviceId}/versions:
     get:
       tags:
         - /executable-load-files
@@ -1603,7 +1604,7 @@ paths:
       ##### Request Body: -
       parameters:
         - $ref: "#/components/parameters/elfId"
-        - $ref: "#/components/parameters/servideId"
+        - $ref: "#/components/parameters/serviceId"
       responses:
         200:
           description: Ok
@@ -2725,16 +2726,6 @@ components:
         example: "4079f402-4e86-b4b0-0c4f-a21681ece9c8"
       description: identifier of the referred Em
     
-    servideId:
-      in: path
-      name: servideId
-      required: true
-      schema:
-        type: string
-        format: uuid
-        example: "615c1678-895b-ff21-7c6c-bcd9fed11b84"
-      description: identifier of the referred Servide
-    
     applicationConfigId:
       in: path
       name: applicationConfigId
@@ -2742,7 +2733,7 @@ components:
       schema:
         type: string
         format: uuid
-        example: "a0f59df9-7ee2-161f-9325-46e1ecc0ecae"
+        example: "615c1678-895b-ff21-7c6c-bcd9fed11b84"
       description: identifier of the referred ApplicationConfig
     
     personalizationScriptId:
@@ -2856,7 +2847,7 @@ components:
             type: string
             example: attachment; filename="filename.cap"
       content:
-        application/octet-data:
+        application/octet-stream:
           schema:
             description: containing actual elf-binary
             type: string
@@ -2871,7 +2862,7 @@ components:
             type: string
             example: attachment; filename="filename.pers"
       content:
-        application/octet-data:
+        application/octet-stream:
           schema:
             description: containing actual pers-binary
             type: string
@@ -2886,7 +2877,7 @@ components:
             type: string
             example: attachment; filename="filename.cert"
       content:
-        application/octet-data:
+        application/octet-stream:
           schema:
             description: containing actual cert-binary
             type: string
@@ -3623,7 +3614,7 @@ components:
 
 ### 4.1.4.15 ###
     PersonalizationConfig:
-      description: "A PersonalizationConfig is a structure to configure configuration options needed to deploy a Service to lifecycle state Personalized. It defines configuration settings which are applied to the applet during deploy or update processes triggered with the TSM-API when using the PersonalizeServiceCommand parameter. Modifications are only possible, as long as the corresponding ApplicationConfig is not yet linked to a published Flavor. The PersonalizationConfig data type is only used as a complex type inside ApplicationConfig and is not directly referenced in any API methods. It has the following attributes:"
+      description: "A PersonalizationConfig is a structure to configure configuration options needed to deploy a Service to lifecycle state Personalized and link a PersonalizationScript with Certificates for communication to a SP backend (if required). It defines configuration settings which are applied to the applet during deploy or update processes triggered with the TSM-API when using the PersonalizeServiceCommand parameter. Modifications are only possible, as long as the corresponding ApplicationConfig is not yet linked to a published Flavor. The PersonalizationConfig data type is only used as a complex type inside ApplicationConfig and is not directly referenced in any API methods. It has the following attributes:"
       type: object
       #required: []
       properties:
@@ -3632,6 +3623,11 @@ components:
           type: string
           format: uuid
           example: "06475326-cda5-a009-d342-c01dbff19904"
+        certificateId: # O, Yes
+          description: "ID of the Certificate used in this PersonalizationConfig. Empty, if no Certificate is used."
+          type: string
+          format: uuid
+          example: "6b95cefe-7ccc-d1e1-b267-9d12481a6f8b"
         provideAttestationToken: # O, C
           description: "Flag, whether an AttestationToken shall be included in the application specific install parameters. If omitted, default value false will be used. When set to true, all corresponding FeatureConfigs must configure keyProvisioningMode and keyIndex."
           type: boolean
@@ -3643,7 +3639,7 @@ components:
 
 ### 4.1.4.16 ###
     PersonalizationScript:
-      description: "A PersonalizationScript is a script a SP may use to specify installation instructions or request TSM-support for, e.g., the personalization of a secure application during the provisioning process. This interface only provides methods to manage the PersonalizationScripts and link them with Certificates for communication to a SP backend (if required). The content of the PersonalizationScript is currently not in the scope of this TR. A PersonalizationScript has the following attributes:"
+      description: "A PersonalizationScript is a script a SP may use to specify installation instructions or request TSM-support for, e.g., the personalization of a secure application during the provisioning process. This interface only provides methods to manage the PersonalizationScripts. The content of the PersonalizationScript is currently not in the scope of this TR. A PersonalizationScript has the following attributes:"
       type: object
       #required: []
       properties:
@@ -3652,13 +3648,13 @@ components:
           type: string
           format: uuid
           readOnly: true
-          example: "bd9a86f0-16ee-8a46-2524-121035f7e006"
+          example: "31f648fc-8b6c-3767-7907-6f9464e77461"
         spId: # A, No
           description: "ID of the ServiceProvider owning the Personalization-Script."
           type: string
           format: uuid
           readOnly: true
-          example: "6b95cefe-7ccc-d1e1-b267-9d12481a6f8b"
+          example: "abbacd23-a58f-d34d-8c55-729ff40dee26"
         fileName: # A, Yes
           description: "Name of this PersonalizationScript."
           type: string
@@ -3674,11 +3670,6 @@ components:
           type: string
           format: date-time
           readOnly: true
-        certificateId: # O, Yes
-          description: "ID of the Certificate used in this PersonalizationScript. Empty, if no Certificate is used."
-          type: string
-          format: uuid
-          example: "31f648fc-8b6c-3767-7907-6f9464e77461"
 
 ### 4.1.4.17 ###
     Certificate:
@@ -3691,13 +3682,13 @@ components:
           type: string
           format: uuid
           readOnly: true
-          example: "abbacd23-a58f-d34d-8c55-729ff40dee26"
+          example: "aef323a1-4665-4679-60e3-a555141dd321"
         spId: # A, No
           description: "ID of the ServiceProvider owning the Certificate."
           type: string
           format: uuid
           readOnly: true
-          example: "aef323a1-4665-4679-60e3-a555141dd321"
+          example: "bd9a86f0-16ee-8a46-2524-121035f7e006"
         fileName: # A, Yes
           description: "Name of the file the Certificate was created from."
           type: string

@@ -1,8 +1,8 @@
 # java-client
 
 BSI-TR-03165: TSM-Backend
-- API version: 1.0.3
-  - Build date: 2023-05-26T08:54:35.802428100+02:00[Europe/Berlin]
+- API version: 1.0.4
+  - Build date: 2023-07-07T13:15:38.560+02:00[Europe/Berlin]
 
 This visual representation describes the TSM-Backend API for a Trusted Service Management System (TSMS) using Swagger UI. It serves as a complement to the [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html) guideline. In case of any discrepancies, please refer to the written guideline.  A TSM-Backend is an IT system within a TSMS that offers management functions in the form of a REST-API. The TSM-Backend is a secure repository for various configurations, flavors, and resources required for installing an JavaCard Applet on secure elements such as eSE and eSIM. With this API, service providers can create, read, update, and delete files and configuration settings required for managing their Applets.  __Functionality:__ * upload JavaCard *.cap files to TSM-Backend * define a service which consists of one or multiple *.cap files * versionize the service * define hardware variants for each service - called flavors  * specify technical requirements for each flavor, e.g. minimal JavaCard version 
 
@@ -40,7 +40,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>de.bund.bsi.tsms.tsm-rest-api</groupId>
   <artifactId>java-client</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -50,7 +50,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "de.bund.bsi.tsms.tsm-rest-api:java-client:1.0.3"
+compile "de.bund.bsi.tsms.tsm-rest-api:java-client:1.0.4"
 ```
 
 ### Others
@@ -63,7 +63,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/java-client-1.0.3.jar`
+* `target/java-client-1.0.4.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -303,9 +303,10 @@ Class | Method | HTTP request | Description
 *ExecutableLoadFilesApi* | [**getElfBinary**](docs/ExecutableLoadFilesApi.md#getElfBinary) | **GET** /executable-load-files/{elfId}/binary | Get binary data of a certain ExecutableLoadFile.
 *ExecutableLoadFilesApi* | [**getEm**](docs/ExecutableLoadFilesApi.md#getEm) | **GET** /executable-load-files/{elfId}/executable-modules/{emId} | Get details of a certain ExecutableModule of a certain Executable...
 *ExecutableLoadFilesApi* | [**listElfRelatedAppConfigs**](docs/ExecutableLoadFilesApi.md#listElfRelatedAppConfigs) | **GET** /executable-load-files/{elfId}/executable-modules/{emId}/application-configs | Return the ApplicationConfigs that apply to a certain ExecutableM...
+*ExecutableLoadFilesApi* | [**listElfRelatedFlavors**](docs/ExecutableLoadFilesApi.md#listElfRelatedFlavors) | **GET** /executable-load-files/{elfId}/services/{serviceId}/flavors | List all Flavors that use a certain ExecutableLoadFile.
 *ExecutableLoadFilesApi* | [**listElfRelatedSecureComponentProfiles**](docs/ExecutableLoadFilesApi.md#listElfRelatedSecureComponentProfiles) | **GET** /executable-load-files/{elfId}/services/{serviceId}/secure-component-profiles | List all SecureComponentProfiles associated to certain Service th...
 *ExecutableLoadFilesApi* | [**listElfRelatedServices**](docs/ExecutableLoadFilesApi.md#listElfRelatedServices) | **GET** /executable-load-files/{elfId}/services | List all Services that use a certain ExecutableLoadFile.
-*ExecutableLoadFilesApi* | [**listElfRelatedVersions**](docs/ExecutableLoadFilesApi.md#listElfRelatedVersions) | **GET** /executable-load-files/{elfId}/services/{servideId}/versions | List all Versions of a certain Service that use a certain Executa...
+*ExecutableLoadFilesApi* | [**listElfRelatedVersions**](docs/ExecutableLoadFilesApi.md#listElfRelatedVersions) | **GET** /executable-load-files/{elfId}/services/{serviceId}/versions | List all Versions of a certain Service that use a certain Executa...
 *ExecutableLoadFilesApi* | [**listElfs**](docs/ExecutableLoadFilesApi.md#listElfs) | **GET** /executable-load-files | List all ExecutableLoadFiles of the authenticated ServiceProvider.
 *ExecutableLoadFilesApi* | [**listEms**](docs/ExecutableLoadFilesApi.md#listEms) | **GET** /executable-load-files/{elfId}/executable-modules | List all ExecutableModules of a certain ExecutableLoadFile.
 *ExecutableLoadFilesApi* | [**modifyElfAndOverwriteBinary**](docs/ExecutableLoadFilesApi.md#modifyElfAndOverwriteBinary) | **PUT** /executable-load-files/{elfId} | Update details and overwrite binary data of an existing Executabl...
@@ -338,7 +339,6 @@ Class | Method | HTTP request | Description
 *ServicesApi* | [**linkFlavors**](docs/ServicesApi.md#linkFlavors) | **POST** /services/{serviceId}/versions/{tag}/flavors | Add additional Flavors to a certain Version and configure the Sec...
 *ServicesApi* | [**linkSecureComponentProfiles**](docs/ServicesApi.md#linkSecureComponentProfiles) | **POST** /services/{serviceId}/versions/{tag}/secure-component-profiles | Add additional SecureComponentProfiles to a certain Version and c...
 *ServicesApi* | [**listAssociatedSecureComponentProfiles**](docs/ServicesApi.md#listAssociatedSecureComponentProfiles) | **GET** /services/{serviceId}/versions/{tag}/flavors/{flavorId}/secure-component-profiles | List SecureComponentProfiles associated to a certain Flavor of a ...
-*ServicesApi* | [**listElfRelatedFlavors**](docs/ServicesApi.md#listElfRelatedFlavors) | **GET** /services/{serviceId}/executable-load-files/{elfId}/flavors | List all Flavors that use a certain ExecutableLoadFile.
 *ServicesApi* | [**listFlavors**](docs/ServicesApi.md#listFlavors) | **GET** /services/{serviceId}/flavors | List all Flavors of a certain Service.
 *ServicesApi* | [**listLinkedElfs**](docs/ServicesApi.md#listLinkedElfs) | **GET** /services/{serviceId}/flavors/{flavorId}/executable-load-files | List all ExecutableLoadFiles used by a certain Flavor.
 *ServicesApi* | [**listLinkedFlavors**](docs/ServicesApi.md#listLinkedFlavors) | **GET** /services/{serviceId}/versions/{tag}/flavors | List all Flavors used by a certain Version.

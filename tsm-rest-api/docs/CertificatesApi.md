@@ -214,7 +214,7 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/octet-data, application/json
+ - **Accept**: application/octet-stream, application/json
 
 <a name="listCertRelatedAppConfigs"></a>
 # **listCertRelatedAppConfigs**

@@ -17,7 +17,6 @@ Method | HTTP request | Description
 [**linkFlavors**](ServicesApi.md#linkFlavors) | **POST** /services/{serviceId}/versions/{tag}/flavors | Add additional Flavors to a certain Version and configure the Sec...
 [**linkSecureComponentProfiles**](ServicesApi.md#linkSecureComponentProfiles) | **POST** /services/{serviceId}/versions/{tag}/secure-component-profiles | Add additional SecureComponentProfiles to a certain Version and c...
 [**listAssociatedSecureComponentProfiles**](ServicesApi.md#listAssociatedSecureComponentProfiles) | **GET** /services/{serviceId}/versions/{tag}/flavors/{flavorId}/secure-component-profiles | List SecureComponentProfiles associated to a certain Flavor of a ...
-[**listElfRelatedFlavors**](ServicesApi.md#listElfRelatedFlavors) | **GET** /services/{serviceId}/executable-load-files/{elfId}/flavors | List all Flavors that use a certain ExecutableLoadFile.
 [**listFlavors**](ServicesApi.md#listFlavors) | **GET** /services/{serviceId}/flavors | List all Flavors of a certain Service.
 [**listLinkedElfs**](ServicesApi.md#listLinkedElfs) | **GET** /services/{serviceId}/flavors/{flavorId}/executable-load-files | List all ExecutableLoadFiles used by a certain Flavor.
 [**listLinkedFlavors**](ServicesApi.md#listLinkedFlavors) | **GET** /services/{serviceId}/versions/{tag}/flavors | List all Flavors used by a certain Version.
@@ -699,58 +698,6 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**List&lt;SecureComponentProfile&gt;**](SecureComponentProfile.md)
-
-### Authorization
-
-[authToken](../README.md#authToken)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-<a name="listElfRelatedFlavors"></a>
-# **listElfRelatedFlavors**
-> List&lt;Flavor&gt; listElfRelatedFlavors(serviceId, elfId)
-
-List all Flavors that use a certain ExecutableLoadFile.
-
-List all Flavors that use a certain ExecutableLoadFile.
-
-### Example
-```java
-// Import classes:
-//import de.bund.bsi.tsms.tsmrestapi.ApiClient;
-//import de.bund.bsi.tsms.tsmrestapi.ApiException;
-//import de.bund.bsi.tsms.tsmrestapi.Configuration;
-//import de.bund.bsi.tsms.tsmrestapi.auth.*;
-//import de.bund.bsi.tsms.tsmrestapi.api.ServicesApi;
-
-ApiClient defaultClient = Configuration.getDefaultApiClient();
-
-
-ServicesApi apiInstance = new ServicesApi();
-UUID serviceId = new UUID(); // UUID | identifier of the referred Service
-UUID elfId = new UUID(); // UUID | identifier of the referred Elf
-try {
-    List<Flavor> result = apiInstance.listElfRelatedFlavors(serviceId, elfId);
-    System.out.println(result);
-} catch (ApiException e) {
-    System.err.println("Exception when calling ServicesApi#listElfRelatedFlavors");
-    e.printStackTrace();
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **serviceId** | [**UUID**](.md)| identifier of the referred Service |
- **elfId** | [**UUID**](.md)| identifier of the referred Elf |
-
-### Return type
-
-[**List&lt;Flavor&gt;**](Flavor.md)
 
 ### Authorization
 

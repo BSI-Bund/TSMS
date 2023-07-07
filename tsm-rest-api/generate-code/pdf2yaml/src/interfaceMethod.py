@@ -420,11 +420,13 @@ class InterfaceMethod:
                         result += '              additionalProperties:\n'
                         if 'string>' in self.request_body[0]:
                             result += '                type: string\n'
+                            result += '                maxLength: 255\n'
                         elif 'string[]>' in self.request_body[0]:
                             result += '                type: array\n'
                             result += '                items:\n'
                             result += '                  type: string\n'
                             result += '                  maxLength: 255\n'
+                            
                 else:
                     for body in self.request_body:
                         result += f'        {body}\n'

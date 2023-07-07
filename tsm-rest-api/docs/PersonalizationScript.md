@@ -8,4 +8,3 @@ Name | Type | Description | Notes
 **fileName** | **String** | Name of this PersonalizationScript. |  [optional]
 **creationDate** | [**DateTime**](DateTime.md) | A datetime string (creation of Personalization-Script). |  [optional]
 **uploadDate** | [**DateTime**](DateTime.md) | A datetime string (upload of Personalization-Script binary). |  [optional]
-**certificateId** | [**UUID**](UUID.md) | ID of the Certificate used in this PersonalizationScript. Empty, if no Certificate is used. |  [optional]

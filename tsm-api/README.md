@@ -46,13 +46,13 @@ Installing JavaCard applets on a secure component of a smartphone is step three 
 
 The resulting build artifacts of this module are:
 
-* **[tsm-api-1.0.3.jar](dist/1.0.3/tsm-api-1.0.3.jar)**
+* **[tsm-api-1.0.4.jar](dist/1.0.4/tsm-api-1.0.4.jar)**
   * can be included into an Android app to use a TSMS by calling TSM-API methods
   * provide default implementations for all data types required by the TSM-API
   * can be used to implement a TSM-API-SDK according to BSI-TR-03165 
-* **[tsm-api-1.0.3-javadoc.jar](dist/1.0.3/tsm-api-1.0.3-javadoc.jar)**
+* **[tsm-api-1.0.4-javadoc.jar](dist/1.0.4/tsm-api-1.0.4-javadoc.jar)**
   * JavaDoc documentation of the TSM-API interfaces, enums and classes
-* **[tsm-api-1.0.3-sources.jar](dist/1.0.3/tsm-api-1.0.3-sources.jar)**
+* **[tsm-api-1.0.4-sources.jar](dist/1.0.4/tsm-api-1.0.4-sources.jar)**
   * source code of the TSM-API
 
 
