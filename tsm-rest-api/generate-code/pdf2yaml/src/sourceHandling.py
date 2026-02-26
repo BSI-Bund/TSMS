@@ -38,8 +38,8 @@ class Source:
         # define paths, including archive path
         self.source_path = source_path
 
-        dest_folder = Path.cwd()
-        if 'tsm-rest-api' in Path.cwd().parts:
+        dest_folder = Path(__file__).parent
+        if 'tsm-rest-api' in dest_folder.parts:
             while dest_folder.parts[-1] != 'tsm-rest-api':
                 dest_folder = dest_folder.parents[0]
             self.destination_path = dest_folder / 'tsm-rest-api.yaml'
@@ -70,31 +70,59 @@ class Source:
         # define markdown-variable, that will contain the markdown-result later on
         self.markdown = []
         # output for testing purposes (experimental / testing)
-        with open('test_interface','wt',encoding='utf-8') as fobj:
-            Text = []
-            Text.append('chapter\trest_url\trequest_method\ttitle\trequest_headers\trequest_elf\trequest_file\trequest_body\tresponse_headers_success\tresponse_body_success\tresponse_headers_failure\tresponse_body_failure\n')
+        with open(
+            Path(__file__).absolute().parents[3] / 'test_datatypes.csv',
+            'wt',
+            encoding='utf-8',
+        ) as fobj:
+            text = []
+            text.append(
+                'chapter\tdata_type\tattribute\ttype\tdescription\tmandatory\teditable\n'
+            )
+            for i, data_type in enumerate(self.data_types):
+                for j, _ in enumerate(data_type.att1):
+                    text.append(
+                        f'{data_type.num}\t{data_type.title}\t{data_type.att1[j]}\t{data_type.att2type[j]}\t{data_type.att3desc[j]}\t{data_type.att4mand[j]}\t{data_type.att5ed[j]}\n'
+                    )
+            fobj.writelines(text)
+        with open(
+            Path(__file__).absolute().parents[3] / 'test_interface.csv',
+            'wt',
+            encoding='utf-8',
+        ) as fobj:
+            text = []
+            text.append(
+                'chapter\trest_url\trequest_method\ttitle\trequest_headers\trequest_elf\trequest_file\trequest_body\tresponse_headers_success\tresponse_body_success\tresponse_headers_failure\tresponse_body_failure\n'
+            )
             for i in self.interface_methods:
                 if i.type_ == 'kapitel':
+                    if i.num == '4.1.6.5.2':
+                        pass
                     if not hasattr(i, 'request_body'):
                         i.request_body = None
                     if not hasattr(i, 'request_elf'):
                         i.request_elf = None
                     if not hasattr(i, 'request_file'):
                         i.request_file = None
-                    Text.append(f'{i.num}\t' \
-                        f'{i.rest_url}\t' \
-                        f'{i.request_method}\t' \
-                        f'{i.title}\t' \
-                        f'{i.request_headers}\t' \
-                        f'{i.request_elf}\t' \
-                        f'{i.request_file}\t' \
-                        f'{i.request_body}\t' \
-                        f'{i.response_headers_success}\t' \
-                        f'{i.response_body_success}\t' \
-                        f'{i.response_headers_failure}\t' \
-                        f'{i.response_body_failure}\n')
-            fobj.writelines(Text)
-        pass
+                    text.append(
+                        f'{i.num}\t'
+                        f'{i.rest_url}\t'
+                        f'{i.request_method}\t'
+                        f'{i.title}\t'
+                        f'{i.request_headers}\t'
+                        f'{i.request_elf}\t'
+                        f'{i.request_file}\t'
+                        f'{i.request_body}\t'
+                        f'{i.response_headers_success}\t'
+                        f'{i.response_body_success}\t'
+                        f'{i.response_headers_failure}\t'
+                        f'{i.response_body_failure}\n'
+                    )
+            fobj.writelines(text)
+    
+    def set_version(self, pdf_version: str) -> None:
+        """set version of source document used"""
+        self.pdf_version = pdf_version
 
     #################
     # Class Utility #
@@ -223,6 +251,10 @@ class Source:
         """add header to yaml"""
         self.yaml = []
         self.appendFileToYAML('source_header.yaml', True)
+        for i, line in enumerate(self.yaml):
+            if 'VERSION_PLACEHOLDER' in line:
+                self.yaml[i] = line.replace('VERSION_PLACEHOLDER', self.pdf_version)
+                break
         # ignore 'tags:' from header, can be generated
         i = returnTextLineFromList(self.yaml, 'tags:\n')
         if i:

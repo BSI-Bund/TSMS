@@ -340,6 +340,14 @@ public interface ITsmApiService {
      * applicable for the device, the returned version will be empty, but the method
      * will still be successful (executionStatus=0).<br>
      *
+     * <p>
+     * <b>Important:</b> The returned value represents only a point-in-time
+     * assessment and is <b>not</b> an atomic reservation. Callers MUST treat this
+     * as advisory information only. Any real deployment decision must be validated
+     * atomically during
+     * {@link #deployService(String, List, boolean, ITsmProcessListener)}.
+     * </p>
+     *
      * @param serviceId
      *            Service for which the availability of a deployment shall be
      *            checked.
@@ -402,6 +410,14 @@ public interface ITsmApiService {
      * motivation for the update, a SP may decide not to perform an update. A SP can
      * check for this situation by comparing the FlavorIds of the current and the
      * future Service Instance prior to an update.
+     *
+     * <p>
+     * <b>Important:</b> The returned value represents only a point-in-time
+     * assessment and is <b>not</b> an atomic reservation. Callers MUST treat this
+     * as advisory information only. Any real deployment decision must be validated
+     * atomically during
+     * {@link #updateService(String, String, List, boolean, ITsmProcessListener)}.
+     * </p>
      *
      * @param serviceInstanceId
      *            Service Instance for which the availability of an update shall be

@@ -1,6 +1,6 @@
 # TSMS - Trusted Service Management System 
 
-Last updated: 05.04.2023
+Last updated: 26.02.2026
 
 The *GitHub-BSI-TSMS* project contains a set of source code modules designed to implement the interfaces specified in [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html), which is a technical guideline published by the German Federal Office for Information Security (BSI).
 

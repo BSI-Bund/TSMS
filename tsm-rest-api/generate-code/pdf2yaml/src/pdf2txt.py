@@ -197,7 +197,7 @@ def parseTR(pdf_file: str, txt_file: str) -> None:
 ###########
 
 if __name__ == '__main__':
-    FILENAME_PDF = Path(__file__).parents[1] / 'pdf' / 'TR-TSMS_V1.0_20220603.pdf'
+    FILENAME_PDF = Path(__file__).parents[1] / 'pdf' / 'TR-TSMS_V1.1.pdf'
     FILENAME_TXT = FILENAME_PDF.parent / (FILENAME_PDF.stem + '.txt')
 
     parseTR(FILENAME_PDF, FILENAME_TXT)

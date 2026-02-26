@@ -5,7 +5,6 @@ to handle the basic level of text processing
 
 import re
 
-
 ######################
 # Content Operations #
 ######################
@@ -67,7 +66,7 @@ def returnTextLineFromList(text: list, line: str, first_index=0) -> int:
     returns 0 if text not found
     """
     for i in range(first_index + 1, len(text), 1):
-        if text[i] == line:
+        if line in text[i]:
             return i
     return 0
 
@@ -175,6 +174,7 @@ def msg(text: str, pos: str, len_target=32) -> str:
     """
     # Gesamtlänge - Textlänge - vorhandene Trenner
     len_rest = len_target - len(text) - 7
+
     if pos == 't':
         start_chr = chr(9484)
         middle_chr_a = chr(9472)

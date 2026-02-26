@@ -2,8 +2,9 @@ package de.bund.bsi.tsms.tsmapi;
 
 import de.bund.bsi.tsms.tsmapi.parameters.IServiceCommand;
 import de.bund.bsi.tsms.tsmapi.results.ICreateServiceInstanceResult;
-import de.bund.bsi.tsms.tsmapi.results.CreateServiceInstanceResult;
 import de.bund.bsi.tsms.tsmapi.results.IGetServiceInstancesResult;
+import de.bund.bsi.tsms.tsmapi.results.IServiceInstance;
+import de.bund.bsi.tsms.tsmapi.results.CreateServiceInstanceResult;
 import de.bund.bsi.tsms.tsmapi.results.GetServiceInstancesResult;
 import de.bund.bsi.tsms.tsmapi.results.IDeployServiceResult;
 import de.bund.bsi.tsms.tsmapi.results.DeployServiceResult;
@@ -21,7 +22,6 @@ import de.bund.bsi.tsms.tsmapi.results.ISetAccessTokenResult;
 import de.bund.bsi.tsms.tsmapi.results.SetAccessTokenResult;
 import de.bund.bsi.tsms.tsmapi.results.ITechnicalInformation;
 import de.bund.bsi.tsms.tsmapi.results.TechnicalInformation;
-import de.bund.bsi.tsms.tsmapi.results.IServiceInstance;
 import de.bund.bsi.tsms.tsmapi.results.ServiceInstance;
 import de.bund.bsi.tsms.tsmapi.results.ProcessInfo;
 import de.bund.bsi.tsms.tsmapi.results.IServiceCommandResult;
@@ -31,8 +31,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.function.Supplier;
 
 /**
  * This class is a mock implementation of an {@link ITsmApiService}.<br>
@@ -43,6 +49,28 @@ import java.util.concurrent.Executors;
  * @since 1.0
  */
 public class MockTsmApiService implements ITsmApiService {
+
+    /**
+     * Bounded executor to avoid resource exhaustion.
+     */
+    private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(4, // core threads
+            8, // max threads
+            30L, TimeUnit.SECONDS, // keep alive
+            new ArrayBlockingQueue<>(200), // bounded queue
+            new ThreadFactory() {
+                private final ThreadFactory def = Executors.defaultThreadFactory();
+
+                @Override
+                public Thread newThread(final Runnable r) {
+                    Thread t = def.newThread(r);
+                    t.setName("mock-tsmapi-" + t.getId());
+                    t.setDaemon(true);
+                    return t;
+                }
+            }, new ThreadPoolExecutor.AbortPolicy());
+    static {
+        EXECUTOR.allowCoreThreadTimeOut(true);
+    }
 
     /**
      * Constructor.
@@ -172,9 +200,8 @@ public class MockTsmApiService implements ITsmApiService {
     public CompletableFuture<IDeployServiceResult> deployService(final String serviceInstanceId,
             final List<IServiceCommand> serviceCommands, final boolean finalizeDeployment,
             final ITsmProcessListener listener) {
-        CompletableFuture<IDeployServiceResult> future = new CompletableFuture<>();
 
-        Executors.newCachedThreadPool().submit(() -> {
+        return async(() -> {
             ProcessInfo processInfo = new ProcessInfo("process1", new Date(), new Date());
 
             TechnicalInformation technicalInformation = new TechnicalInformation(
@@ -184,15 +211,9 @@ public class MockTsmApiService implements ITsmApiService {
             serviceCommandResults
                     .add(new ServiceCommandResult(ECommandResultType.EXECUTION_SUCCESS));
 
-            DeployServiceResult result = new DeployServiceResult(processInfo,
-                    EServiceInstanceState.OPERATIONAL, technicalInformation, serviceCommandResults,
-                    "eSE1");
-
-            future.complete(result);
-            return null;
+            return new DeployServiceResult(processInfo, EServiceInstanceState.OPERATIONAL,
+                    technicalInformation, serviceCommandResults, "eSE1");
         });
-
-        return future;
     }
 
     /**
@@ -234,9 +255,8 @@ public class MockTsmApiService implements ITsmApiService {
     public CompletableFuture<IUpdateServiceResult> updateService(final String serviceInstanceId,
             final String newVersion, final List<IServiceCommand> serviceCommands,
             final boolean finalizeDeployment, final ITsmProcessListener listener) {
-        CompletableFuture<IUpdateServiceResult> future = new CompletableFuture<>();
 
-        Executors.newCachedThreadPool().submit(() -> {
+        return async(() -> {
             ProcessInfo processInfo = new ProcessInfo("process2", new Date(), new Date());
 
             TechnicalInformation technicalInformation = new TechnicalInformation(
@@ -247,15 +267,9 @@ public class MockTsmApiService implements ITsmApiService {
             serviceCommandResults
                     .add(new ServiceCommandResult(ECommandResultType.EXECUTION_SUCCESS));
 
-            UpdateServiceResult result = new UpdateServiceResult(processInfo,
-                    EServiceInstanceState.OPERATIONAL, technicalInformation, serviceCommandResults,
-                    "eSE1");
-
-            future.complete(result);
-            return null;
+            return new UpdateServiceResult(processInfo, EServiceInstanceState.OPERATIONAL,
+                    technicalInformation, serviceCommandResults, "eSE1");
         });
-
-        return future;
     }
 
     /**
@@ -280,16 +294,10 @@ public class MockTsmApiService implements ITsmApiService {
     public CompletableFuture<ISuspendOrResumeResult> suspendOrResumeService(
             final String serviceInstanceId, final boolean suspensionControl,
             final ITsmProcessListener listener) {
-        CompletableFuture<ISuspendOrResumeResult> future = new CompletableFuture<>();
-
-        Executors.newCachedThreadPool().submit(() -> {
+        return async(() -> {
             ProcessInfo processInfo = new ProcessInfo("process3", new Date(), new Date());
-            SuspendOrResumeResult result = new SuspendOrResumeResult(processInfo);
-            future.complete(result);
-            return null;
+            return new SuspendOrResumeResult(processInfo);
         });
-
-        return future;
     }
 
     /**
@@ -311,16 +319,10 @@ public class MockTsmApiService implements ITsmApiService {
     @Override
     public CompletableFuture<ITerminateServiceResult> terminateService(
             final String serviceInstanceId, final ITsmProcessListener listener) {
-        CompletableFuture<ITerminateServiceResult> future = new CompletableFuture<>();
-
-        Executors.newCachedThreadPool().submit(() -> {
+        return async(() -> {
             ProcessInfo processInfo = new ProcessInfo("process4", new Date(), new Date());
-            TerminateServiceResult result = new TerminateServiceResult(processInfo);
-            future.complete(result);
-            return null;
+            return new TerminateServiceResult(processInfo);
         });
-
-        return future;
     }
 
     /**
@@ -347,21 +349,13 @@ public class MockTsmApiService implements ITsmApiService {
     @Override
     public CompletableFuture<IServiceDeploymentAvailableResult> checkServiceDeploymenAvailable(
             final String serviceId, final String serviceVersionTag) {
-        CompletableFuture<IServiceDeploymentAvailableResult> future = new CompletableFuture<>();
+        return async(() -> {
+            TechnicalInformation ti = new TechnicalInformation(new LinkedHashMap<>(), "service1",
+                    "1.0.0", "flavor1", "myFlavor", "profile1");
 
-        Executors.newCachedThreadPool().submit(() -> {
-            TechnicalInformation newTechnicalInformation = new TechnicalInformation(
-                    new LinkedHashMap<>(), "service1", "1.0.0", "flavor1", "myFlavor", "profile1");
-
-            ServiceDeploymentAvailableResult result = new ServiceDeploymentAvailableResult(
-                    EDeploymentAvailable.DEPLOYMENT_AVAILABLE, "1.0.0", newTechnicalInformation,
-                    EErrorType.NO_ERROR, "");
-
-            future.complete(result);
-            return null;
+            return new ServiceDeploymentAvailableResult(EDeploymentAvailable.DEPLOYMENT_AVAILABLE,
+                    "1.0.0", ti, EErrorType.NO_ERROR, "");
         });
-
-        return future;
     }
 
     /**
@@ -387,21 +381,13 @@ public class MockTsmApiService implements ITsmApiService {
     @Override
     public CompletableFuture<IServiceUpdateAvailableResult> checkServiceUpdateAvailable(
             final String serviceInstanceId, final String newVersion) {
-        CompletableFuture<IServiceUpdateAvailableResult> future = new CompletableFuture<>();
+        return async(() -> {
+            TechnicalInformation ti = new TechnicalInformation(new LinkedHashMap<>(), "service1",
+                    "2.0.0", "flavor1", "myFlavor", "profile1");
 
-        Executors.newCachedThreadPool().submit(() -> {
-            TechnicalInformation newTechnicalInformation = new TechnicalInformation(
-                    new LinkedHashMap<>(), "service1", "2.0.0", "flavor1", "myFlavor", "profile1");
-
-            ServiceUpdateAvailableResult result = new ServiceUpdateAvailableResult(
-                    EUpdateAvailable.UPDATE_AVAILABLE, "2.0.0", newTechnicalInformation,
+            return new ServiceUpdateAvailableResult(EUpdateAvailable.UPDATE_AVAILABLE, "2.0.0", ti,
                     EErrorType.NO_ERROR, "");
-
-            future.complete(result);
-            return null;
         });
-
-        return future;
     }
 
     /**
@@ -420,5 +406,28 @@ public class MockTsmApiService implements ITsmApiService {
         SetAccessTokenResult result = new SetAccessTokenResult(EErrorType.NO_ERROR, "");
 
         return result;
+    }
+
+    /**
+     * Executes the given task asynchronously using a shared, bounded executor.
+     * <p>
+     * If the executor rejects execution, the returned {@link CompletableFuture} is
+     * completed exceptionally with {@link RejectedExecutionException}.
+     * </p>
+     *
+     * @param <T>
+     *            the result type
+     * @param supplier
+     *            the task to execute asynchronously
+     * @return a {@link CompletableFuture} representing the asynchronous execution
+     */
+    private static <T> CompletableFuture<T> async(final Supplier<T> supplier) {
+        try {
+            return CompletableFuture.supplyAsync(supplier, EXECUTOR);
+        } catch (RejectedExecutionException ex) {
+            CompletableFuture<T> f = new CompletableFuture<>();
+            f.completeExceptionally(ex);
+            return f;
+        }
     }
 }

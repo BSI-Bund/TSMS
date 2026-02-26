@@ -4,7 +4,6 @@ to read the latest TR pdf-file stored in the pdf directory
 """
 
 import time
-
 import sys
 from pathlib import Path
 
@@ -21,6 +20,20 @@ def dateKey(file):
     """
     return str(file)[-12:-4]
 
+def versionKey(file):
+    """
+    key-function, to only point to sanitized version numbers in the filename
+    expecting format:
+        TR-TSMS_V1.0.5.pdf
+    or
+        TR-TSMS_V1.1.pdf
+    or
+        TR-TSMS_V1.0.5_pre.pdf
+    """
+    file = str(file).replace('.pdf','')
+    while len(str(file)) < 14:
+        file += '.0'
+    return file
 
 def chooseFile():
     """
@@ -40,16 +53,16 @@ def chooseFile():
         files = []
         for i in root_dir.glob('pdf/*.pdf'):
             files.append(i.name)
-        files.sort(key=dateKey)
+        files.sort(key=versionKey) # key=dateKey
         filename = root_dir / 'pdf' / files[-1]
     elif arg == 'txt':
         filename = root_dir / 'pdf' / 'tr_03165_source.txt'
     else:
         filename = root_dir / 'pdf' / arg
-    
+
     print('TR TSMS sourcefile chosen:')
     print(filename)
-    
+
     ## convert to TXT
     if filename.suffix == '.pdf':
         filename_pdf = filename
@@ -59,7 +72,15 @@ def chooseFile():
         print('PDF converted to text file:')
         print(filename)
 
-    return filename
+    # extract version
+    version = '1.0.5'
+    with open(filename, 'rt', encoding='utf-8') as fobj:
+        for line in fobj:
+            if 'Version' in line:
+                version = line.split(' ',1)[1].strip()
+                break
+
+    return filename, version
 
 
 def main(yaml_name: str) -> None:
@@ -70,14 +91,15 @@ def main(yaml_name: str) -> None:
     cwd = Path(__file__).parents[1]
 
     # define file paths
-    source_name = chooseFile()
-    source_file = Path(cwd, 'pdf', source_name)
+    source_name, source_version = chooseFile()
+    source_file = Path(cwd, 'pdf', source_name.name)
 
     # run twice for robustness sake
     # needed if previous result is incomplete or missing
     for _ in range(2):
         # handle source via object construct
         source_obj = Source(source_file, yaml_name)
+        source_obj.set_version(source_version)
         source_obj.generate()
 
     # Convert Table-Content to LaTeX-format
@@ -93,7 +115,7 @@ if __name__ == '__main__':
     print('### PDF2YAML ###')
     print('################')
     print()
-   
+
     YAML_NAME = 'TSM_Backend_API.yaml'
 
     # main function

@@ -1,10 +1,10 @@
-# ServiceprovidersApi
+# ServiceProvidersApi
 
 All URIs are relative to */*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getAccountInformation**](ServiceprovidersApi.md#getAccountInformation) | **GET** /serviceproviders/current | Get details of the SP account.
+[**getAccountInformation**](ServiceProvidersApi.md#getAccountInformation) | **GET** /service-providers/current | Get details of the SP account.
 
 <a name="getAccountInformation"></a>
 # **getAccountInformation**
@@ -21,17 +21,17 @@ Get details of the SP account.
 //import de.bund.bsi.tsms.tsmrestapi.ApiException;
 //import de.bund.bsi.tsms.tsmrestapi.Configuration;
 //import de.bund.bsi.tsms.tsmrestapi.auth.*;
-//import de.bund.bsi.tsms.tsmrestapi.api.ServiceprovidersApi;
+//import de.bund.bsi.tsms.tsmrestapi.api.ServiceProvidersApi;
 
 ApiClient defaultClient = Configuration.getDefaultApiClient();
 
 
-ServiceprovidersApi apiInstance = new ServiceprovidersApi();
+ServiceProvidersApi apiInstance = new ServiceProvidersApi();
 try {
     ServiceProvider result = apiInstance.getAccountInformation();
     System.out.println(result);
 } catch (ApiException e) {
-    System.err.println("Exception when calling ServiceprovidersApi#getAccountInformation");
+    System.err.println("Exception when calling ServiceProvidersApi#getAccountInformation");
     e.printStackTrace();
 }
 ```

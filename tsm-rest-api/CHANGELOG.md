@@ -1,13 +1,20 @@
 # Changelog
 Changelog file for BSI tsm-rest-api.
 
+## [1.1.0] - 26.02.2026
+* Added input constraints for uploaded filename fields (`elfFilename`, `scriptFilename`, `certFilename`) in `multipart/form-data` request bodies (introduced `maxLength` and a strict filename pattern to prevent path traversal and invalid filenames).
+* Added explicit size and structural constraints for configuration parameter maps (`spParameters`, `contextSpecificAttributes`, `allowedDeployments`) to prevent oversized payloads.
+* Renamed `servicesproviders` to `service-providers`.
+* Modified authentication endpoint to use Basic Authentication and `application/x-www-form-urlencoded` with `grant_type=client_credentials`.
+* Updated `Version` schema: `tag` is no longer required for POST requests and is ignored when provided.
+* Clarified attributes whose default value is an empty string, empty list, empty map, or null (added explicit notes for several fields).
+
 ## [1.0.4] - 07.07.2023
 * modifications to be compliant to BSI TR-03165 v1.0.4:
   * PersonalizationConfig: added attribute certificateId and removed it from PersonalizationScript
   * corrected URL in 4.1.6.5.10 for method list related flavors from /services/{serviceId}/executable-load-files/{elfId}/flavors to /executable-load-files/{elfId}/services/{serviceId}/flavors (#264)
   * corrected URL in 4.1.6.5.12 for method list related versions from /executable-load-files/{elfId}/services/{servideId}/versions to /executable-load-files/{elfId}/services/{serviceId}/versions (#264)
 * changed media type "application/octed-data" to "application/octed-stream" (#266)
-
 
 ## [1.0.3] - 26.05.2023
 * modifications to be compliant to BSI TR-03165 v1.0.3:

@@ -1,8 +1,8 @@
 # java-client
 
 BSI-TR-03165: TSM-Backend
-- API version: 1.0.4
-  - Build date: 2023-07-07T13:15:38.560+02:00[Europe/Berlin]
+- API version: 1.1.0
+  - Build date: 2026-02-26T13:55:23.038+01:00[Europe/Berlin]
 
 This visual representation describes the TSM-Backend API for a Trusted Service Management System (TSMS) using Swagger UI. It serves as a complement to the [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html) guideline. In case of any discrepancies, please refer to the written guideline.  A TSM-Backend is an IT system within a TSMS that offers management functions in the form of a REST-API. The TSM-Backend is a secure repository for various configurations, flavors, and resources required for installing an JavaCard Applet on secure elements such as eSE and eSIM. With this API, service providers can create, read, update, and delete files and configuration settings required for managing their Applets.  __Functionality:__ * upload JavaCard *.cap files to TSM-Backend * define a service which consists of one or multiple *.cap files * versionize the service * define hardware variants for each service - called flavors  * specify technical requirements for each flavor, e.g. minimal JavaCard version 
 
@@ -40,7 +40,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>de.bund.bsi.tsms.tsm-rest-api</groupId>
   <artifactId>java-client</artifactId>
-  <version>1.0.4</version>
+  <version>1.1.0</version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -50,7 +50,7 @@ Add this dependency to your project's POM:
 Add this dependency to your project's build file:
 
 ```groovy
-compile "de.bund.bsi.tsms.tsm-rest-api:java-client:1.0.4"
+compile "de.bund.bsi.tsms.tsm-rest-api:java-client:1.1.0"
 ```
 
 ### Others
@@ -63,7 +63,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/java-client-1.0.4.jar`
+* `target/java-client-1.1.0.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -325,7 +325,7 @@ Class | Method | HTTP request | Description
 *SecureComponentProfilesApi* | [**listScpRelatedServices**](docs/SecureComponentProfilesApi.md#listScpRelatedServices) | **GET** /secure-component-profiles/{scpId}/services | List all Services that use a certain SecureComponentProfile.
 *SecureComponentProfilesApi* | [**listScpRelatedVersions**](docs/SecureComponentProfilesApi.md#listScpRelatedVersions) | **GET** /secure-component-profiles/{scpId}/services/{serviceId}/versions | List all Versions of a certain Service that use a certain SecureC...
 *SecureComponentProfilesApi* | [**listSecureComponentProfiles**](docs/SecureComponentProfilesApi.md#listSecureComponentProfiles) | **GET** /secure-component-profiles | List all available SecureComponentProfiles.
-*ServiceprovidersApi* | [**getAccountInformation**](docs/ServiceprovidersApi.md#getAccountInformation) | **GET** /serviceproviders/current | Get details of the SP account.
+*ServiceProvidersApi* | [**getAccountInformation**](docs/ServiceProvidersApi.md#getAccountInformation) | **GET** /service-providers/current | Get details of the SP account.
 *ServicesApi* | [**createFlavor**](docs/ServicesApi.md#createFlavor) | **POST** /services/{serviceId}/flavors | Create a new Flavor for a certain Service.
 *ServicesApi* | [**createService**](docs/ServicesApi.md#createService) | **POST** /services | Create a new Service.
 *ServicesApi* | [**createVersion**](docs/ServicesApi.md#createVersion) | **POST** /services/{serviceId}/versions | Create a new Version of a certain Service.

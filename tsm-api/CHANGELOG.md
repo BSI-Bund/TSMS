@@ -1,6 +1,10 @@
 # Changelog
 Changelog file for BSI tsm-api.
 
+## [1.1.0] - 26.02.2026
+* TOCTOU / Availability Checks: Clarified in Javadoc that `checkServiceDeploymenAvailable` and `checkServiceUpdateAvailable` provide non-atomic, advisory point-in-time results; final validation occurs during deploy/update.
+* Trivial DoS / Kill Switch: Introduced a bounded executor for asynchronous operations in `MockTsmApiService` to prevent resource exhaustion via excessive concurrent requests.
+
 ## [1.0.4] - 07.07.2023
 * the version of tsm-api (v1.0.4) is identical to v1.0.3, as there were no differences in the TSM-API specifications between BSI-TR-03165 v1.0.3 and v1.0.4
 * the version number (v1.0.4) was only created to maintain consistency across BSI-TR-03165, tsm-api, and tsm-rest-api.

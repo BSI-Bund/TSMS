@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 Authenticate to the TSM-Backend by sending a long-term token, and...
 
-Authenticate to the TSM-Backend by sending a long-term token, and receive a short-term bearer token. The short-term bearer token is used to access the other API functions. The long-term token is provided out of band.
+Authenticate to the TSM-Backend by sending a long-term token, and receive a short-term bearer token. The short-term bearer token is used to access the other API functions. The long-term token is provided out of band. To authenticate the client, Basic Authentication is used, where the Request Authorization header contains the &#x27;Basic&#x27; keyword followed by the Base64-encoded string of the URL-encoded long-term-token (typically: {URL-encoded-client-ID}:{URL-encoded-client-secret}).
 
 ### Example
 ```java
@@ -49,6 +49,6 @@ This endpoint does not need any parameter.
 
 ### HTTP request headers
 
- - **Content-Type**: Not defined
+ - **Content-Type**: application/x-www-form-urlencoded
  - **Accept**: application/json
 

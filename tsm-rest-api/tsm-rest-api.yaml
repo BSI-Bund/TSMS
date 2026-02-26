@@ -13,7 +13,7 @@ info:
     * define hardware variants for each service - called flavors 
     * specify technical requirements for each flavor, e.g. minimal JavaCard version
     
-  version: "1.0.4"
+  version: "1.1.0"
   title: "BSI-TR-03165: TSM-Backend"
   termsOfService: https://www.bsi.bund.de/DE/Service/Nutzungsbedingungen/Nutzungsbedingungen_node.html
   contact:
@@ -25,7 +25,7 @@ info:
 tags:
 - name: /auth
   description: "authentication methods"
-- name: /serviceproviders
+- name: /service-providers
   description: "methods for management of SP"
 - name: /secure-component-profiles
   description: "Retrieve SecureComponentProfiles"
@@ -52,14 +52,22 @@ paths:
       tags:
         - /auth
       summary: "Authenticate to the TSM-Backend by sending a long-term token, and..."
-      description: "Authenticate to the TSM-Backend by sending a long-term token, and receive a short-term bearer token. The short-term bearer token is used to access the other API functions. The long-term token is provided out of band."
+      description: "Authenticate to the TSM-Backend by sending a long-term token, and receive a short-term bearer token. The short-term bearer token is used to access the other API functions. The long-term token is provided out of band. To authenticate the client, Basic Authentication is used, where the Request Authorization header contains the 'Basic' keyword followed by the Base64-encoded string of the URL-encoded long-term-token (typically: {URL-encoded-client-ID}:{URL-encoded-client-secret})."
       operationId: createAccessToken
       ##### Request Headers:
       security:
         - LongtermToken: []
-      ##### Content-Type: application/json
+      ##### Content-Type: application/x-www-form-urlencoded
       ##### Accept: application/json
-      ##### Request Body: -
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: string
+              maxLength: 255
+            example:
+              "grant_type=client_credentials"
       responses:
         200:
           description: Ok
@@ -78,10 +86,10 @@ paths:
 # This section lists methods for the management of SP account information.
 
 ### 4.1.6.2.1 Get Account Information ###
-  /serviceproviders/current:
+  /service-providers/current:
     get:
       tags:
-        - /serviceproviders
+        - /service-providers
       summary: "Get details of the SP account."
       description: "Get details of the SP account."
       operationId: getAccountInformation
@@ -510,7 +518,7 @@ paths:
               $ref: "#/components/schemas/Flavor"
             example:
               name: "YY-624B-11"
-              description: "Additional description for this Flavor."
+              description: "Additional description for this Flavor. Default value is empty string."
               executableLoadFileIds: [ "54050ff0-7d9e-ef28-b120-3c3e81ae77af", "7860e9a9-70b3-43b1-b2d7-fc6199c92cb4", "2b3447ca-eecc-eba9-3f48-2f61ae43c742" ]
               applicationInstantiationConfigs: [ { priority: 137, executableModuleId: "40b455b5-1e45-fd2f-319b-83794b2a8d82", applicationConfigId: "1e555fae-c0bb-9915-b086-b7f77a52ca69" }, { priority: 81, executableModuleId: "efe37b02-819a-9dc1-f656-b00b80072581", applicationConfigId: "9b2990c9-59b0-a979-d4b2-11ff5fe00cb2" }, { priority: 132, executableModuleId: "105030db-8fd7-095f-953e-a4143a3576c3", applicationConfigId: "b3f08e86-ebed-1a72-984d-8030cbe89b79" } ]
               spParameters: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
@@ -582,7 +590,7 @@ paths:
               $ref: "#/components/schemas/Flavor"
             example:
               name: "YY-624B-11"
-              description: "Additional description for this Flavor."
+              description: "Additional description for this Flavor. Default value is empty string."
               executableLoadFileIds: [ "54050ff0-7d9e-ef28-b120-3c3e81ae77af", "7860e9a9-70b3-43b1-b2d7-fc6199c92cb4", "2b3447ca-eecc-eba9-3f48-2f61ae43c742" ]
               applicationInstantiationConfigs: [ { priority: 137, executableModuleId: "40b455b5-1e45-fd2f-319b-83794b2a8d82", applicationConfigId: "1e555fae-c0bb-9915-b086-b7f77a52ca69" }, { priority: 81, executableModuleId: "efe37b02-819a-9dc1-f656-b00b80072581", applicationConfigId: "9b2990c9-59b0-a979-d4b2-11ff5fe00cb2" }, { priority: 132, executableModuleId: "105030db-8fd7-095f-953e-a4143a3576c3", applicationConfigId: "b3f08e86-ebed-1a72-984d-8030cbe89b79" } ]
               spParameters: { param0: "Value0 which can be evaluated by the App.", param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App." }
@@ -784,7 +792,6 @@ paths:
       ##### Request Headers:
       security:
         - authToken: []
-      ##### Content-Type: application/json
       ##### Accept: application/json
       ##### Request Body: -
       parameters:
@@ -1049,6 +1056,7 @@ paths:
           application/json:
             schema:
               type: object
+              maxProperties: 50
               additionalProperties:
                 type: array
                 items:
@@ -1195,6 +1203,7 @@ paths:
           application/json:
             schema:
               type: object
+              maxProperties: 50
               additionalProperties:
                 type: string
                 maxLength: 255
@@ -1710,7 +1719,7 @@ paths:
             example:
               instanceAid: "A00000089316631C0000"
               name: "XX-413D-58"
-              description: "Description of this ApplicationConfig."
+              description: "Description of this ApplicationConfig. Default value is empty string."
       responses:
         200:
           description: Ok
@@ -1776,7 +1785,7 @@ paths:
             example:
               instanceAid: "A00000089316631C0000"
               name: "XX-413D-58"
-              description: "Description of this ApplicationConfig."
+              description: "Description of this ApplicationConfig. Default value is empty string."
       parameters:
         - $ref: "#/components/parameters/applicationConfigId"
       responses:
@@ -2779,6 +2788,8 @@ components:
               elfFilename:
                 description: filename of the ELF
                 type: string
+                maxLength: 255
+                pattern: "^[a-zA-Z0-9._-]+$"
                 example: elf-file.cap
               elfFile:
                 description: containing actual elf-file
@@ -2802,6 +2813,8 @@ components:
               scriptFilename:
                 description: filename of the personalization script
                 type: string
+                maxLength: 255
+                pattern: "^[a-zA-Z0-9._-]+$"
                 example: file.pers
               scriptFile:
                 description: containing actual script-file
@@ -2825,6 +2838,8 @@ components:
               certFilename:
                 description: filename of the certificate
                 type: string
+                maxLength: 255
+                pattern: "^[a-zA-Z0-9._-]+$"
                 example: file.cert
               certFile:
                 description: containing actual cert-file
@@ -3149,20 +3164,21 @@ components:
           readOnly: true
           example: "A00000025128620C1110"
         accessAuthorizedDeviceApps: # O, Yes
-          description: "List of apps for which an access rule is created when an instance of this Service is activated."
+          description: "List of apps for which an access rule is created when an instance of this Service is activated. Default value is empty list."
           type: array
           items:
             type: string
             format: aid
           example: [ "A00000039998960C1111", "A00000086243583C0111", "A00000052220986C0110" ]
         sposConfigId: # O, Yes
-          description: "ID of the SposConfig used for this Service."
+          description: "ID of the SposConfig used for this Service. Default value is null."
           type: string
           format: uuid
           example: "167f43e0-2ada-d0d0-ba18-b23fd6accd18"
         spParameters: # O, Yes
-          description: "Key value definitions used as parameters of a Service. Those parameters can be retrieved via TSM-API. The parameters can be overwritten for each Flavor."
+          description: "Key value definitions used as parameters of a Service. Those parameters can be retrieved via TSM-API. The parameters can be overwritten for each Flavor. Default value is empty map."
           type: object
+          maxProperties: 50
           additionalProperties:
             type: string
             maxLength: 255
@@ -3172,10 +3188,10 @@ components:
     Version:
       description: "A Service can be provided in different Versions. Each Version may have multiple Flavors. Each Flavor defines a set of configurations and ELF files to support a certain hardware platform. The matching of a Flavor to specific SCs is managed via the attribute allowedDeployments. This attribute is a map where one or multiple SecureComponentProfiles are assigned to a specific Flavor. A SecureComponentProfile describes the hardware platform(s) a Flavor is supporting. Thus, inside the Version, a SP MUST define which ELF is used for which hardware platform. The SP also MAY add platform specific configurations. A TSM provider MUST ensure that the FlavorIds and SecureComponentProfileIds are unique for a Version. In the same Version it is not supported to assign a SecureComponentProfile to multiple Flavors or vice versa. A TSM provider MUST also perform a compatibility check when the allowedDeployments attribute is modified. Here, a TSM provider SHALL compare the ELF files with the assigned SecureComponentProfiles, e.g. to check for JavaCard version mismatch or missing CSP support. Such a compatibility check might also be needed when an ELF or a Flavor is modified. The Version is mutable, thus it is allowed to modify a Version when it is already deployed on a device. With this, the SP can assign new SecureComponentProfiles to an existing Version to increase the amount of devices supported by this Version. The SP can also remove SecureComponentProfiles from an existing Version, e.g., in case of a security incident. A Version has the following attributes:"
       type: object
-      required: [tag, allowedDeployments]
+      required: [allowedDeployments]
       properties:
-        tag: # M, No
-          description: "Tag of the Version in the format <Major>.<Minor>.<Revision> The tag must be unique for a Service, since tag is used to reference the Version."
+        tag: # C, No
+          description: "Tag of the Version in the format <Major>.<Minor>.<Revision> The tag must be unique for a Service, since tag is used to reference the Version. The tag is mandatory for PUT requests. For POST requests the attribute may be omitted or null. Non-null values on POST requests are ignored by the TSMS."
           type: string
           format: version
           maxLength: 11
@@ -3192,6 +3208,7 @@ components:
         allowedDeployments: # M, Yes
           description: "Map, which associates Flavors (see 4.1.4.4) to one or multiple SecureComponentProfiles (see 4.1.4.5). By this, Flavors linked to this Version are assigned to concrete hardware platforms as 1-n association. The key of the map contains the FlavorId. The value of the map is a list of SecureComponentProfileIds. Specific FlavorIds and SecureComponentProfileIds can only be used once inside a Version, i.e., inside a Version it is not supported to assign a SecureComponentProfile to multiple Flavors or vice versa."
           type: object
+          maxProperties: 50
           additionalProperties:
             type: array
             items:
@@ -3217,15 +3234,15 @@ components:
           readOnly: true
           example: "bb451440-fdc1-1983-43f2-df17104a4715"
         name: # O, Yes
-          description: "Name of this Flavor."
+          description: "Name of this Flavor. Default value is empty string."
           type: string
           maxLength: 255
-          example: "nameOfThisFlavor"
+          example: "nameOfThisFlavorDefaultValueIsEmptyString"
         description: # O, Yes
-          description: "Additional description for this Flavor."
+          description: "Additional description for this Flavor. Default value is empty string."
           type: string
           maxLength: 255
-          example: "Additional description for this Flavor."
+          example: "Additional description for this Flavor. Default value is empty string."
         creationDate: # A, No
           description: "A datetime string (creation of Flavor)."
           type: string
@@ -3237,29 +3254,31 @@ components:
           default: false
           readOnly: true
         executableLoadFileIds: # O, C
-          description: "List of IDs of ELFs used by this Flavor. Modifications are only possible, as long as the Flavor is not yet published."
+          description: "List of IDs of ELFs used by this Flavor. Modifications are only possible, as long as the Flavor is not yet published. Default value is empty list."
           type: array
           items:
             type: string
             format: uuid
           example: [ "fd4aad1f-50f8-1534-aeab-652bafa65604", "96f3baa5-d50c-84e4-b285-07b679aa6953", "69c1eede-6767-ddbc-6c84-3903126e51b4" ]
         applicationInstantiationConfigs: # O, C
-          description: "List to link and prioritize EMs and ApplicationConfigs. Modifications are only possible, as long as the Flavor is not yet published."
+          description: "List to link and prioritize EMs and ApplicationConfigs. Modifications are only possible, as long as the Flavor is not yet published. Default value is empty list."
           type: array
           items:
             $ref: "#/components/schemas/ApplicationInstantiationConfig"
         spParameters: # O, Yes
-          description: "Key value definitions used as parameters of a service. Those parameters can be retrieved via TSM-API. For the parameters returned by TSM-API the key value pairs are combined with key values pairs of spParameters contained in the Service definition. For pairs with identical keys, the key value pairs of the given flavor take presence over the corresponding pairs contained in spParameters of the Service definition.."
+          description: "Key value definitions used as parameters of a service. Those parameters can be retrieved via TSM-API. For the parameters returned by TSM-API the key value pairs are combined with key values pairs of spParameters contained in the Service definition. For pairs with identical keys, the key value pairs of the given flavor take presence over the corresponding pairs contained in spParameters of the Service definition. Default value is empty map."
           type: object
+          maxProperties: 50
           additionalProperties:
             type: string
             maxLength: 255
           example: { param1: "Value1 which can be evaluated by the App.", param2: "Value2 which can be evaluated by the App.", param3: "Value3 which can be evaluated by the App." }
         featureConfig: # O, Yes
-          $ref: "#/components/schemas/FeatureConfig" # "Used to indicate the use of features supported by the SC or provided by the TSM."
+          $ref: "#/components/schemas/FeatureConfig" # "Used to indicate the use of features supported by the SC or provided by the TSM. Default value is FeatureConfig with defaults."
         contextSpecificAttributes: # O, Yes
-          description: "Additional context specific configuration settings (e.g. platform specific CSP patch level). Possible options are defined bilateral between SP and TSMS provider."
+          description: "Additional context specific configuration settings (e.g. platform specific CSP patch level). Possible options are defined bilateral between SP and TSMS provider. Default value is empty map."
           type: object
+          maxProperties: 50
           additionalProperties:
             type: string
             maxLength: 255
@@ -3267,7 +3286,7 @@ components:
 
 ### 4.1.4.5 ###
     SecureComponentProfile:
-      description: "A SecureComponentProfile describes a secure component by its properties like JavaCard version, operating system name and version, chip identifier etc. The SP can retrieve this list via the TSM-Backend REST-API to determine supported hardware platforms. With this information, the SP can prepare the necessary ELF files and configure a corresponding Flavor. Finally, the SP assigns specific SecureComponentProfiles to this Flavor to control on which platforms it shall be deployed. This is done via the allowedDeployments attribute of the Version (see Section 4.1.4.3.) A SecureComponentProfile has the following attributes:"
+      description: "A SecureComponentProfile describes a secure component by its properties like JavaCard version, operating system name and version, chip identifier etc. The SP can retrieve this list via the TSM-Backend REST-API to determine supported hardware platforms. With this information, the SP can prepare the necessary ELF files and configure a corresponding Flavor. Finally, the SP assigns specific SecureComponentProfiles to this Flavor to control on which platforms it shall be deployed. This is done via the allowedDeployments attribute of the Version (see Section 4.1.4.3.). SecureComponentProfiles are read-only and cannot be modified by the Service Provider. A SecureComponentProfile has the following attributes:"
       type: object
       required: [name, scType, hardwarePlatform, os, osVersion, javaCardVersion, javaCardFeatures, gpSpecVersions, gpApiVersions, csp, certifications]
       properties:
@@ -3321,6 +3340,7 @@ components:
         javaCardFeatures: # M, No
           description: "Features provided by the JavaCard. The key contains the name of the feature. The value contains a list of supported algorithm for each feature. Sample keys are -> cypher -> signature -> messageDigest -> randomData -> keyBuilder -> keyAgreement -> checksum -> keyPairAlgRsaOnCardGeneration -> keyPairAlgRsaCrtOnCardGeneration -> keyPairAlgDsaOnCardGeneration -> keyPairAlgEcF2MOnCardGeneration -> keyPairAlgEcFpOnCardGeneration -> aeadCipher"
           type: object
+          maxProperties: 50
           additionalProperties:
             type: array
             items:
@@ -3330,6 +3350,7 @@ components:
         gpSpecVersions: # M, No
           description: "Global Platform Specification versions. The key contains an identifier for the GP specification document. The value contains the version for each specification. Sample keys are -> card -> contactlessServices -> scp03 -> executableLoadFileUpgrade Sample values are 2.3.1, 2.3, 2.2.1."
           type: object
+          maxProperties: 50
           additionalProperties:
             type: string
             maxLength: 255
@@ -3338,6 +3359,7 @@ components:
         gpApiVersions: # M, No
           description: "GlobalPlatform API versions. The key contains an identifier for the GP API. The value contains the version for each API. Sample keys are -> card -> contactless -> elfUpgrade Sample values are 1.7, 1.6."
           type: object
+          maxProperties: 50
           additionalProperties:
             type: string
             maxLength: 255
@@ -3346,6 +3368,7 @@ components:
         csp: # M, No
           description: "Supported CSP. Empty when no CSP is available. Key contains an identifier for additional information about the CSP. Value contains the additional CSP information. Sample keys are -> apiVersion -> vendor"
           type: object
+          maxProperties: 50
           additionalProperties:
             type: string
             maxLength: 255
@@ -3354,6 +3377,7 @@ components:
         certifications: # M, No
           description: "Platform certification level. The key contains the scope of the certification. The value contains the link to the letter of approval. Sample keys are -> BSI-CC-PP-0084-2014 -> BSI-CC-PP-0089-2015 -> BSI-CC-PP-0099-2017 -> BSI-CC-PP-0100-2018 -> BSI-CC-PP-0104-2019 -> BSI-CC-PP-0117-2022"
           type: object
+          maxProperties: 50
           additionalProperties:
             type: string
             maxLength: 255
@@ -3371,8 +3395,9 @@ components:
           type: boolean
           default: false
         genericOptions: # O, Yes
-          description: "Possibility to configure further feature options (e.g. key-agreement-algorithm, message-digest). If omitted, default value empty list will be used."
+          description: "Possibility to configure further feature options (e.g. key-agreement-algorithm, message-digest). If omitted, default value empty map will be used."
           type: object
+          maxProperties: 50
           additionalProperties:
             type: boolean
           default: {}
@@ -3410,7 +3435,7 @@ components:
     ExecutableLoadFile:
       description: "An ExecutableLoadFile (ELF) is an executable binary file that can be loaded onto a Secure Component. In SmartCard terminology, the ELF is a container of executable code on a secure component [GPC_SPE_034]. ELFs are essential components of a Flavor used by a Version of a Service. ELFs are uploaded by the SP and may be used in different Flavors. An ELF may contain zero or more ExecutableModule entities. The specific type of an ELF is determined at upload time. If the ELF is a CAP, the ELF AID is automatically extracted from the CAP. The binary of an ELF can be replaced only as long as the ELF is not linked to a published Flavor. An ELF has the following attributes:"
       type: object
-      #required: []
+      required: [fileName]
       properties:
         id: # A, No
           description: "Unique identification of the ELF."
@@ -3430,7 +3455,7 @@ components:
           format: aid
           readOnly: true
           example: "A00000030027697C0110"
-        fileName: # A, Yes
+        fileName: # M, Yes
           description: "Name of this ELF."
           type: string
           maxLength: 255
@@ -3482,7 +3507,7 @@ components:
           readOnly: true
           example: "1.7"
         technicalRequirements: # O, Yes
-          $ref: "#/components/schemas/TechnicalRequirements" # "Technical requirements needed for this CAP."
+          $ref: "#/components/schemas/TechnicalRequirements" # "Technical requirements needed for this CAP. Default value is TechnicalRequirements."
 
 ### 4.1.4.10 ###
     TechnicalRequirements:
@@ -3558,21 +3583,21 @@ components:
           format: aid
           example: "A00000037797423C1100"
         name: # O, Yes
-          description: "Name of this ApplicationConfig."
+          description: "Name of this ApplicationConfig. Default value is empty string."
           type: string
           maxLength: 255
-          example: "nameOfThisApplicationconfig"
+          example: "nameOfThisApplicationconfigDefaultValueIsEmptyString"
         description: # O, Yes
-          description: "Description of this ApplicationConfig."
+          description: "Description of this ApplicationConfig. Default value is empty string."
           type: string
           maxLength: 255
-          example: "Description of this ApplicationConfig."
+          example: "Description of this ApplicationConfig. Default value is empty string."
         installConfig: # O, C
-          $ref: "#/components/schemas/InstallConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Installed."
+          $ref: "#/components/schemas/InstallConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Installed. Default value is InstallConfig with defaults."
         activationConfig: # O, C
-          $ref: "#/components/schemas/ActivationConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Activated."
+          $ref: "#/components/schemas/ActivationConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Activated. Default value is ActivationConfig with defaults."
         personalizationConfig: # O, C
-          $ref: "#/components/schemas/PersonalizationConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Personalized."
+          $ref: "#/components/schemas/PersonalizationConfig" # "Configuration settings applied to the running application instance during transition to lifecycle state Personalized. Default value is PersonalizationConfig with defaults."
 
 ### 4.1.4.13 ###
     InstallConfig:
@@ -3581,13 +3606,14 @@ components:
       #required: []
       properties:
         applicationSpecificInstallParameter: # O, C
-          description: "List of application specific parameters needed for installation. If omitted, empty application specific parameters will be used. Format <TLV-Structures>."
+          description: "List of application specific parameters needed for installation. If omitted, empty application specific parameters will be used. Format <TLV-Structures>. Default value is empty string."
           type: string
           format: tlv
           maxLength: 255
+          pattern: "^([0-9A-Fa-f]{2}[ ]?)+$"
           example: "0f 09 e6 ea e9 06 8d 89 19 a4 8a"
         privileges: # O, C
-          description: "List of required privileges for an application instance. Subset of -> 'CVMManagement' -> 'ContactlessSelfActivation' -> 'GlobalService' -> 'PrivacyTrusted'"
+          description: "List of required privileges for an application instance. Subset of -> 'CVMManagement' -> 'ContactlessSelfActivation' -> 'GlobalService' -> 'PrivacyTrusted' Default value is empty list."
           type: array
           items:
             type: string
@@ -3619,12 +3645,12 @@ components:
       #required: []
       properties:
         personalizationScriptId: # O, C
-          description: "ID of the PersonalizationScript used for personalization."
+          description: "ID of the PersonalizationScript used for personalization. Default value is null."
           type: string
           format: uuid
           example: "06475326-cda5-a009-d342-c01dbff19904"
         certificateId: # O, Yes
-          description: "ID of the Certificate used in this PersonalizationConfig. Empty, if no Certificate is used."
+          description: "ID of the Certificate used in this PersonalizationConfig. Default value is null."
           type: string
           format: uuid
           example: "6b95cefe-7ccc-d1e1-b267-9d12481a6f8b"
@@ -3641,7 +3667,7 @@ components:
     PersonalizationScript:
       description: "A PersonalizationScript is a script a SP may use to specify installation instructions or request TSM-support for, e.g., the personalization of a secure application during the provisioning process. This interface only provides methods to manage the PersonalizationScripts. The content of the PersonalizationScript is currently not in the scope of this TR. A PersonalizationScript has the following attributes:"
       type: object
-      #required: []
+      required: [fileName]
       properties:
         id: # A, No
           description: "Unique identification of the Personalization-Script."
@@ -3655,7 +3681,7 @@ components:
           format: uuid
           readOnly: true
           example: "abbacd23-a58f-d34d-8c55-729ff40dee26"
-        fileName: # A, Yes
+        fileName: # M, Yes
           description: "Name of this PersonalizationScript."
           type: string
           maxLength: 255
@@ -3675,7 +3701,7 @@ components:
     Certificate:
       description: "A Certificate is used for the communication between TSM and SP Online System and also in PersonalizationScripts for applet provisioning and personalization. A Certificate has the following attributes:"
       type: object
-      #required: []
+      required: [fileName]
       properties:
         id: # A, No
           description: "Unique identification of the Certificate."
@@ -3689,7 +3715,7 @@ components:
           format: uuid
           readOnly: true
           example: "bd9a86f0-16ee-8a46-2524-121035f7e006"
-        fileName: # A, Yes
+        fileName: # M, Yes
           description: "Name of the file the Certificate was created from."
           type: string
           maxLength: 255

@@ -1,6 +1,6 @@
 # TSM-API 
 
-*Last updated: 14.02.2023*
+*Last updated: 26.02.2026*
 
 The module **tsm-api** is a Java realization of the TSM-API specified in section 4.2 of [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html). It is a submodule of [GitHub-BSI-TSMS](../README.md).
 
@@ -46,13 +46,13 @@ Installing JavaCard applets on a secure component of a smartphone is step three 
 
 The resulting build artifacts of this module are:
 
-* **[tsm-api-1.0.4.jar](dist/1.0.4/tsm-api-1.0.4.jar)**
+* **[tsm-api-1.1.0.jar](dist/1.1.0/tsm-api-1.1.0.jar)**
   * can be included into an Android app to use a TSMS by calling TSM-API methods
   * provide default implementations for all data types required by the TSM-API
   * can be used to implement a TSM-API-SDK according to BSI-TR-03165 
-* **[tsm-api-1.0.4-javadoc.jar](dist/1.0.4/tsm-api-1.0.4-javadoc.jar)**
+* **[tsm-api-1.1.0-javadoc.jar](dist/1.1.0/tsm-api-1.1.0-javadoc.jar)**
   * JavaDoc documentation of the TSM-API interfaces, enums and classes
-* **[tsm-api-1.0.4-sources.jar](dist/1.0.4/tsm-api-1.0.4-sources.jar)**
+* **[tsm-api-1.1.0-sources.jar](dist/1.1.0/tsm-api-1.1.0-sources.jar)**
   * source code of the TSM-API
 
 

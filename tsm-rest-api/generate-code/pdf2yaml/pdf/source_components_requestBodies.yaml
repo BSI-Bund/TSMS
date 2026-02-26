@@ -9,6 +9,8 @@
               elfFilename:
                 description: filename of the ELF
                 type: string
+                maxLength: 255
+                pattern: "^[a-zA-Z0-9._-]+$"
                 example: elf-file.cap
               elfFile:
                 description: containing actual elf-file
@@ -32,6 +34,8 @@
               scriptFilename:
                 description: filename of the personalization script
                 type: string
+                maxLength: 255
+                pattern: "^[a-zA-Z0-9._-]+$"
                 example: file.pers
               scriptFile:
                 description: containing actual script-file
@@ -55,6 +59,8 @@
               certFilename:
                 description: filename of the certificate
                 type: string
+                maxLength: 255
+                pattern: "^[a-zA-Z0-9._-]+$"
                 example: file.cert
               certFile:
                 description: containing actual cert-file

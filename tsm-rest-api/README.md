@@ -1,10 +1,10 @@
 # TSM-REST-API
 
-*Last updated: 07.07.2023*
+*Last updated: 26.02.2026*
 
 The module **tsm-rest-api** is an OpenApi realization of the TSM-Backend REST-API specified in section 4.1 of [BSI-TR-03165](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr03165/tr-03165.html). It is a submodule of [GitHub-BSI-TSMS](../README.md).
 
-Swagger-ui documentation of latest TSM-REST-API: [tsm-rest-api.yaml](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/BSI-Bund/TSMS/main/tsm-rest-api/dist/1.0.4/tsm-rest-api-1.0.4.yaml)
+Swagger-ui documentation of latest TSM-REST-API: [tsm-rest-api.yaml](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/BSI-Bund/TSMS/main/tsm-rest-api/dist/1.1.0/tsm-rest-api-1.1.0.yaml)
 
 
 Content:
@@ -46,32 +46,32 @@ Uploading JavaCard applets to a TSM-Backend and the configuration of Services vi
 
 The main result of this project is an OpenApi [tsm-rest-api.yaml](tsm-rest-api.yaml) file which specifies the REST-API to configure the TSM-Backend. Beside this, the projects provides scripts to generate additional supporting documents like documentation and transcripts of the API to other formats like JSON and Java. 
 
-Latest official version: 1.0.4
+Latest official version: 1.1.0
 
 The version numbering matches the versions of the BSI-TR-03165, i.e. TR-03165 in version a.b equates to tsm-rest-api-a.b.x. The last digit x is reserved for bugfixes applied on this project itself. 
 
 Resulting build artifacts are:
 
-* **[tsm-rest-api-1.0.4.yaml](dist/1.0.4/tsm-rest-api-1.0.4.yaml)**
+* **[tsm-rest-api-1.1.0.yaml](dist/1.1.0/tsm-rest-api-1.1.0.yaml)**
   * OpenApi specification for the TSM-REST-API  
   * can be used for code generation with [swagger-codegen](https://swagger.io/tools/swagger-codegen)
   * can be visualized with [Swagger UI](https://swagger.io/tools/swagger-ui)
   * contains scheme definition for the data types used in TSM-Backend REST-API (compatible to xsd)
-* **[tsm-rest-api-1.0.4.json](dist/1.0.4/tsm-rest-api-1.0.4.json)**
+* **[tsm-rest-api-1.1.0.json](dist/1.1.0/tsm-rest-api-1.1.0.json)**
   * other format for OpenApi yaml file of the TSM-REST-API
-* **[tsm-rest-api-1.0.4-swagger-ui.zip](dist/1.0.4/tsm-rest-api-1.0.4-swagger-ui.zip)**
+* **[tsm-rest-api-1.1.0-swagger-ui.zip](dist/1.1.0/tsm-rest-api-1.1.0-swagger-ui.zip)**
   * offline Swagger UI documentation for TSM-REST-API
-* **[generate-tsm-rest-api-java-client-1.0.4-pom.xml](dist/1.0.4/generate-tsm-rest-api-java-client-1.0.4-pom.xml)**
+* **[generate-tsm-rest-api-java-client-1.1.0-pom.xml](dist/1.1.0/generate-tsm-rest-api-java-client-1.1.0-pom.xml)**
   * Maven definition file to configure [swagger-codegen](https://swagger.io/tools/swagger-codegen) to generate a java-client from the OpenApi yaml file
-* **[tsm-rest-api-java-client-1.0.4.jar](dist/1.0.4/tsm-rest-api-java-client-1.0.4.jar)**
+* **[tsm-rest-api-java-client-1.1.0.jar](dist/1.1.0/tsm-rest-api-java-client-1.1.0.jar)**
   * java library to access a TSM
   * can be integrated into a Java application
   * can be used to call REST-API methods of the TSM-Backend
   * provide default implementation for the data types required for TSM-Backend REST-API
   * generated via [swagger-codegen](https://swagger.io/tools/swagger-codegen) from tsm-rest-api.json
-* **[tsm-rest-api-java-client-1.0.4-javadoc.jar](dist/1.0.4/tsm-rest-api-java-client-1.0.4-javadoc.jar)**
+* **[tsm-rest-api-java-client-1.1.0-javadoc.jar](dist/1.1.0/tsm-rest-api-java-client-1.1.0-javadoc.jar)**
   * javadocs for the java-client
-* **[tsm-rest-api-java-client-1.0.4-sources.jar](dist/1.0.4/tsm-rest-api-java-client-1.0.4-sources.jar)**
+* **[tsm-rest-api-java-client-1.1.0-sources.jar](dist/1.1.0/tsm-rest-api-java-client-1.1.0-sources.jar)**
   * source code of the java-client
 
 
@@ -206,8 +206,8 @@ All methods of the TSM-Backend REST-API are described in detail in BSI-TR-03165 
 
 Additional documentation generated from the TR is available here:
 
-* Online Swagger UI documentation: [tsm-rest-api.yaml](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/BSI-Bund/TSMS/main/tsm-rest-api/dist/1.0.4/tsm-rest-api-1.0.4.yaml)
-* Offline Swagger UI documentation: [tsm-rest-api-1.0.4-swagger-ui.zip](dist/1.0.4/tsm-rest-api-1.0.4-swagger-ui.zip)
+* Online Swagger UI documentation: [tsm-rest-api.yaml](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/BSI-Bund/TSMS/main/tsm-rest-api/dist/1.1.0/tsm-rest-api-1.1.0.yaml)
+* Offline Swagger UI documentation: [tsm-rest-api-1.1.0-swagger-ui.zip](dist/1.1.0/tsm-rest-api-1.1.0-swagger-ui.zip)
 * Java-Client documentation: [docs/README.md](docs/README.md)
 
 

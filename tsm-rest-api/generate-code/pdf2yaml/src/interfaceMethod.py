@@ -149,13 +149,13 @@ class InterfaceMethod:
             self.description = ''
             for i in range(1, line_rest_url):
                 self.description += self.interface_method_text[i].strip() + ' '
-            self.description = self.description.strip()
+            self.description = self.description.strip().replace('"', "'")
             # request headers
             self.request_headers = {}
             for i in range(line_request_headers + 1, line_request_headers_end, 2):
-                self.request_headers[
-                    self.interface_method_text[i].strip()
-                ] = self.interface_method_text[i + 1].strip()
+                self.request_headers[self.interface_method_text[i].strip()] = (
+                    self.interface_method_text[i + 1].strip()
+                )
             # request filename
             # if False:#line_request_filename:
             #     self.request_filename = {}
@@ -168,9 +168,9 @@ class InterfaceMethod:
             if line_request_file:
                 self.request_file = {}
                 for i in range(line_request_file + 1, line_response_success, 2):
-                    self.request_file[
-                        self.interface_method_text[i].strip()
-                    ] = self.interface_method_text[i + 1].strip()
+                    self.request_file[self.interface_method_text[i].strip()] = (
+                        self.interface_method_text[i + 1].strip()
+                    )
             else:
                 self.request_file = None
             # request body
@@ -226,9 +226,9 @@ class InterfaceMethod:
             # response headers (success)
             self.response_headers_success = {}
             for i in range(line_response_headers_succ + 1, line_response_body_succ, 2):
-                self.response_headers_success[
-                    self.interface_method_text[i].strip()
-                ] = self.interface_method_text[i + 1].strip()
+                self.response_headers_success[self.interface_method_text[i].strip()] = (
+                    self.interface_method_text[i + 1].strip()
+                )
             # response body (success)
             self.response_body_success = self.interface_method_text[
                 line_response_body_succ + 1
@@ -240,9 +240,9 @@ class InterfaceMethod:
             # response headers (failure)
             self.response_headers_failure = {}
             for i in range(line_response_headers_fail + 1, line_response_body_fail, 2):
-                self.response_headers_failure[
-                    self.interface_method_text[i].strip()
-                ] = self.interface_method_text[i + 1].strip()
+                self.response_headers_failure[self.interface_method_text[i].strip()] = (
+                    self.interface_method_text[i + 1].strip()
+                )
             self.response_headers_failure['Status Code'] = [
                 x.strip()
                 for x in self.response_headers_failure['Status Code'].split(',')
@@ -395,16 +395,26 @@ class InterfaceMethod:
             elif self.request_body:
                 result += '      requestBody:\n'
                 if len(self.request_body) == 1:
-                    result += '        required: true\n'
-                    result += '        content:\n'
-                    result += '          application/json:\n'
-                    result += '            schema:\n'
-                    result += f'              $ref: "#/components/schemas/{self.request_body[0].strip()}"\n'
-                    key = self.request_body[0].strip()
-                    if key in self.request_body_examples:
+                    if 'grant_type' in self.request_body[0]:
+                        result += '        required: true\n'
+                        result += '        content:\n'
+                        result += '          application/x-www-form-urlencoded:\n'
+                        result += '            schema:\n'
+                        result += '              type: string\n'
+                        result += '              maxLength: 255\n'
                         result += '            example:\n'
-                        for request_body_example in self.request_body_examples[key]:
-                            result += f'              {request_body_example}\n'
+                        result += '              "grant_type=client_credentials"\n'
+                    else:
+                        result += '        required: true\n'
+                        result += '        content:\n'
+                        result += '          application/json:\n'
+                        result += '            schema:\n'
+                        result += f'              $ref: "#/components/schemas/{self.request_body[0].strip()}"\n'
+                        key = self.request_body[0].strip()
+                        if key in self.request_body_examples:
+                            result += '            example:\n'
+                            for request_body_example in self.request_body_examples[key]:
+                                result += f'              {request_body_example}\n'
                 elif len(self.request_body) == 2:
                     result += f'        description: "{self.request_body[1].strip()}"\n'
                     result += '        required: true\n'
@@ -417,6 +427,7 @@ class InterfaceMethod:
                         result += f'                type: {self.request_body[0].strip()[:-2]}\n'
                     elif 'Map<string,' in self.request_body[0]:
                         result += '              type: object\n'
+                        result += '              maxProperties: 50\n'
                         result += '              additionalProperties:\n'
                         if 'string>' in self.request_body[0]:
                             result += '                type: string\n'
@@ -426,7 +437,7 @@ class InterfaceMethod:
                             result += '                items:\n'
                             result += '                  type: string\n'
                             result += '                  maxLength: 255\n'
-                            
+
                 else:
                     for body in self.request_body:
                         result += f'        {body}\n'
@@ -461,16 +472,16 @@ class InterfaceMethod:
                         result += '                type: array\n'
                         result += '                items:\n'
                         if 'ExecutableLoadFile' in self.response_body_success:
-                            result += f'                  oneOf:\n'
+                            result += '                  oneOf:\n'
                             result += f'                    - $ref: "#/components/schemas/{self.response_body_success.replace("[]","")}"\n'
-                            result += f'                    - $ref: "#/components/schemas/CAP"\n'
+                            result += '                    - $ref: "#/components/schemas/CAP"\n'
                         else:
                             result += f'                  $ref: "#/components/schemas/{self.response_body_success.replace("[]","")}"\n'
                     else:
                         if 'ExecutableLoadFile' in self.response_body_success:
-                            result += f'                oneOf:\n'
+                            result += '                oneOf:\n'
                             result += f'                  - $ref: "#/components/schemas/{self.response_body_success.replace("[]","")}"\n'
-                            result += f'                  - $ref: "#/components/schemas/CAP"\n'
+                            result += '                  - $ref: "#/components/schemas/CAP"\n'
                         else:
                             result += f'                $ref: "#/components/schemas/{self.response_body_success}"\n'
             elif self.response_headers_success['Status Code'] == '204':

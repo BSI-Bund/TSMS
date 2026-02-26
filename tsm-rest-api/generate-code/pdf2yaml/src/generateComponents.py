@@ -315,6 +315,7 @@ class Components:
                     elif d_type.att2type[i] == 'Map<string, string>':
                         type_ = "spParameters"
                         self.result.append('          type: object\n')
+                        self.result.append('          maxProperties: 50\n')
                         self.result.append('          additionalProperties:\n')
                         self.result.append('            type: string\n')
                         self.result.append('            maxLength: 255\n')
@@ -322,6 +323,7 @@ class Components:
                     elif d_type.att2type[i] == 'Map<string, Link>':
                         type_ = "_links"
                         self.result.append('          type: object\n')
+                        self.result.append('          maxProperties: 50\n')
                         self.result.append('          additionalProperties:\n')
                         self.result.append('            type: string\n')
                         self.result.append('            format: uri\n')

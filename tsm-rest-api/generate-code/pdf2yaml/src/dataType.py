@@ -290,6 +290,7 @@ class DataType:
                         type_ = "tlv"
                         result += '          format: tlv\n'
                         result += '          maxLength: 255\n'
+                        result += r'          pattern: "^([0-9A-Fa-f]{2}[ ]?)+$"'+'\n'
                     # hardwarePlatform
                     elif 'hardwarePlatform' == self.att1[i]:
                         type_ = 'platform'
@@ -427,6 +428,7 @@ class DataType:
                 elif self.att2type[i] == 'Map<string, string>':
                     type_ = 'stringMap'
                     result += '          type: object\n'
+                    result += '          maxProperties: 50\n'
                     result += '          additionalProperties:\n'
                     result += '            type: string\n'
                     result += '            maxLength: 255\n'
@@ -443,6 +445,7 @@ class DataType:
                 elif self.att2type[i] == 'Map<string, string[]>':
                     type_ = 'stringVecMap'
                     result += '          type: object\n'
+                    result += '          maxProperties: 50\n'
                     result += '          additionalProperties:\n'
                     result += '            type: array\n'
                     result += '            items:\n'
@@ -454,6 +457,7 @@ class DataType:
                 elif self.att2type[i] == 'Map<string, boolean>':
                     type_ = 'booleanMap'
                     result += '          type: object\n'
+                    result += '          maxProperties: 50\n'
                     result += '          additionalProperties:\n'
                     result += '            type: boolean\n'
                     if self.att1[i] == 'genericOptions':
@@ -463,6 +467,7 @@ class DataType:
                 elif self.att2type[i] == 'Map<string, Link>':
                     type_ = '_links'
                     result += '          type: object\n'
+                    result += '          maxProperties: 50\n'
                     result += '          additionalProperties:\n'
                     result += '            type: string\n'
                     result += '            format: uri\n'
@@ -470,6 +475,7 @@ class DataType:
                 # key-value map
                 elif 'Map<string,' in self.att2type[i]:
                     result += '          type: object\n'
+                    result += '          maxProperties: 50\n'
                     result += '          additionalProperties:\n'
                     # values are string-lists
                     if 'string[]>' in self.att2type[i]:
